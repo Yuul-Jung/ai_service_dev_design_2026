@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>1일차 오후 첫 구간 · 언어 모델은 입력을 어떻게 처리하고 무엇을 배웠는가</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F1F2EE;--card:#FFFFFF;--ink:#15171C;--ink-2:#454A55;--ink-3:#6E7480;
+  --line:#DDDFD8;--accent:#4635B1;--accent-soft:#EDEAFA;
+  --ok:#1D6B45;--ok-soft:#E3F2E9;--warn:#7E5200;--warn-soft:#FBF0D9;--ng:#A8261D;--ng-soft:#FBE7E4;
+  --plus:#0F5E73;--plus-soft:#E2F1F5;--src:#F6F6F2;
+  --hero:#15171C;--hero-ink:#F1F2EE;--hero-2:#B9BDC4;--hero-3:#8D9299;--hl:#FFD24A;
+  --maxw:1180px;color-scheme:light;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#111216;--card:#1A1C22;--ink:#E7E8EB;--ink-2:#B8BDC7;--ink-3:#8E94A0;
+  --line:#2C2F37;--accent:#AEA2FF;--accent-soft:#2A2550;
+  --ok:#7FD9A8;--ok-soft:#16301F;--warn:#F3C86F;--warn-soft:#352911;--ng:#FF9A90;--ng-soft:#3A1916;
+  --plus:#7FD0E6;--plus-soft:#142C33;--src:#15171C;
+  --hero:#0B0C0F;color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --paper:#111216;--card:#1A1C22;--ink:#E7E8EB;--ink-2:#B8BDC7;--ink-3:#8E94A0;
+  --line:#2C2F37;--accent:#AEA2FF;--accent-soft:#2A2550;
+  --ok:#7FD9A8;--ok-soft:#16301F;--warn:#F3C86F;--warn-soft:#352911;--ng:#FF9A90;--ng-soft:#3A1916;
+  --plus:#7FD0E6;--plus-soft:#142C33;--src:#15171C;--hero:#0B0C0F;color-scheme:dark;}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans KR",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.75;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+code,.mono{font-family:"IBM Plex Mono","IBM Plex Sans KR",ui-monospace,monospace;font-size:.92em}
+a{color:var(--accent)}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.hero{position:relative;background:var(--hero);color:var(--hero-ink);overflow:hidden}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(to right,rgba(255,255,255,.055) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.055) 1px,transparent 1px);background-size:28px 28px;pointer-events:none}
+.hero-inner{position:relative;max-width:var(--maxw);margin:0 auto;padding:80px 32px 68px}
+.hero-kicker{margin:0 0 18px;font-size:clamp(1rem,2.2vw,1.18rem);font-weight:500;color:var(--hl);display:inline-block;padding-bottom:7px;border-bottom:2px solid var(--hl)}
+.hero h1{margin:0;font-size:clamp(2rem,5vw,3.3rem);font-weight:700;letter-spacing:-.035em;line-height:1.2;max-width:18ch}
+.hero .sub{margin:24px 0 0;max-width:52ch;color:var(--hero-2);font-size:1.03rem;font-weight:300}
+.hero-meta{margin-top:36px;display:flex;flex-wrap:wrap;gap:10px}
+.chip{font-family:"IBM Plex Mono",monospace;font-size:.78rem;color:#E4E6EA;border:1px solid rgba(255,255,255,.22);border-radius:2px;padding:5px 11px}
+.chip b{color:var(--hl);font-weight:600}
+.hero-terms{margin-top:48px;padding-top:32px;border-top:1px solid rgba(255,255,255,.15);display:grid;grid-template-columns:1fr 1fr;gap:30px 46px}
+.term h2{margin:0 0 8px;font-size:1.06rem;font-weight:600;color:#fff}
+.term h2 span{display:block;margin-top:3px;font-family:"IBM Plex Mono",monospace;font-size:.74rem;font-weight:400;color:var(--hero-3)}
+.term p{margin:0;font-size:.93rem;font-weight:300;color:var(--hero-2);max-width:46ch}
+.term-sum{grid-column:1/-1;margin:0;padding:15px 18px;background:rgba(255,210,74,.10);border-left:2px solid var(--hl);font-size:.95rem;font-weight:300;color:#D6D9DE}
+.hero strong,.hero b{color:var(--hl);font-weight:600}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px 96px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:52px;align-items:start}
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);padding:44px 0;max-height:100vh;overflow-y:auto}
+nav.toc h2{font-size:.8rem;color:var(--ink-3);margin:0 0 12px;font-weight:500}
+nav.toc ol{list-style:none;margin:0;padding:0}
+nav.toc a{display:flex;gap:10px;padding:4px 0 4px 10px;color:var(--ink-2);text-decoration:none;font-size:.85rem;line-height:1.5;border-left:2px solid transparent}
+nav.toc a:hover,nav.toc a:focus-visible{color:var(--accent);border-left-color:var(--accent)}
+nav.toc .n{font-family:"IBM Plex Mono",monospace;color:var(--ink-3);font-size:.78rem;min-width:18px}
+main{padding:44px 0 0;min-width:0}
+
+section{background:var(--card);border:1px solid var(--line);padding:34px 38px 36px;margin-bottom:18px;scroll-margin-top:20px}
+section>h2{margin:0 0 4px;font-size:1.42rem;font-weight:600;letter-spacing:-.02em;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+section>h2 .num{font-family:"IBM Plex Mono",monospace;font-size:.9rem;font-weight:500;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:2px}
+section>h2 .pg{font-family:"IBM Plex Mono",monospace;font-size:.78rem;font-weight:400;color:var(--ink-3);margin-left:auto}
+section h3{font-size:1.06rem;font-weight:600;margin:28px 0 8px}
+section p{margin:12px 0;max-width:72ch}
+.lead{color:var(--ink-2);margin-top:10px}
+section ul,section ol{padding-left:1.25em;max-width:72ch}
+section li{margin:4px 0}
+strong{font-weight:600}
+
+.src{margin:18px 0;padding:14px 18px;background:var(--src);border-left:3px solid var(--ink-3);font-size:.96rem}
+.src .pl{display:block;font-family:"IBM Plex Mono",monospace;font-size:.74rem;color:var(--ink-3);margin-bottom:4px}
+.src p{margin:4px 0}
+
+.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin:18px 0}
+.flow>div{flex:1 1 140px;border:1px solid var(--line);background:var(--card);padding:10px 12px;font-size:.9rem;position:relative}
+.flow>div b{display:block;font-weight:600;font-size:.93rem}
+.flow>div span{color:var(--ink-2);font-size:.86rem}
+.flow>i{align-self:center;font-style:normal;color:var(--ink-3);font-family:"IBM Plex Mono",monospace}
+
+.tbl{overflow-x:auto;margin:16px 0}
+table{border-collapse:collapse;width:100%;font-size:.92rem;min-width:420px}
+th,td{border-bottom:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+th{font-weight:600;color:var(--ink-2);background:var(--src);font-size:.86rem}
+td.c,th.c{text-align:center}
+td.r,th.r{text-align:right;font-family:"IBM Plex Mono",monospace}
+
+dl.ex{margin:16px 0;border-top:1px solid var(--line)}
+dl.ex dt{font-weight:600;padding-top:14px;font-size:.95rem}
+dl.ex dt code{background:var(--accent-soft);color:var(--accent);padding:1px 6px}
+dl.ex dd{margin:4px 0 0;padding-bottom:14px;border-bottom:1px solid var(--line);color:var(--ink-2);max-width:72ch}
+
+.box{margin:20px 0;padding:16px 20px;border:1px solid var(--line)}
+.box>h4{margin:0 0 6px;font-size:.88rem;font-weight:600;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.box p,.box li{font-size:.94rem}
+.box p:first-of-type{margin-top:4px}
+.box.v{background:var(--ok-soft);border-color:transparent}
+.box.v>h4{color:var(--ok)}
+.box.p{background:var(--plus-soft);border-color:transparent}
+.box.p>h4{color:var(--plus)}
+.box.w{background:var(--warn-soft);border-color:transparent}
+.box.w>h4{color:var(--warn)}
+.box.t{border-style:dashed}
+.box.t>h4{color:var(--accent)}
+.tag{font-family:"IBM Plex Mono",monospace;font-size:.72rem;font-weight:500;padding:1px 7px;border:1px solid currentColor;border-radius:2px}
+.tag.ok{color:var(--ok)}.tag.ng{color:var(--ng)}.tag.na{color:var(--ink-3)}.tag.add{color:var(--plus)}
+.calc{font-family:"IBM Plex Mono",monospace;font-size:.88rem;background:var(--card);padding:10px 12px;margin:8px 0;overflow-x:auto;white-space:pre;line-height:1.6}
+
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+.pair>div{border:1px solid var(--line);padding:14px 16px}
+.pair>div h4{margin:0 0 6px;font-size:.98rem;font-weight:600}
+.pair>div p,.pair>div li{font-size:.92rem;color:var(--ink-2)}
+.nest{border:1px solid var(--ink-3);padding:12px 14px;margin:14px 0}
+.nest .nest{margin:10px 0 0;border-color:var(--accent)}
+.nest .nest .nest{border-style:dashed}
+.nest b{font-weight:600}.nest span{color:var(--ink-2);font-size:.9rem}
+
+details{margin:16px 0;border:1px solid var(--line);padding:0 16px}
+details summary{cursor:pointer;padding:12px 0;font-weight:600;font-size:.94rem;color:var(--accent)}
+details[open] summary{border-bottom:1px solid var(--line);margin-bottom:8px}
+details>*:last-child{margin-bottom:14px}
+
+section.summary{background:var(--hero);color:var(--hero-ink);border-color:var(--hero)}
+section.summary>h2 .num{background:rgba(255,210,74,.15);color:var(--hl)}
+section.summary li{color:#D6D9DE}
+section.summary strong{color:var(--hl)}
+footer{max-width:var(--maxw);margin:0 auto;padding:0 32px 60px;color:var(--ink-3);font-size:.84rem}
+footer p{max-width:80ch}
+
+@media (max-width:900px){
+  .wrap{grid-template-columns:1fr;gap:0;padding:0 16px 64px}
+  nav.toc{position:static;max-height:none;padding:28px 0 8px}
+  nav.toc ol{columns:2;column-gap:16px}
+  .hero-inner{padding:56px 20px 48px}
+  .hero-terms{grid-template-columns:1fr}
+  section{padding:24px 18px 26px}
+  .pair{grid-template-columns:1fr}
+  section>h2 .pg{margin-left:0;width:100%}
+  footer{padding:0 16px 48px}
+}
+</style></head>
+<body>
+<header class="hero"><div class="hero-grid"></div><div class="hero-inner">
+<p class="hero-kicker">1일차 오후 첫 구간 · 13:00–15:00</p>
+<h1>언어 모델은 입력을 어떻게 처리하고, 무엇을 배웠는가</h1>
+<p class="sub">토큰화부터 다음 토큰의 반복 생성까지 입력이 응답이 되는 과정을 따라가고, 그 능력을 만든 사전학습·지도 미세조정·정렬을 이번 입력에 자료를 넣는 일과 구별합니다.</p>
+<div class="hero-meta"><span class="chip">쪽 <b>p.51–111</b></span><span class="chip">토크나이저 <b>o200k_base</b></span><span class="chip">직접 분할 검증 <b>일치</b></span><span class="chip">학습 단계 <b>3</b></span></div>
+<div class="hero-terms"><div class="term"><h2>문맥<span>Context</span></h2><p>이번 응답을 만들 때 모델에 실제로 전달된 정보입니다. 화면의 대화 기록 전체와 같지 않습니다(p.57, p.80).</p></div><div class="term"><h2>다음 토큰 예측<span>Next-token prediction</span></h2><p>앞의 토큰들로 다음 토큰 후보의 확률을 계산하고 하나를 골라 붙이는 일을 반복합니다(p.74–77).</p></div><p class="term-sum">사용할 때는 <strong>입력이 바뀌고</strong> 매개변수는 그대로, 학습할 때는 <strong>매개변수가 바뀝니다</strong>. 이 구분이 1일차의 도착점인 “파일 제공 ≠ 학습”의 근거입니다.</p></div>
+</div></header>
+<div class="wrap">
+<nav class="toc" aria-label="목차"><h2>목차</h2><ol><li><a href="#s00"><span class="n">00</span>언어 모델과 LLM</a></li><li><a href="#s01"><span class="n">01</span>입력부터 응답까지 전체 과정</a></li><li><a href="#s02"><span class="n">02</span>문맥 · 검색과 생성</a></li><li><a href="#s03"><span class="n">03</span>토큰화와 토큰 번호</a></li><li><a href="#s04"><span class="n">04</span>임베딩</a></li><li><a href="#s05"><span class="n">05</span>위치 정보와 동음이의어</a></li><li><a href="#s06"><span class="n">06</span>어텐션</a></li><li><a href="#s07"><span class="n">07</span>트랜스포머</a></li><li><a href="#s08"><span class="n">08</span>다음 토큰의 확률과 반복 생성</a></li><li><a href="#s09"><span class="n">09</span>모델 입력의 구성과 서비스 메모리</a></li><li><a href="#s10"><span class="n">10</span>원하는 설명을 얻는 요청</a></li><li><a href="#s11"><span class="n">11</span>학습과 추론 · 입력 정보와 학습한 지식</a></li><li><a href="#s12"><span class="n">12</span>사전학습과 손실</a></li><li><a href="#s13"><span class="n">13</span>지도 미세조정 · 예시 제공과 추가 학습</a></li><li><a href="#s14"><span class="n">14</span>정렬과 선호 학습</a></li><li><a href="#s15"><span class="n">15</span>학습 자료와 목표에 따른 모델 특성</a></li><li><a href="#s16"><span class="n">16</span>입력 · 저장 · 학습 구별하기</a></li><li><a href="#s17"><span class="n">17</span>수업 설계 예시 두 가지</a></li><li><a href="#s18"><span class="n">18</span>개념 탐구 질문의 짧은 답</a></li><li><a href="#s19"><span class="n">19</span>핵심 정리</a></li><li><a href="#s20"><span class="n">20</span>검증 기록</a></li></ol></nav>
+<main>
+<section id="s00" aria-labelledby="s00-h"><h2 id="s00-h"><span class="num">00</span>언어 모델과 LLM<span class="pg">p.51–55</span></h2>
+<p class="lead">이 구간은 두 질문으로 나뉩니다. 앞 절반은 “입력을 어떻게 처리하는가”(p.53–88), 뒤 절반은 “그 능력을 어떻게 배웠는가”(p.89–109)입니다.</p>
+<div class="pair"><div><h4>요약 · 번역 · 설명 (p.53)</h4><p>같은 안내문에 다른 요청을 해도, 공통적으로 “주어진 글과 요청을 함께 처리해 새로운 글을 만든다.”</p></div><div><h4>LLM (p.54)</h4><p>Large Language Model. 많은 자료와 다수의 매개변수로 학습한 언어 모델. 앞의 내용으로 다음 표현의 가능성을 계산하고, 선택한 표현을 더해 글을 이어 간다.</p></div></div>
+<div class="tbl"><table><thead><tr><th>같은 자료 (p.55)</th><th>요청</th><th>응답 예 (교육용)</th></tr></thead><tbody>
+<tr><td rowspan="2">신청 마감은 금요일 18시</td><td>마감일을 알려 줘</td><td>“금요일 18시입니다.”</td></tr>
+<tr><td>신청 독려 제목을 써 줘</td><td>“금요일 18시, 신청을 마쳐 주세요.”</td></tr></tbody></table></div>
+<p>요청과 자료가 함께 “다음 글의 조건”이 됩니다. 오전 p.33의 같은 원문·다른 결과 예가 여기서 작동 원리로 설명됩니다.</p>
+<div class="box p"><h4>보충 · 자료 밖 내용</h4><p>요약·번역·질의응답이 모두 “다음 표현을 이어 쓰는 일” 하나로 수행된다는 점이 언어 모델의 특징입니다. 작업마다 다른 모델을 만들던 이전 방식과 달리, 요청 문장이 어떤 작업인지를 지정합니다. ‘대규모’에 정해진 기준 수치는 없고, 시기에 따라 매개변수 수억 개에서 수천억 개 이상까지 폭넓게 쓰입니다.</p></div>
+</section>
+
+<section id="s01" aria-labelledby="s01-h"><h2 id="s01-h"><span class="num">01</span>입력부터 응답까지 전체 과정<span class="pg">p.56 · p.78</span></h2>
+<div class="flow"><div><b>글을 계산할 표현으로</b><span>토큰화 → 토큰 번호 → 임베딩</span></div><i>→</i><div><b>문맥을 반영하는 계산</b><span>위치 정보와 어텐션 → 여러 계산층</span></div><i>→</i><div><b>새 글 생성</b><span>후보 확률 → 토큰 선택 → 이어서 반복</span></div></div>
+<div class="src"><span class="pl">자료 p.78</span><p>글을 토큰이라는 단위로 나누고, 번호와 수치 표현으로 바꾼다. 문맥을 반영해 계산한 뒤 다음 토큰을 생성한다. 생성한 토큰을 포함해 다시 계산하며 응답을 이어 간다.</p></div>
+<div class="box t"><h4>강의 포인트</h4><p>이 세 줄을 수업의 지도로 먼저 보여 주고, 각 개념을 배울 때마다 “지금 몇째 줄에 있는가”를 짚어 주세요. 학습자가 어텐션 같은 세부 계산에서 길을 잃는 것을 막아 줍니다.</p></div>
+</section>
+
+<section id="s02" aria-labelledby="s02-h"><h2 id="s02-h"><span class="num">02</span>문맥 · 검색과 생성<span class="pg">p.57–58</span></h2>
+<div class="src"><span class="pl">자료 p.57</span><p>“문맥은 모델이 이번 응답을 생성할 때 참고하는 정보다.” 모델에 전달한 문맥 = 현재 질문 + 전달한 대화 + 전달한 자료</p></div>
+<div class="tbl"><table><thead><tr><th></th><th>검색 (p.58)</th><th>생성</th></tr></thead><tbody>
+<tr><td>하는 일</td><td>질문 → 관련 문서 찾기</td><td>문맥 → 다음 표현 계산</td></tr>
+<tr><td>결과</td><td>문서·문서 위치</td><td>새로 작성한 글</td></tr>
+<tr><td>역할</td><td>찾은 문서가 답의 근거가 된다</td><td>검색한 문서를 받아 설명할 수 있다</td></tr></tbody></table></div>
+<p>“검색 결과를 모델 입력에 넣으면 두 기능을 함께 쓸 수 있다.” 검색이 근거를 찾고, 생성이 그 근거로 답을 씁니다.</p>
+<div class="box p"><h4>보충 · 자료 밖 내용 <span class="tag add">용어</span></h4><p>검색한 자료를 입력에 넣어 생성하는 방식을 흔히 검색 증강 생성, RAG(Retrieval-Augmented Generation)라고 부릅니다. 이 이름은 Lewis 등(2020)의 논문에서 널리 알려졌습니다. 오후 둘째 구간의 “근거 자료로 답하기”(p.134–143)가 이 방식을 사람이 직접 해 보는 연습입니다.</p></div>
+</section>
+
+<section id="s03" aria-labelledby="s03-h"><h2 id="s03-h"><span class="num">03</span>토큰화와 토큰 번호<span class="pg">p.59–62</span></h2>
+<div class="src"><span class="pl">자료 p.59–60</span><p>글을 정해진 규칙에 따라 조각으로 나누고 각 조각을 번호로 바꾸어 모델에 전달한다. 이 조각이 토큰이다. 단어와 항상 같지는 않다. 글을 토큰으로 나누고 번호를 붙이는 프로그램을 토크나이저라고 한다.</p></div>
+<div class="tbl"><table><thead><tr><th>“오늘 수업은 오후 두 시에 시작합니다.”</th><th class="c">토큰 (␣ = 앞 공백)</th><th class="r">토큰 번호</th></tr></thead><tbody>
+<tr><td rowspan="11">o200k_base 분할 · 11개</td><td class="c">오늘</td><td class="r">149830</td></tr>
+<tr><td class="c">␣수</td><td class="r">8963</td></tr><tr><td class="c">업</td><td class="r">14102</td></tr>
+<tr><td class="c">은</td><td class="r">4740</td></tr><tr><td class="c">␣오후</td><td class="r">119206</td></tr>
+<tr><td class="c">␣두</td><td class="r">44922</td></tr><tr><td class="c">␣시</td><td class="r">12468</td></tr>
+<tr><td class="c">에</td><td class="r">3107</td></tr><tr><td class="c">␣시작</td><td class="r">50972</td></tr>
+<tr><td class="c">합니다</td><td class="r">24490</td></tr><tr><td class="c">.</td><td class="r">13</td></tr></tbody></table></div>
+<div class="box v"><h4>검증 · 토크나이저로 직접 분할 <span class="tag ok">일치</span></h4><p>o200k_base 어휘표가 들어 있는 공개 라이브러리(js-tiktoken)로 같은 문장을 분할했습니다. 토큰 수 11개, 경계, 그리고 자료 p.61의 번호 149830 · 8963 · 14102가 모두 일치합니다. 자료가 보여 주지 않은 나머지 8개 번호는 이 분할 결과에서 채웠습니다.</p>
+<div class="calc">"오늘"      → [149830]          1개
+"수업"      → [7820, 14102]     2개  ("수" + "업")
+"오늘 수업" → [149830, 8963, 14102]</div>
+<p>추가로 발견한 점: 문장 안의 “␣수”(8963)와 단독 “수”(7820)는 <strong>번호가 다릅니다</strong>. 앞 공백이 붙은 조각과 붙지 않은 조각은 토크나이저에게 서로 다른 토큰입니다.</p></div>
+<div class="src"><span class="pl">자료 p.62</span><p>“149830이 8963보다 더 중요한 뜻은 아니다. 문맥 계산에는 각 토큰에 대응하는 수치 표현을 쓴다.”</p></div>
+<div class="box p"><h4>보충 · 자료 밖 내용</h4><ul>
+<li>o200k_base는 OpenAI가 공개한 토크나이저로, GPT-4o 계열 모델에 쓰인다고 알려져 있습니다. 다른 회사의 모델은 다른 토크나이저를 쓰므로, 같은 문장도 토큰 수가 다릅니다.</li>
+<li>많은 토크나이저는 자주 함께 나오는 글자 조각을 하나로 합쳐 어휘를 만드는 방식(BPE 계열)을 씁니다. 그래서 자주 쓰이는 “오늘”은 한 토큰이 되고, 상대적으로 덜 합쳐진 조합은 여러 토큰으로 나뉩니다.</li>
+<li>요금·문맥 한도는 토큰으로 계산됩니다. 글자 수로 어림하지 말고, 실제 사용할 모델의 토크나이저나 서비스가 제공하는 토큰 계산 기능으로 세어야 합니다.</li></ul></div>
+</section>
+
+<section id="s04" aria-labelledby="s04-h"><h2 id="s04-h"><span class="num">04</span>임베딩<span class="pg">p.63–65</span></h2>
+<div class="pair"><div><h4>토큰 번호</h4><p>“오늘” → 149830. 어떤 토큰인지 찾는 번호. 크다고 더 중요한 단어가 아니다.</p></div><div><h4>임베딩 벡터</h4><p>149830 → [0.2, −0.4, 0.7]. 모델 계산에 넣을 여러 수. 학습하면서 값이 조정된다. (설명용 가정)</p></div></div>
+<div class="tbl"><table><thead><tr><th>토큰</th><th class="r">번호</th><th>임베딩 벡터 (p.64 · 설명용)</th></tr></thead><tbody>
+<tr><td>오늘</td><td class="r">149830</td><td class="mono">[ 0.2, −0.4, 0.7 ]</td></tr>
+<tr><td>␣수</td><td class="r">8963</td><td class="mono">[ 0.8, 0.1, −0.3 ]</td></tr></tbody></table></div>
+<div class="src"><span class="pl">자료 p.65</span><p>“사용 중 문맥을 계산하는 것과, 학습으로 임베딩 값을 바꾸는 것은 다르다.”</p></div>
+<dl class="ex"><dt>처음 수치 표현은 같고, 계산 결과가 달라진다</dt><dd>“과일 가게에서 산 사과”와 “잘못을 인정하며 한 사과”에서 ‘사과’ 토큰이 처음 가져오는 임베딩은 같습니다. 달라지는 것은 그 뒤 층들이 앞 정보(과일 가게·구매 / 잘못·인정)를 반영해 계산한 결과입니다. 이때 임베딩 표 자체는 바뀌지 않습니다.</dd></dl>
+<div class="box p"><h4>보충 · 자료 밖 내용</h4><p>자료의 벡터는 숫자 3개짜리 설명용입니다. 실제 모델의 임베딩은 수백에서 수천 개의 수로 이루어집니다(예: 공개된 GPT-2 가장 작은 모델은 768개). 임베딩 표 전체도 학습되는 매개변수의 일부입니다.</p></div>
+</section>
+
+<section id="s05" aria-labelledby="s05-h"><h2 id="s05-h"><span class="num">05</span>위치 정보와 동음이의어<span class="pg">p.66–68</span></h2>
+<div class="pair"><div><h4>The dog bit the man.</h4><p>개가 사람을 물었다.</p></div><div><h4>The man bit the dog.</h4><p>사람이 개를 물었다.</p></div></div>
+<p>두 문장의 토큰 종류는 같고 순서만 다릅니다. 그래서 “토큰의 종류뿐 아니라 어느 위치에 있는지도 문맥 계산에 반영한다”(p.66).</p>
+<div class="tbl"><table><thead><tr><th>문맥 (p.68 · 설명용)</th><th>이어질 표현 후보</th></tr></thead><tbody>
+<tr><td>과일 가게에서 산 사과를 …</td><td>먹었다 / 씻었다 / 골랐다</td></tr>
+<tr><td>실수한 친구에게 사과를 …</td><td>했다 / 건넸다 / 전했다</td></tr></tbody></table></div>
+<div class="box p"><h4>보충 · 자료 밖 내용</h4><p>다음 절의 어텐션은 계산 방식만 보면 입력의 순서를 구분하지 못합니다. 그래서 위치 정보를 따로 넣어야 합니다. 트랜스포머를 처음 제안한 논문(Vaswani 등, 2017, “Attention Is All You Need”)은 사인·코사인 함수로 만든 위치 값을 임베딩에 더했고, 이후에는 위치 값을 학습하는 방식이나 회전 위치 임베딩(RoPE) 같은 방식도 널리 쓰입니다.</p></div>
+</section>
+
+<section id="s06" aria-labelledby="s06-h"><h2 id="s06-h"><span class="num">06</span>어텐션<span class="pg">p.69–72</span></h2>
+<div class="src"><span class="pl">자료 p.69</span><p>문장 “과일 가게에서 산 사과”. 지금 처리할 위치: 사과. 참고할 앞 위치: 과일 가게에서 / 산. 각 위치의 정보를 얼마나 반영할지 계산하고, 그 비중으로 정보를 모아 현재 표현에 반영한다.</p></div>
+<div class="tbl"><table><thead><tr><th>참고 위치 (p.70 · 가상 수치)</th><th class="r">가져올 값</th><th class="r">반영 비중</th><th class="r">곱</th></tr></thead><tbody>
+<tr><td>과일 가게에서</td><td class="r">2</td><td class="r">0.6</td><td class="r">1.2</td></tr>
+<tr><td>산</td><td class="r">4</td><td class="r">0.3</td><td class="r">1.2</td></tr>
+<tr><td>사과</td><td class="r">1</td><td class="r">0.1</td><td class="r">0.1</td></tr>
+<tr><th>합</th><th></th><th class="r">1.0</th><th class="r">2.5</th></tr></tbody></table></div>
+<div class="box v"><h4>검증 <span class="tag ok">일치</span></h4><div class="calc">2×0.6 + 4×0.3 + 1×0.1 = 1.2 + 1.2 + 0.1 = 2.5
+비중의 합 0.6 + 0.3 + 0.1 = 1.0</div></div>
+<div class="tbl"><table><thead><tr><th>질의 (Query)</th><th>키 (Key)</th><th>값 (Value)</th></tr></thead><tbody>
+<tr><td>현재 위치가 비교에 사용할 수치 표현</td><td>참고할 위치를 비교할 수치 표현</td><td>비중에 따라 가져올 정보의 수치 표현</td></tr></tbody></table></div>
+<p>질의와 키를 비교해 비중을 정하고, 그 비중대로 값들을 섞습니다(p.71). “앞 예의 2.5는 ‘정답’이나 ‘사과의 뜻’이 아니다. 다른 위치의 정보를 모아 얻은 계산값이다”(p.72).</p>
+<div class="box p"><h4>보충 · 자료 밖 내용 <span class="tag add">수식</span></h4><div class="calc">Attention(Q, K, V) = softmax( Q·Kᵀ / √d ) · V</div><ul>
+<li>Q·Kᵀ가 질의와 키의 비교(유사도 점수), softmax가 그 점수를 합이 1인 비중으로 바꾸는 단계, V를 곱하는 것이 p.70의 가중합입니다. √d로 나누는 것은 벡터가 길어질 때 점수가 지나치게 커지는 것을 막는 장치입니다.</li>
+<li>글을 생성하는 모델은 아직 생성되지 않은 뒤 위치를 보지 못하도록 막고 <strong>앞 위치만</strong> 참고합니다. 자료 p.69의 “참고할 앞 위치”라는 표현이 이 구조와 맞습니다.</li>
+<li>실제 모델은 이런 계산을 여러 개 나란히 수행합니다(멀티헤드 어텐션). 각각이 서로 다른 관계를 잡아내도록 학습됩니다.</li></ul></div>
+</section>
+
+<section id="s07" aria-labelledby="s07-h"><h2 id="s07-h"><span class="num">07</span>트랜스포머<span class="pg">p.73</span></h2>
+<div class="flow"><div><b>입력</b><span>토큰의 수치 표현 + 위치 정보</span></div><i>→</i><div><b>한 계산층</b><span>어텐션(다른 위치 정보 결합) + 위치별 신경망(다시 변환)</span></div><i>→</i><div><b>반복</b><span>층의 출력 → 다음 층의 입력 → …</span></div><i>→</i><div><b>끝</b><span>후보별 점수 계산</span></div></div>
+<div class="src"><span class="pl">자료 p.73</span><p>“각 층의 가중치는 학습에서 조정되고, 응답 생성 때는 그 가중치로 계산한다.”</p></div>
+<p>오전 p.35의 “다음 층은 앞 층의 출력을 받는다”가 그대로 반복되는 구조입니다. 달라진 점은 층마다 어텐션이 들어가 다른 위치의 정보를 섞는다는 것입니다.</p>
+<div class="box p"><h4>보충 · 자료 밖 내용</h4><p>자료는 핵심 두 부품만 보여 줍니다. 실제 층에는 층의 입력을 출력에 그대로 더해 주는 잔차 연결(residual connection)과, 값의 크기를 고르게 맞추는 정규화(layer normalization)도 들어갑니다. 이 두 장치 덕분에 수십 개 층을 쌓아도 학습이 안정적으로 됩니다. 오늘날 대화형 LLM은 대부분 트랜스포머 중 생성 부분만 쓰는 디코더 전용 구조입니다.</p></div>
+</section>
+
+<section id="s08" aria-labelledby="s08-h"><h2 id="s08-h"><span class="num">08</span>다음 토큰의 확률과 반복 생성<span class="pg">p.74–77</span></h2>
+<div class="flow"><div><b>문맥 계산</b><span>여러 층을 거친 현재 위치의 표현</span></div><i>→</i><div><b>후보별 점수</b><span>토큰 목록의 후보마다 점수</span></div><i>→</i><div><b>확률로 변환</b><span>합이 100%인 후보 분포</span></div></div>
+<div class="tbl"><table><thead><tr><th>입력 “과일 가게에서 산 사과를” (p.75 · 가상 분포)</th><th class="r">먹었다</th><th class="r">씻었다</th><th class="r">골랐다</th><th class="r">보았다</th></tr></thead><tbody>
+<tr><td>확률</td><td class="r">50%</td><td class="r">30%</td><td class="r">15%</td><td class="r">5%</td></tr></tbody></table></div>
+<div class="box v"><h4>검증 <span class="tag ok">일치</span></h4><p>50 + 30 + 15 + 5 = 100%. 확률 분포의 조건(합 100%)을 만족합니다. 자료는 “표현 하나를 토큰 하나로 단순화”했다고 밝혔습니다. 실제로 ‘먹었다’는 여러 토큰일 수 있습니다.</p></div>
+<div class="tbl"><table><thead><tr><th>p.77</th><th>입력</th><th>후보 → 선택</th></tr></thead><tbody>
+<tr><td>첫 생성</td><td>“안녕하세요”를 영어 인사로 바꿔 줘.</td><td>Hello / Hi / Greetings → Hello</td></tr>
+<tr><td>다음 생성</td><td>처음 요청 + Hello</td><td>! 또는 . → !</td></tr></tbody></table></div>
+<p>“만든 표현을 입력에 더해 다음 토큰을 계산한다.” 응답 전체는 이 한 걸음의 반복입니다.</p>
+<div class="box p"><h4>보충 · 자료 밖 내용 <span class="tag add">용어</span></h4><ul>
+<li>후보별 점수를 logit, 점수를 확률로 바꾸는 함수를 softmax라고 합니다. 어텐션의 비중을 만들 때와 같은 함수입니다.</li>
+<li>앞에서 생성한 결과를 다시 입력으로 쓰며 하나씩 만드는 방식을 자기회귀(autoregressive) 생성이라고 합니다(p.111의 질문).</li>
+<li>생성은 모델이 ‘끝’을 뜻하는 특수 토큰을 고르거나, 출력 한도에 닿을 때 멈춥니다. 후자는 오후 둘째 구간 p.120–121에서 다룹니다.</li></ul></div>
+</section>
+
+<section id="s09" aria-labelledby="s09-h"><h2 id="s09-h"><span class="num">09</span>모델 입력의 구성과 서비스 메모리<span class="pg">p.79–82</span></h2>
+<div class="flow"><div><b>현재 요청</b></div><i>+</i><div><b>전달된 이전 대화</b></div><i>+</i><div><b>서비스 지시</b></div><i>+</i><div><b>전달된 자료·도구 결과</b></div><i>=</i><div><b>이번 모델 입력</b></div></div>
+<div class="src"><span class="pl">자료 p.80</span><p>“화면의 기록 전체와 현재 입력이 같다고 가정하지 않는다.”</p></div>
+<div class="pair"><div><h4>앞 대화를 포함한 요청 (p.81)</h4><p>내 이름은 민서야. → … → 내 이름은 뭐야?<br>응답 예: 민서님입니다.</p></div><div><h4>앞 대화를 뺀 요청</h4><p>내 이름은 뭐야?<br>응답 예: 아직 이름을 알려 주지 않았어요. (입력에 이름이 없다)</p></div></div>
+<div class="src"><span class="pl">자료 p.82</span><p>서비스 저장(지난 대화 “내 이름은 민서야.”) → 이번 입력(저장 내용 + “내 이름이 뭐야?”) → 모델의 답 “민서님입니다.”<br>저장한 정보를 다시 전달하는 것 ≠ 모델의 매개변수를 바꾸는 학습</p></div>
+<div class="box w"><h4>주의 · 같은 답, 다른 경로</h4><p>새 대화에서 모델이 이름을 맞혔다면 “모델이 배웠다”가 아니라 “서비스가 저장한 정보를 이번 입력에 넣었다”일 가능성을 먼저 봅니다. 결과가 같아도 경로가 다릅니다.</p></div>
+<div class="box p"><h4>보충 · 자료 밖 내용</h4><p>모델 API는 보통 이전 요청을 기억하지 않는(stateless) 방식으로 동작합니다. 대화가 이어지는 것처럼 보이는 것은, 서비스가 매번 지난 대화를 함께 다시 보내기 때문입니다. 대화가 문맥 한도보다 길어지면 서비스는 앞부분을 잘라 내거나 요약해서 넣습니다. 그래서 긴 대화에서 앞의 내용을 “잊는” 것처럼 보일 수 있습니다.</p></div>
+</section>
+
+<section id="s10" aria-labelledby="s10-h"><h2 id="s10-h"><span class="num">10</span>원하는 설명을 얻는 요청<span class="pg">p.83–87</span></h2>
+<div class="tbl"><table><thead><tr><th>요청에 담을 것 (p.83)</th><th>예</th></tr></thead><tbody>
+<tr><td>이미 아는 것</td><td>“문서에서 검색하는 기능은 써 봤어요.”</td></tr>
+<tr><td>모르는 차이</td><td>“자료 검색과 AI의 답변 생성은 무엇이 다른가요?”</td></tr>
+<tr><td>원하는 도움</td><td>“같은 안내문으로 두 작업을 비교해 주세요.”</td></tr></tbody></table></div>
+<div class="tbl"><table><thead><tr><th>p.86–87</th><th>내용</th></tr></thead><tbody>
+<tr><td>처음 요청</td><td>“문맥을 설명해 줘.”</td></tr>
+<tr><td>고친 요청</td><td>“새 대화에서 어제의 공지를 모를 수 있는 이유를, 문맥과 연결해 설명해 줘.”</td></tr>
+<tr><td>추가한 정보</td><td>새 대화, 어제의 공지, 알고 싶은 이유</td></tr>
+<tr><td>그대로인 것</td><td>별도 학습을 하지 않았다면 학습된 매개변수</td></tr></tbody></table></div>
+<div class="src"><span class="pl">자료 p.86</span><p>“모델에 전달한 정보가 달라졌다. 이 요청을 보낸 것만으로 가중치를 다시 학습한 것은 아니다.”</p></div>
+<details><summary>p.85 확인 질문 · 먼저 답해 본 뒤 펼치기</summary><p>질문: 새 대화에서 어제의 공지를 답하려면 그 공지 내용이 어디에 있어야 할까?</p><p>자료의 예상 답: 이번 입력에 포함되어야 한다. 서비스가 저장 자료를 다시 넣어 줄 수도 있다.</p></details>
+</section>
+
+<section id="s11" aria-labelledby="s11-h"><h2 id="s11-h"><span class="num">11</span>학습과 추론 · 입력 정보와 학습한 지식<span class="pg">p.89–92</span></h2>
+<div class="tbl"><table><thead><tr><th></th><th>학습 (p.91)</th><th>추론</th></tr></thead><tbody>
+<tr><td>계산</td><td>자료로 예측과 목표를 비교</td><td>학습한 매개변수로 계산</td></tr>
+<tr><td>매개변수</td><td>조정</td><td>그대로</td></tr>
+<tr><td>얻는 것</td><td>언어·지식·응답 방식</td><td>이번 입력에 맞는 답. 새 공지를 입력하면 그 정보를 답변에 활용</td></tr></tbody></table></div>
+<div class="src"><span class="pl">자료 p.92</span><p>새 공지를 읽힌 뒤 답변이 달라졌다. 이번 입력의 정보를 사용한 결과다. 그렇다면 공지를 읽기 전부터 알던 언어와 지식, 요청에 답하는 방식은 어떻게 형성되었을까?</p></div>
+<div class="flow"><div><b>사전학습</b><span>자료의 표현과 관계</span></div><i>→</i><div><b>지도 미세조정</b><span>요청과 응답 방식</span></div><i>→</i><div><b>정렬</b><span>바람직한 응답의 기준</span></div></div>
+<p>오전 05절(학습과 추론)의 구분이 언어 모델에서도 그대로 적용됩니다. 처음 나온 곳은 1일차 p.26·p.28입니다.</p>
+</section>
+
+<section id="s12" aria-labelledby="s12-h"><h2 id="s12-h"><span class="num">12</span>사전학습과 손실<span class="pg">p.93–97</span></h2>
+<div class="tbl"><table><thead><tr><th>학습할 글 (p.93)</th><th>모델에 주는 앞부분</th><th>비교할 다음 조각</th></tr></thead><tbody>
+<tr><td>오늘 수업은 오후 두 시에 | 시작합니다.</td><td>오늘 수업은 오후 두 시에</td><td>“␣시작”</td></tr></tbody></table></div>
+<p>“원문 자체에서 다음 토큰의 학습 목표를 얻는다.” 사람이 라벨을 붙이지 않아도, 글의 다음 조각이 곧 정답입니다. 03절의 분할 결과에서도 “␣시작”은 실제로 하나의 토큰(50972)입니다.</p>
+<div class="src"><span class="pl">자료 p.95 · 가상 비교</span><p>원문의 다음 토큰 “␣시작”에 확률 10%를 주면 손실 약 2.30, 50%를 주면 약 0.69.</p></div>
+<div class="box v"><h4>검증 · 손실 = −ln(정답 토큰에 준 확률) <span class="tag ok">일치</span></h4><div class="calc">−ln(0.10) = 2.3026   → 약 2.30
+−ln(0.50) = 0.6931   → 약 0.69
+−ln(0.90) = 0.1054   (추가: 90%면 손실은 더 작아진다)
+−ln(1.00) = 0         (정답에 100%를 주면 손실 0)</div><p>자료의 두 값은 자연로그를 쓴 교차 엔트로피 손실과 정확히 일치합니다. 확률이 0에 가까워질수록 손실은 끝없이 커집니다.</p></div>
+<div class="flow"><div><b>원문과 예측</b><span>실제 다음 토큰에 준 확률로 손실 계산</span></div><i>→</i><div><b>조정 방향 계산</b><span>어떤 값을 바꾸면 손실이 줄어들지</span></div><i>→</i><div><b>가중치 갱신</b><span>임베딩·어텐션·출력 등 학습 가능한 값</span></div></div>
+<div class="src"><span class="pl">자료 p.96 · p.97</span><p>“정답을 문서 목록에 저장하는 것이 아니라, 다음 예측에 쓰일 계산값을 바꾼다.”</p><p>“이런 자료의 예측을 반복하며 패턴을 학습한다. 모든 사실과 계산을 정확히 수행한다는 뜻은 아니다.”</p></div>
+<div class="box p"><h4>보충 · 자료 밖 내용</h4><ul>
+<li>이처럼 원문에서 목표를 만드는 학습을 자기지도 학습(self-supervised learning)이라고 합니다. 라벨링 비용 없이 매우 많은 글을 쓸 수 있다는 점이 대규모 언어 모델을 가능하게 했습니다.</li>
+<li>“서울은 대한민국의 … 수도”처럼 다음 말을 잘 맞히려면 지명·수량·인과 관계를 쓸 수밖에 없습니다(p.97). 사전학습만으로 다양한 능력이 생기는 이유를 설명하는 대표적 예입니다.</li>
+<li>p.96은 “저장하지 않는다”고 하지만, 학습 자료에 자주 반복된 문장은 모델이 거의 그대로 재현할 수 있다는 연구도 있습니다. 저장 방식이 아니라는 뜻이지, 원문이 절대 나오지 않는다는 보증은 아닙니다.</li></ul></div>
+</section>
+
+<section id="s13" aria-labelledby="s13-h"><h2 id="s13-h"><span class="num">13</span>지도 미세조정 · 예시 제공과 추가 학습<span class="pg">p.98–99</span></h2>
+<div class="src"><span class="pl">자료 p.98</span><p>요청 “초심자에게 토큰을 두 문장으로 설명해 줘.” + 학습에 쓸 응답 예 “토큰은 글을 모델이 처리하는 단위입니다. 한 단어 전체일 수도 있고 일부일 수도 있습니다.” → 이런 요청·응답 쌍으로 매개변수를 추가로 조정한다.</p></div>
+<div class="tbl"><table><thead><tr><th></th><th>대화창에 예시 제공 (p.99)</th><th>예시로 추가 학습</th></tr></thead><tbody>
+<tr><td>넣는 것</td><td>요청 + 참고 응답 예</td><td>요청·응답 학습 자료</td></tr>
+<tr><td>일어나는 일</td><td>현재 모델에 입력으로 전달</td><td>학습 절차로 매개변수 조정</td></tr>
+<tr><td>효과의 범위</td><td><strong>이번 답변</strong>에만</td><td>조정된 모델을 <strong>이후에</strong> 사용</td></tr></tbody></table></div>
+<div class="box p"><h4>보충 · 자료 밖 내용 <span class="tag add">용어</span></h4><p>영어로는 지도 미세조정 SFT(supervised fine-tuning)입니다. 입력에 예시 몇 개를 넣어 원하는 형식을 따르게 하는 방법은 few-shot 프롬프팅, 그렇게 입력 안의 예시만으로 작업을 따라 하는 능력은 문맥 내 학습(in-context learning)이라고 부릅니다. 이름에 ‘학습’이 들어 있지만 매개변수는 바뀌지 않으므로, 가르칠 때 혼동하지 않도록 짚어 주세요.</p></div>
+</section>
+
+<section id="s14" aria-labelledby="s14-h"><h2 id="s14-h"><span class="num">14</span>정렬과 선호 학습<span class="pg">p.100–102</span></h2>
+<div class="src"><span class="pl">자료 p.100</span><p>정렬: 사람의 의도와 기준에 맞는 응답을 만들도록 조정. 기준의 예: 도움이 되는가 / 사실에 근거하는가 / 피할 행동은 무엇인가. 활용할 자료: 좋은 응답의 예 / 평가 / 두 응답의 선호 비교. 지도 미세조정도 정렬에 사용할 수 있는 방법이다.</p></div>
+<div class="pair"><div><h4>답 가</h4><p>“질의와 관련도가 높은 문서를 색인에서 검색해 반환합니다.”</p></div><div><h4>답 나 · 초심자가 선호할 수 있음</h4><p>“질문과 관련된 내용을 여러 문서에서 찾아주는 기능입니다.”</p></div></div>
+<div class="flow"><div><b>평가 자료</b><span>같은 질문의 답 가·나를 기준에 따라 비교</span></div><i>→</i><div><b>별도 학습</b><span>선호 정보를 이용하는 학습 절차로 가중치 조정</span></div><i>→</i><div><b>이후 생성</b><span>조정된 모델이 새 질문에 답변</span></div></div>
+<div class="box w"><h4>주의 · 선호와 정확성은 다르다</h4><p>p.102: “쉬운 말투를 선호했어도 사실이 맞는지는 별도로 평가해야 한다.” 사람이 더 좋아하는 답이 더 정확한 답이라는 보장은 없습니다.</p></div>
+<div class="box p"><h4>보충 · 자료 밖 내용 <span class="tag add">방법 이름</span></h4><ul>
+<li><strong>RLHF</strong>(사람 피드백 기반 강화학습): 사람의 선호 비교로 ‘보상 모델’을 먼저 학습하고, 그 보상이 높아지도록 언어 모델을 조정합니다. 대화형 모델에 널리 알려진 계기는 Ouyang 등(2022)의 InstructGPT 논문입니다.</li>
+<li><strong>DPO</strong>(Rafailov 등, 2023): 보상 모델을 따로 두지 않고 선호 쌍에서 직접 모델을 조정하는 방법입니다.</li>
+<li>사람 대신 원칙 목록과 AI 평가를 활용하는 방법도 있습니다(예: Anthropic의 Constitutional AI, Bai 등, 2022).</li></ul><p>세 방법 모두 자료의 흐름(평가 자료 → 별도 학습 → 이후 생성)에 들어맞습니다.</p></div>
+</section>
+
+<section id="s15" aria-labelledby="s15-h"><h2 id="s15-h"><span class="num">15</span>학습 자료와 목표에 따른 모델 특성<span class="pg">p.103–104</span></h2>
+<div class="tbl"><table><thead><tr><th>학습 자료 (p.103)</th><th>배우는 것</th></tr></thead><tbody>
+<tr><td>많은 글의 다음 표현</td><td>언어와 여러 분야의 패턴</td></tr>
+<tr><td>요청과 좋은 응답의 짝</td><td>요청에 맞는 응답 방식</td></tr>
+<tr><td>두 응답의 비교·평가</td><td>유용성·안전성 등의 기준</td></tr></tbody></table></div>
+<div class="tbl"><table><thead><tr><th>매개변수 수가 같아도 다른 점 (p.104)</th><th>확인할 질문</th></tr></thead><tbody>
+<tr><td>학습 자료</td><td>어떤 언어·분야·시점의 자료를 사용했나</td></tr>
+<tr><td>구조와 규모</td><td>어떤 계산 구조와 매개변수를 사용하나</td></tr>
+<tr><td>학습 목표</td><td>어떤 과제와 응답 기준을 학습했나</td></tr></tbody></table></div>
+<p>“내 과제에 맞는지는 실제 결과와 사용 조건을 함께 보아야 한다.” 이 기준은 오후 둘째 구간의 모델 선택(p.144–152)으로 이어집니다.</p>
+</section>
+
+<section id="s16" aria-labelledby="s16-h"><h2 id="s16-h"><span class="num">16</span>입력 · 저장 · 학습 구별하기<span class="pg">p.105–108</span></h2>
+<div class="src"><span class="pl">자료 p.105 · 교육용 예</span><p>이전 공지 10일 마감 → 새 공지 12일 마감. 질문 “11일에 신청할 수 있나요?” 현재 적용되는 새 공지를 입력에 제공 → 11일은 기한 안이다. 잔여 정원은 별도로 확인한다.</p></div>
+<div class="tbl"><table><thead><tr><th>문제 (p.106)</th><th>먼저 할 일</th></tr></thead><tbody>
+<tr><td>마감일이 바뀌었다</td><td>현재 공지를 입력에 제공한다. 날짜 갱신에 재학습부터 하지 않는다.</td></tr>
+<tr><td>항상 같은 표로 받고 싶다</td><td>열 이름과 완성 예를 지시에 넣어 먼저 시험한다.</td></tr>
+<tr><td>여러 사례에서 형식을 어긴다</td><td>지시·예시로도 해결되지 않는지 먼저 본다. 추가 학습에는 학습 자료와 평가 자료가 필요하다.</td></tr></tbody></table></div>
+<p>p.107은 직접 해 보는 페이지입니다. 세 사례에서 “무엇이 바뀌는가”를 먼저 스스로 적고 펼쳐 보세요.</p>
+<details><summary>p.107 세 사례의 예시 답</summary>
+<div class="tbl"><table><thead><tr><th>사례</th><th>바뀌는 것</th><th>효과가 남는 범위</th></tr></thead><tbody>
+<tr><td>① 이번 질문에 안내문 첨부</td><td>이번 모델 입력(안내문 내용이 들어감)</td><td>이번 답변. 다음 질문에 다시 넣지 않으면 없음</td></tr>
+<tr><td>② 저장한 대화 요약을 불러옴</td><td>서비스 저장소 → 필요할 때 입력에 다시 포함</td><td>서비스가 다시 넣어 주는 동안</td></tr>
+<tr><td>③ 응답 예시로 수치를 조정</td><td>모델의 매개변수</td><td>조정된 모델을 쓰는 이후 모든 응답</td></tr></tbody></table></div></details>
+<div class="pair"><div><h4>저장한 자료를 다시 전달 (p.108)</h4><p>새 공지 저장 → 다음 질문과 함께 입력 → 공지 내용으로 답함.<br>확인할 것: 이번 입력에 저장 자료가 포함되었는가?</p></div><div><h4>별도의 학습을 수행</h4><p>공지 관련 학습 자료 → 가중치 조정 → 조정된 모델 사용.<br>확인할 것: 학습 작업과 모델 변경이 실제로 있었는가?</p></div></div>
+<div class="box p"><h4>보충 · 자료 밖 내용</h4><p>자주 바뀌는 사실(날짜, 가격, 담당자)은 입력으로 넣는 쪽이 거의 항상 낫습니다. 학습으로 넣은 사실은 바뀔 때마다 다시 학습해야 하고, 모델이 그 사실을 정확히 꺼낸다는 보장도 약합니다. 반대로 추가 학습은 말투·형식·전문 분야의 응답 방식처럼 <strong>여러 요청에 걸쳐 반복되는 행동</strong>을 바꿀 때 검토합니다.</p></div>
+</section>
+
+<section id="s17" aria-labelledby="s17-h"><h2 id="s17-h"><span class="num">17</span>수업 설계 예시 두 가지<span class="pg">p.88 · p.109</span></h2>
+<div class="tbl"><table><thead><tr><th></th><th>업무 자료로 답변 요청 (p.88)</th><th>자료 제공과 모델 학습 구분 (p.109)</th></tr></thead><tbody>
+<tr><td>대상 (예)</td><td>공지 문의에 답하는 직원</td><td>사내 문서를 AI에 쓰려는 담당자</td></tr>
+<tr><td>목표</td><td>답변에 필요한 자료와 조건을 AI에게 제공할 수 있게</td><td>문서 업로드와 모델 학습을 구분해 설명할 수 있게</td></tr>
+<tr><td>과정</td><td>공지 포함·누락 입력 비교 → 이번 입력이 쓰이는 원리 설명 → AI와 다른 문의의 답변을 만들고 필요한 정보 제공 여부 확인</td><td>입력 경로와 학습 경로를 보여 줌 → 새 공지·답변 예시의 쓰임 비교 → 무엇이 바뀌는지 설명하게 함</td></tr></tbody></table></div>
+<div class="box t"><h4>강의 포인트</h4><p>두 설계 모두 <strong>같은 질문에 한 가지 조건만 바꾼 두 입력</strong>을 비교하는 구조입니다. 내 대상으로 바꿀 때도 “무엇을 같게 두고, 무엇 하나를 바꿀 것인가”부터 정하면 됩니다. 강사 역량 구간 p.171이 이 원칙을 정리합니다.</p></div>
+</section>
+
+<section id="s18" aria-labelledby="s18-h"><h2 id="s18-h"><span class="num">18</span>개념 탐구 질문의 짧은 답<span class="pg">p.110–111</span></h2>
+<details><summary>p.110–111 질문 열한 묶음의 짧은 답</summary>
+<div class="tbl"><table><thead><tr><th>개념</th><th>짧은 답</th><th>위치</th></tr></thead><tbody>
+<tr><td>언어 모델이 요약·번역을 하는 방법</td><td>요청과 자료를 문맥으로 받아 다음 토큰을 이어 쓴다</td><td>00</td></tr>
+<tr><td>토큰·토크나이저</td><td>모델의 처리 단위. 글자·단어와 다르며 토크나이저마다 나누는 방식이 다르다</td><td>03</td></tr>
+<tr><td>벡터·임베딩</td><td>토큰마다 대응하는 학습된 수치 묶음</td><td>04</td></tr>
+<tr><td>위치 정보</td><td>어텐션은 순서를 모르므로 위치 값을 따로 반영한다</td><td>05</td></tr>
+<tr><td>어텐션·질의·키·값</td><td>질의와 키로 비중을 정하고 값을 섞어 다음 계산에 넘긴다</td><td>06</td></tr>
+<tr><td>트랜스포머</td><td>어텐션과 위치별 신경망을 층으로 반복하는 구조</td><td>07</td></tr>
+<tr><td>자기회귀 생성</td><td>생성한 토큰을 입력에 더해 다음 토큰을 계산하는 반복</td><td>08</td></tr>
+<tr><td>컨텍스트·서비스 메모리</td><td>이번 입력 / 저장했다가 다시 넣는 기능. 학습과 다르다</td><td>09</td></tr>
+<tr><td>사전학습·손실 함수</td><td>원문의 다음 토큰을 목표로, −ln(확률)을 줄이도록 가중치 조정</td><td>12</td></tr>
+<tr><td>지도 미세조정</td><td>요청·응답 쌍으로 추가 조정. 입력에 예시를 넣는 것과 달리 매개변수가 바뀐다</td><td>13</td></tr>
+<tr><td>정렬·선호 학습</td><td>바람직한 응답 기준을 반영. 선호와 정확성은 항상 같지 않다</td><td>14</td></tr></tbody></table></div></details>
+</section>
+
+<section id="s19" class="summary" aria-labelledby="s19-h"><h2 id="s19-h"><span class="num">19</span>핵심 정리</h2>
+<ul>
+<li>LLM은 글을 <strong>토큰 → 번호 → 임베딩</strong>으로 바꾸고, <strong>위치 정보와 어텐션</strong>으로 문맥을 반영해 <strong>다음 토큰의 확률</strong>을 계산합니다.</li>
+<li>응답은 <strong>토큰 하나를 고르고 입력에 더하는 일의 반복</strong>입니다.</li>
+<li>문맥은 <strong>이번에 실제로 전달된 입력</strong>이며, 화면의 대화 기록과 같지 않습니다.</li>
+<li>능력은 <strong>사전학습 → 지도 미세조정 → 정렬</strong>로 형성되고, 모두 매개변수를 바꾸는 별도의 학습입니다.</li>
+<li>자료를 입력에 넣거나 서비스가 저장했다가 다시 넣는 것은 <strong>학습이 아닙니다</strong>. 같은 답이 나와도 경로가 다릅니다.</li>
+</ul>
+</section>
+
+<section id="s20" aria-labelledby="s20-h"><h2 id="s20-h"><span class="num">20</span>검증 기록</h2>
+<div class="tbl"><table><thead><tr><th>쪽</th><th>항목</th><th>방법</th><th>결과</th></tr></thead><tbody>
+<tr><td>p.60</td><td>예문 11개 토큰과 경계</td><td>o200k_base로 직접 분할 (js-tiktoken)</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>p.61</td><td>번호 149830 · 8963 · 14102</td><td>같은 분할 결과와 대조</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>p.70</td><td>가중합 2.5, 비중 합 1</td><td>재계산</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>p.75</td><td>분포 합 100%</td><td>재계산</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>p.95</td><td>손실 2.30 · 0.69</td><td>−ln(p) 재계산</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>p.63–64</td><td>임베딩 벡터 값</td><td>자료가 설명용으로 표시</td><td><span class="tag na">검증 대상 아님</span></td></tr></tbody></table></div>
+</section>
+
+</main></div>
+<footer><p>이 문서는 「AI 강사양성과정」 1일차 교육자료를 다시 쓴 학습 참고자료입니다. 자료 원문은 회색 인용 상자, 직접 다시 계산한 결과는 초록 ‘검증’ 상자, 자료에 없는 설명은 파란 ‘보충’ 상자로 구분했습니다. 보충 내용은 작성자의 지식에 기반하며 웹 검색으로 확인하지 않았습니다. 인용한 논문·문서의 제목과 연도는 원문을 직접 확인하세요. ‘설명용’, ‘가상’, ‘교육용 예’로 표시된 수치는 실제 측정값이 아닙니다.</p></footer>
+</body></html>

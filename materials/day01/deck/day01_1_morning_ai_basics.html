@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>1일차 오전 · AI는 무엇을 내놓고, 어떻게 만들어지는가</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F1F2EE;--card:#FFFFFF;--ink:#15171C;--ink-2:#454A55;--ink-3:#6E7480;
+  --line:#DDDFD8;--accent:#4635B1;--accent-soft:#EDEAFA;
+  --ok:#1D6B45;--ok-soft:#E3F2E9;--warn:#7E5200;--warn-soft:#FBF0D9;--ng:#A8261D;--ng-soft:#FBE7E4;
+  --plus:#0F5E73;--plus-soft:#E2F1F5;--src:#F6F6F2;
+  --hero:#15171C;--hero-ink:#F1F2EE;--hero-2:#B9BDC4;--hero-3:#8D9299;--hl:#FFD24A;
+  --maxw:1180px;color-scheme:light;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#111216;--card:#1A1C22;--ink:#E7E8EB;--ink-2:#B8BDC7;--ink-3:#8E94A0;
+  --line:#2C2F37;--accent:#AEA2FF;--accent-soft:#2A2550;
+  --ok:#7FD9A8;--ok-soft:#16301F;--warn:#F3C86F;--warn-soft:#352911;--ng:#FF9A90;--ng-soft:#3A1916;
+  --plus:#7FD0E6;--plus-soft:#142C33;--src:#15171C;
+  --hero:#0B0C0F;color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --paper:#111216;--card:#1A1C22;--ink:#E7E8EB;--ink-2:#B8BDC7;--ink-3:#8E94A0;
+  --line:#2C2F37;--accent:#AEA2FF;--accent-soft:#2A2550;
+  --ok:#7FD9A8;--ok-soft:#16301F;--warn:#F3C86F;--warn-soft:#352911;--ng:#FF9A90;--ng-soft:#3A1916;
+  --plus:#7FD0E6;--plus-soft:#142C33;--src:#15171C;--hero:#0B0C0F;color-scheme:dark;}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans KR",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.75;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+code,.mono{font-family:"IBM Plex Mono","IBM Plex Sans KR",ui-monospace,monospace;font-size:.92em}
+a{color:var(--accent)}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.hero{position:relative;background:var(--hero);color:var(--hero-ink);overflow:hidden}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(to right,rgba(255,255,255,.055) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.055) 1px,transparent 1px);background-size:28px 28px;pointer-events:none}
+.hero-inner{position:relative;max-width:var(--maxw);margin:0 auto;padding:80px 32px 68px}
+.hero-kicker{margin:0 0 18px;font-size:clamp(1rem,2.2vw,1.18rem);font-weight:500;color:var(--hl);display:inline-block;padding-bottom:7px;border-bottom:2px solid var(--hl)}
+.hero h1{margin:0;font-size:clamp(2rem,5vw,3.3rem);font-weight:700;letter-spacing:-.035em;line-height:1.2;max-width:18ch}
+.hero .sub{margin:24px 0 0;max-width:52ch;color:var(--hero-2);font-size:1.03rem;font-weight:300}
+.hero-meta{margin-top:36px;display:flex;flex-wrap:wrap;gap:10px}
+.chip{font-family:"IBM Plex Mono",monospace;font-size:.78rem;color:#E4E6EA;border:1px solid rgba(255,255,255,.22);border-radius:2px;padding:5px 11px}
+.chip b{color:var(--hl);font-weight:600}
+.hero-terms{margin-top:48px;padding-top:32px;border-top:1px solid rgba(255,255,255,.15);display:grid;grid-template-columns:1fr 1fr;gap:30px 46px}
+.term h2{margin:0 0 8px;font-size:1.06rem;font-weight:600;color:#fff}
+.term h2 span{display:block;margin-top:3px;font-family:"IBM Plex Mono",monospace;font-size:.74rem;font-weight:400;color:var(--hero-3)}
+.term p{margin:0;font-size:.93rem;font-weight:300;color:var(--hero-2);max-width:46ch}
+.term-sum{grid-column:1/-1;margin:0;padding:15px 18px;background:rgba(255,210,74,.10);border-left:2px solid var(--hl);font-size:.95rem;font-weight:300;color:#D6D9DE}
+.hero strong,.hero b{color:var(--hl);font-weight:600}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px 96px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:52px;align-items:start}
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);padding:44px 0;max-height:100vh;overflow-y:auto}
+nav.toc h2{font-size:.8rem;color:var(--ink-3);margin:0 0 12px;font-weight:500}
+nav.toc ol{list-style:none;margin:0;padding:0}
+nav.toc a{display:flex;gap:10px;padding:4px 0 4px 10px;color:var(--ink-2);text-decoration:none;font-size:.85rem;line-height:1.5;border-left:2px solid transparent}
+nav.toc a:hover,nav.toc a:focus-visible{color:var(--accent);border-left-color:var(--accent)}
+nav.toc .n{font-family:"IBM Plex Mono",monospace;color:var(--ink-3);font-size:.78rem;min-width:18px}
+main{padding:44px 0 0;min-width:0}
+
+section{background:var(--card);border:1px solid var(--line);padding:34px 38px 36px;margin-bottom:18px;scroll-margin-top:20px}
+section>h2{margin:0 0 4px;font-size:1.42rem;font-weight:600;letter-spacing:-.02em;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+section>h2 .num{font-family:"IBM Plex Mono",monospace;font-size:.9rem;font-weight:500;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:2px}
+section>h2 .pg{font-family:"IBM Plex Mono",monospace;font-size:.78rem;font-weight:400;color:var(--ink-3);margin-left:auto}
+section h3{font-size:1.06rem;font-weight:600;margin:28px 0 8px}
+section p{margin:12px 0;max-width:72ch}
+.lead{color:var(--ink-2);margin-top:10px}
+section ul,section ol{padding-left:1.25em;max-width:72ch}
+section li{margin:4px 0}
+strong{font-weight:600}
+
+.src{margin:18px 0;padding:14px 18px;background:var(--src);border-left:3px solid var(--ink-3);font-size:.96rem}
+.src .pl{display:block;font-family:"IBM Plex Mono",monospace;font-size:.74rem;color:var(--ink-3);margin-bottom:4px}
+.src p{margin:4px 0}
+
+.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin:18px 0}
+.flow>div{flex:1 1 140px;border:1px solid var(--line);background:var(--card);padding:10px 12px;font-size:.9rem;position:relative}
+.flow>div b{display:block;font-weight:600;font-size:.93rem}
+.flow>div span{color:var(--ink-2);font-size:.86rem}
+.flow>i{align-self:center;font-style:normal;color:var(--ink-3);font-family:"IBM Plex Mono",monospace}
+
+.tbl{overflow-x:auto;margin:16px 0}
+table{border-collapse:collapse;width:100%;font-size:.92rem;min-width:420px}
+th,td{border-bottom:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+th{font-weight:600;color:var(--ink-2);background:var(--src);font-size:.86rem}
+td.c,th.c{text-align:center}
+td.r,th.r{text-align:right;font-family:"IBM Plex Mono",monospace}
+
+dl.ex{margin:16px 0;border-top:1px solid var(--line)}
+dl.ex dt{font-weight:600;padding-top:14px;font-size:.95rem}
+dl.ex dt code{background:var(--accent-soft);color:var(--accent);padding:1px 6px}
+dl.ex dd{margin:4px 0 0;padding-bottom:14px;border-bottom:1px solid var(--line);color:var(--ink-2);max-width:72ch}
+
+.box{margin:20px 0;padding:16px 20px;border:1px solid var(--line)}
+.box>h4{margin:0 0 6px;font-size:.88rem;font-weight:600;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.box p,.box li{font-size:.94rem}
+.box p:first-of-type{margin-top:4px}
+.box.v{background:var(--ok-soft);border-color:transparent}
+.box.v>h4{color:var(--ok)}
+.box.p{background:var(--plus-soft);border-color:transparent}
+.box.p>h4{color:var(--plus)}
+.box.w{background:var(--warn-soft);border-color:transparent}
+.box.w>h4{color:var(--warn)}
+.box.t{border-style:dashed}
+.box.t>h4{color:var(--accent)}
+.tag{font-family:"IBM Plex Mono",monospace;font-size:.72rem;font-weight:500;padding:1px 7px;border:1px solid currentColor;border-radius:2px}
+.tag.ok{color:var(--ok)}.tag.ng{color:var(--ng)}.tag.na{color:var(--ink-3)}.tag.add{color:var(--plus)}
+.calc{font-family:"IBM Plex Mono",monospace;font-size:.88rem;background:var(--card);padding:10px 12px;margin:8px 0;overflow-x:auto;white-space:pre;line-height:1.6}
+
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+.pair>div{border:1px solid var(--line);padding:14px 16px}
+.pair>div h4{margin:0 0 6px;font-size:.98rem;font-weight:600}
+.pair>div p,.pair>div li{font-size:.92rem;color:var(--ink-2)}
+.nest{border:1px solid var(--ink-3);padding:12px 14px;margin:14px 0}
+.nest .nest{margin:10px 0 0;border-color:var(--accent)}
+.nest .nest .nest{border-style:dashed}
+.nest b{font-weight:600}.nest span{color:var(--ink-2);font-size:.9rem}
+
+details{margin:16px 0;border:1px solid var(--line);padding:0 16px}
+details summary{cursor:pointer;padding:12px 0;font-weight:600;font-size:.94rem;color:var(--accent)}
+details[open] summary{border-bottom:1px solid var(--line);margin-bottom:8px}
+details>*:last-child{margin-bottom:14px}
+
+section.summary{background:var(--hero);color:var(--hero-ink);border-color:var(--hero)}
+section.summary>h2 .num{background:rgba(255,210,74,.15);color:var(--hl)}
+section.summary li{color:#D6D9DE}
+section.summary strong{color:var(--hl)}
+footer{max-width:var(--maxw);margin:0 auto;padding:0 32px 60px;color:var(--ink-3);font-size:.84rem}
+footer p{max-width:80ch}
+
+@media (max-width:900px){
+  .wrap{grid-template-columns:1fr;gap:0;padding:0 16px 64px}
+  nav.toc{position:static;max-height:none;padding:28px 0 8px}
+  nav.toc ol{columns:2;column-gap:16px}
+  .hero-inner{padding:56px 20px 48px}
+  .hero-terms{grid-template-columns:1fr}
+  section{padding:24px 18px 26px}
+  .pair{grid-template-columns:1fr}
+  section>h2 .pg{margin-left:0;width:100%}
+  footer{padding:0 16px 48px}
+}
+</style></head>
+<body>
+<header class="hero"><div class="hero-grid"></div><div class="hero-inner">
+<p class="hero-kicker">1일차 오전 · 09:00–12:00</p>
+<h1>AI는 무엇을 내놓고, 어떻게 만들어지는가</h1>
+<p class="sub">스팸 메일 분류와 답장 생성이라는 한 쌍의 예로 AI의 결과 형태, 규칙과 학습, 모델·매개변수·학습·추론을 구분하고, 모델이 서비스 안에서 도구·에이전트와 함께 쓰이는 방식까지 정리합니다.</p>
+<div class="hero-meta"><span class="chip">쪽 <b>p.1–50</b></span><span class="chip">예제 <b>스팸 메일</b></span><span class="chip">계산 검증 <b>3건 일치</b></span><span class="chip">탐구 질문 <b>10묶음</b></span></div>
+<div class="hero-terms"><div class="term"><h2>머신러닝<span>Machine Learning</span></h2><p>사람이 판별 조건을 쓰지 않고, 정답이 붙은 자료와 예측을 비교하며 판별에 쓰는 수치를 조정하는 방식입니다(p.21).</p></div><div class="term"><h2>추론<span>Inference</span></h2><p>학습으로 정해진 매개변수를 그대로 쓰며 새 입력의 결과를 계산하는 단계입니다(p.28). 이때 매개변수는 바뀌지 않습니다.</p></div><p class="term-sum">이 구간의 축은 둘입니다. <strong>무엇을 내놓는가</strong>(분류·수치 예측·생성)와 <strong>어떻게 만드는가</strong>(규칙·학습)를 섞지 않고, <strong>학습은 값을 바꾸고 추론은 값을 쓴다</strong>는 구분을 세웁니다.</p></div>
+</div></header>
+<div class="wrap">
+<nav class="toc" aria-label="목차"><h2>목차</h2><ol><li><a href="#s00"><span class="n">00</span>과정의 전제와 오늘의 도착점</a></li><li><a href="#s01"><span class="n">01</span>AI의 범위와 결과의 형태</a></li><li><a href="#s02"><span class="n">02</span>규칙 기반 분류와 머신러닝</a></li><li><a href="#s03"><span class="n">03</span>라벨 · 특징 · 모델 · 매개변수</a></li><li><a href="#s04"><span class="n">04</span>가중치 계산과 학습</a></li><li><a href="#s05"><span class="n">05</span>학습과 추론</a></li><li><a href="#s06"><span class="n">06</span>생성형 AI</a></li><li><a href="#s07"><span class="n">07</span>신경망 · 딥러닝 · 개념의 관계</a></li><li><a href="#s08"><span class="n">08</span>수업 설계 예시 · AI 입문자</a></li><li><a href="#s09"><span class="n">09</span>모델과 서비스 · 파일 입력 · 멀티모달</a></li><li><a href="#s10"><span class="n">10</span>도구 실행 · 에이전트 · 자동화</a></li><li><a href="#s11"><span class="n">11</span>개념 탐구 질문의 짧은 답</a></li><li><a href="#s12"><span class="n">12</span>핵심 정리</a></li><li><a href="#s13"><span class="n">13</span>검증 기록</a></li></ol></nav>
+<main>
+<section id="s00" aria-labelledby="s00-h"><h2 id="s00-h"><span class="num">00</span>과정의 전제와 오늘의 도착점<span class="pg">p.1–14</span></h2>
+<p class="lead">본론에 앞서 이 과정이 무엇을 평가하는지 먼저 정리합니다. 오늘 배우는 모든 개념은 마지막에 “다른 사람에게 설명하고, 새 사례에 적용하게 할 수 있는가”로 확인됩니다.</p>
+<div class="src"><span class="pl">자료 p.3 · p.12</span><p>“AI에게 설명과 초안을 받을 수 있어도, 그것을 이해하고 활용하는 배움은 필요하다.”</p><p>“AI를 사용하는 경험만으로 가르치는 능력이 생기지는 않는다.”</p></div>
+<div class="flow"><div><b>1–6일 · AI 기초와 활용</b><span>학습·생성 원리, 데이터의 역할, 활용 기술 비교</span></div><i>→</i><div><b>7–10일 · 서비스 개발</b><span>자료와 도구를 연결해 만들고 고친다</span></div><i>→</i><div><b>11–15일 · 강의 설계와 시연</b><span>강의안·실습 자료를 만들고 가르쳐 본 뒤 수정</span></div></div>
+<div class="tbl"><table><thead><tr><th>학습 결과물 (p.13)</th><th>평가 기준</th></tr></thead><tbody>
+<tr><td>AI 학습·활용 기록</td><td>배운 개념을 설명하고 새 사례에 적용하는가</td></tr>
+<tr><td>구현한 서비스와 수정 기록</td><td>요구한 기능이 작동하며 수정 이유를 설명하는가</td></tr>
+<tr><td>강의안·실습안·평가 기준</td><td>목표에 필요한 설명·활동·평가를 갖췄는가</td></tr>
+<tr><td>강의 시연과 개선안</td><td>학습자의 어려움에 맞춰 설명과 지원을 조정하는가</td></tr></tbody></table></div>
+<div class="src"><span class="pl">자료 p.14 · 첫날 확인할 원리</span><p>“파일을 주는 것과 모델을 학습시키는 것은 다르다.” 무엇이 달라지는지 사례로 설명한다.</p></div>
+<p>이 문장이 1일차 전체의 도착점입니다. 오전에는 그 바탕이 되는 <strong>학습(매개변수를 바꿈)과 추론(매개변수를 씀)</strong>의 구분을 세우고, 오후 첫 구간(p.82, p.99, p.105–108)에서 이 문장을 직접 설명합니다.</p>
+</section>
+
+<section id="s01" aria-labelledby="s01-h"><h2 id="s01-h"><span class="num">01</span>AI의 범위와 결과의 형태<span class="pg">p.15–18 · p.30–31</span></h2>
+<p class="lead">AI를 이해하는 첫 질문은 “무슨 결과가 필요한가?”입니다. 결과의 형태가 정해져야 그 기능을 어떻게 만들지 고를 수 있습니다.</p>
+<div class="src"><span class="pl">자료 p.17</span><p>인공지능: 인식·추론·문제 해결 등 지능과 관련된 기능을 컴퓨터로 구현하는 기술과 연구 분야. AI는 대화형 서비스만을 뜻하지 않는다.</p></div>
+<div class="pair"><div><h4>분류 · 범주를 고른다</h4><p>받은 메일 “신청한 강좌는 월요일에 시작합니다.”<br>선택지 일반 / 스팸 → 결과 <strong>일반</strong></p></div><div><h4>생성 · 내용을 구성한다</h4><p>요청 “참석이 어렵다고 답장하기”<br>→ “월요일에는 참석이 어렵습니다. 다른 일정으로 신청할 수 있나요?”</p></div></div>
+<div class="src"><span class="pl">자료 p.18</span><p>“차이는 결과의 형태다. 분류는 범주, 생성은 요청에 맞게 구성한 내용이 나온다.”</p></div>
+<div class="tbl"><table><thead><tr><th>결과 형태 (p.30)</th><th>입력 → 결과</th><th>교육 업무의 예 (p.31)</th></tr></thead><tbody>
+<tr><td>분류</td><td>메일 → 일반 / 스팸</td><td>문의 메일 → 신청·결제·일정</td></tr>
+<tr><td>수치 예측</td><td>과거 신청 기록 → 다음 달 예상 인원</td><td>과거 문의 기록 → 다음 주 문의량</td></tr>
+<tr><td>생성</td><td>문의와 안내문 → 새 답장</td><td>교육 안내와 질문 → 답변 초안</td></tr></tbody></table></div>
+<div class="box w"><h4>주의 · 두 페이지의 분류 방식이 다르다</h4><p>p.17은 “과거 자료로 수요를 예측”을 <strong>판별하는 AI</strong> 아래에 두지만, p.30은 수치 예측을 분류와 별도의 결과 형태로 나눕니다. p.17의 ‘판별’은 “생성하지 않는 AI”를 넓게 묶은 표현으로 읽으면 두 페이지가 충돌하지 않습니다. 가르칠 때는 p.30의 세 갈래(분류·수치 예측·생성)를 기준으로 삼는 편이 혼동이 적습니다.</p></div>
+<div class="box p"><h4>보충 · 자료 밖 내용 <span class="tag add">용어</span></h4><p>영어로는 분류 classification, 수치 예측 regression(회귀), 생성 generation이라고 부릅니다. p.49의 탐구 질문 “수치 예측을 다루는 회귀는 무엇인가?”의 답이 바로 이 수치 예측입니다.</p><p>p.30의 “하나의 모델이 여러 작업을 수행할 수도 있다”는 실제로 흔합니다. 생성형 언어 모델에 “일반 또는 스팸 중 하나로만 답하라”고 지시하면, 생성 모델이 분류 결과를 내놓습니다. 결과의 형태는 모델의 종류가 아니라 <strong>요청과 출력 형식</strong>으로도 정해질 수 있습니다.</p></div>
+</section>
+
+<section id="s02" aria-labelledby="s02-h"><h2 id="s02-h"><span class="num">02</span>규칙 기반 분류와 머신러닝<span class="pg">p.19–21</span></h2>
+<p class="lead">같은 분류 기능도 두 가지 방법으로 만들 수 있습니다. 차이는 <strong>판별 방법을 누가 정하느냐</strong>입니다.</p>
+<div class="tbl"><table><thead><tr><th></th><th>규칙을 직접 작성</th><th>자료로 학습 (머신러닝)</th></tr></thead><tbody>
+<tr><td>준비</td><td>사람이 조건을 만든다</td><td>메일과 올바른 분류를 모은다</td></tr>
+<tr><td>예</td><td>“무료”가 있으면 스팸</td><td>분류된 여러 메일</td></tr>
+<tr><td>틀렸을 때</td><td>새 유형을 놓치면 조건을 수정</td><td>예측과 분류값을 비교하며 판별에 쓰는 수치를 조정</td></tr></tbody></table></div>
+<div class="src"><span class="pl">자료 p.20 · 규칙의 한계</span><p>“무료”가 있으면 스팸 → “신청한 무료 강좌 안내”를 스팸으로 오판</p><p>“무료”가 없으면 일반 → “당첨금 수령 링크”를 일반으로 오판</p></div>
+<dl class="ex">
+<dt>왜 규칙이 틀리는가</dt><dd>규칙은 사람이 떠올린 표면 단서 하나에 기댑니다. 같은 단어가 정상 메일에도 나오고(무료 강좌), 스팸은 그 단어를 피해서 쓰입니다(당첨금 링크). 규칙을 늘릴수록 예외도 늘어납니다.</dd>
+<dt>머신러닝은 무엇을 바꾸는가</dt><dd>판별 조건을 사람이 쓰지 않습니다. 사람은 <strong>정답이 붙은 자료</strong>를 준비하고, 모델은 자기 예측이 정답과 어긋난 정도를 보며 계산에 쓰는 수치를 고칩니다. 사람의 일이 “규칙 작성”에서 “기준을 정하고 자료에 정답을 붙이는 일”로 옮겨 갑니다.</dd>
+</dl>
+<div class="box p"><h4>보충 · 자료 밖 내용</h4><p>규칙 기반 시스템은 지금도 쓰입니다. 금지어 필터, 형식 검사(이메일 주소·날짜), 법규처럼 근거를 설명해야 하는 판정이 대표적입니다. 실제 서비스는 규칙과 학습 모델을 함께 쓰는 경우가 많습니다. 그래서 p.49의 질문 “머신러닝을 사용하지 않는 인공지능도 있는가?”의 답은 “있다”입니다.</p><p>스팸 필터는 머신러닝이 대중적으로 쓰인 초기 사례로 자주 언급됩니다(예: 단어 출현 확률을 쓰는 나이브 베이즈 필터).</p></div>
+<div class="box t"><h4>강의 포인트</h4><p>학습자가 “AI는 다 학습한다”고 말하면, p.20의 오판 두 개를 보여 주고 “이 프로그램도 AI인가?”를 물어보세요. 규칙 기반도 AI의 한 방식이라는 점과, 학습 방식이 그 한계를 어떻게 다루는지를 한 번에 구분하게 됩니다.</p></div>
+</section>
+
+<section id="s03" aria-labelledby="s03-h"><h2 id="s03-h"><span class="num">03</span>라벨 · 특징 · 모델 · 매개변수<span class="pg">p.22–24</span></h2>
+<p class="lead">학습에 필요한 재료와 계산 구조를 나눠 봅니다. 네 용어는 “입력의 어느 부분인가, 계산의 어느 부분인가”로 구분하면 섞이지 않습니다.</p>
+<div class="flow"><div><b>입력 특징</b><span>링크 1개 / 송금 요구 있음 / 알려진 발신자 아님</span></div><i>→</i><div><b>모델</b><span>특징을 계산하는 구조 + 계산에 쓰는 수치(매개변수)</span></div><i>→</i><div><b>예측</b><span>계산한 점수 → 분류 결과</span></div><i>⇄</i><div><b>라벨</b><span>학습 중 예측과 비교할 정답: 스팸</span></div></div>
+<dl class="ex">
+<dt><code>라벨</code> · <code>라벨링</code> (p.22)</dt><dd>라벨은 학습 자료에 붙인 분류값, 라벨링은 정한 기준에 따라 라벨을 붙이는 작업입니다. 자료의 기준 예는 “신청한 안내인가, 원치 않는 광고·사기성 메일인가?”입니다(교육용 사례).</dd>
+<dt><code>특징</code> (p.23)</dt><dd>메일을 계산할 수 있는 정보로 표현한 것입니다. “특징은 예측에 쓰는 정보, 라벨은 학습 중 예측과 비교할 값이다.” 특징은 입력 쪽, 라벨은 정답 쪽입니다.</dd>
+<dt><code>모델</code> · <code>매개변수</code> (p.24)</dt><dd>모델은 입력을 받아 결과를 계산하는 구조이고, 매개변수는 “모델 안에서 계산에 사용하며, 학습으로 조정하는 수치”입니다. 구조는 그대로 두고 매개변수만 바뀌는 것이 학습입니다.</dd>
+</dl>
+<div class="box w"><h4>주의 · 라벨링 기준이 흔들리면</h4><p>같은 종류의 메일에 사람마다 다른 라벨을 붙이면, 모델은 그 흔들림까지 배웁니다. 라벨링 전에 기준 문장과 경계 사례(예: 수강생이 신청한 유료 강좌 광고)를 먼저 정하는 이유입니다.</p></div>
+<div class="box p"><h4>보충 · 자료 밖 내용</h4><p>p.49는 “라벨 없이도 학습할 수 있는가?”를 묻습니다. 가능합니다. 정답 없이 비슷한 자료끼리 묶는 비지도 학습이 있고, 언어 모델의 사전학습처럼 <strong>원문 자체에서 목표를 만들어</strong> 학습하는 자기지도 학습도 있습니다. 후자는 오후 첫 구간 p.93(“다음 토큰 학습의 목표는 원문에서 얻는다”)에서 다룹니다.</p></div>
+</section>
+
+<section id="s04" aria-labelledby="s04-h"><h2 id="s04-h"><span class="num">04</span>가중치 계산과 학습<span class="pg">p.25–27</span></h2>
+<p class="lead">매개변수가 실제로 어떻게 결과를 바꾸는지 숫자로 따라갑니다. 수치는 모두 자료의 “설명용 모형”입니다.</p>
+<div class="src"><span class="pl">자료 p.25 · 설명용 모형</span><p>스팸 점수 = 링크 × 0.2 + 송금 요구 × 0.1 − 알려진 발신자 × 0.6<br>점수 0.5 이상이면 스팸 · 0.2, 0.1, 0.6이 가중치</p></div>
+<div class="box v"><h4>검증 · 자료의 계산을 다시 해 봄 <span class="tag ok">일치</span></h4>
+<div class="calc">p.25  1×0.2 + 1×0.1 − 0×0.6 = 0.3   → 0.5 미만 → 일반 메일로 예측
+p.27  송금 요구 가중치 0.1 → 0.7
+      1×0.2 + 1×0.7 − 0×0.6 = 0.9   → 0.5 이상 → 스팸으로 예측</div>
+<p>두 값 모두 자료와 일치합니다. 라벨이 스팸이므로 조정 전에는 불일치, 조정 후에는 일치입니다.</p></div>
+<div class="flow"><div><b>현재 모델의 예측</b><span>사기성 메일을 일반으로 예측</span></div><i>→</i><div><b>라벨과 비교</b><span>올바른 분류는 스팸 · 오차 계산</span></div><i>→</i><div><b>매개변수 조정</b><span>여러 자료의 오차가 줄어드는 방향으로</span></div></div>
+<div class="src"><span class="pl">자료 p.26 · p.27</span><p>“학습 자료로 예측·비교·조정을 반복한다. 새 메일도 잘 분류하는지는 따로 확인한다.”</p><p>“한 자료에서 맞았다고 학습이 끝나는 것은 아니다.”</p></div>
+<div class="box p"><h4>보충 · 자료 밖 내용</h4><ul>
+<li>자료는 0.1을 한 번에 0.7로 바꿨지만, 실제 학습은 보통 작은 폭의 조정을 수많은 자료에서 반복합니다. 조정 방향을 계산하는 대표적 방법이 경사하강법이고, 한 번에 움직이는 폭을 학습률이라고 합니다.</li>
+<li>한 메일에만 맞추면 다른 메일에서 틀릴 수 있습니다. 학습에 쓰지 않은 자료(검증·테스트 자료)로 따로 확인하는 이유입니다. 학습 자료에만 지나치게 맞춰진 상태를 과적합이라고 합니다.</li></ul></div>
+<div class="box t"><h4>강의 포인트 · 수치 하나 바꿔 보기</h4><p>같은 메일이 알려진 발신자(1)에게서 왔다면? 조정 후 가중치로 0.2 + 0.7 − 0.6 = 0.3, 일반 메일로 예측됩니다. 가중치는 그대로인데 <strong>입력이 바뀌어</strong> 결과가 달라진 경우와, 입력은 그대로인데 <strong>가중치가 바뀌어</strong> 결과가 달라진 경우를 나란히 놓으면 학습과 추론의 차이가 바로 보입니다.</p></div>
+</section>
+
+<section id="s05" aria-labelledby="s05-h"><h2 id="s05-h"><span class="num">05</span>학습과 추론<span class="pg">p.28–29</span></h2>
+<p class="lead">오늘 하루를 관통하는 구분입니다. 두 과정에서 “무엇이 바뀌는가”만 기억하면 됩니다.</p>
+<div class="tbl"><table><thead><tr><th></th><th>학습</th><th>추론</th></tr></thead><tbody>
+<tr><td>하는 일</td><td>자료와 목표로 오차를 계산</td><td>새 입력을 모델에 전달</td></tr>
+<tr><td>매개변수</td><td><strong>조정한다</strong></td><td><strong>그대로 쓴다</strong></td></tr>
+<tr><td>결과</td><td>학습된 모델</td><td>이번 입력의 예측·응답</td></tr></tbody></table></div>
+<div class="src"><span class="pl">자료 p.28</span><p>“새 메일을 처리하는 일과 모델을 다시 학습시키는 일은 서로 다르다.”</p></div>
+<div class="box w"><h4>주의 · “쓰면서 배운다”는 오해</h4><p>서비스가 사용자 반응을 모아 나중에 모델을 다시 학습시키는 경우는 있습니다. 하지만 그것은 별도로 실행하는 학습 작업입니다. 질문 하나를 처리하는 추론 자체가 매개변수를 바꾸지는 않습니다.</p></div>
+<div class="box p"><h4>보충 · 자료 밖 내용 <span class="tag add">용어</span></h4><p>영어로는 학습 training, 추론 inference입니다. 오후 둘째 구간 p.123에서 ‘추론’이 “조건을 비교해 결론을 내는 문제 풀이(reasoning)”라는 다른 뜻으로도 쓰인다는 점을 다룹니다. 같은 한국어 단어가 두 뜻을 가지므로, 가르칠 때는 어느 뜻인지 먼저 밝히는 것이 좋습니다.</p></div>
+</section>
+
+<section id="s06" aria-labelledby="s06-h"><h2 id="s06-h"><span class="num">06</span>생성형 AI<span class="pg">p.32–33</span></h2>
+<div class="src"><span class="pl">자료 p.32</span><p>생성형 AI: 자료에서 표현과 관계를 학습해 입력에 맞는 글·이미지·음성 등을 생성하는 AI.<br>학습: 많은 자료로 모델의 매개변수 조정 / 사용: 요청과 자료를 바탕으로 새로운 결과 생성<br>“생성한 내용은 학습 자료의 검색 결과와 같지 않다.”</p></div>
+<div class="tbl"><table><thead><tr><th>같은 원문 (p.33)</th><th>요청</th><th>결과</th></tr></thead><tbody>
+<tr><td rowspan="3">금요일 18시까지 과제 메뉴에 파일을 올리고 제출을 누르세요.</td><td>제목을 써 줘</td><td>금요일 18시 과제 마감</td></tr>
+<tr><td>어디에 제출하나요?</td><td>과제 메뉴에 제출합니다.</td></tr>
+<tr><td>쉽게 설명해 줘</td><td>파일을 올린 뒤 제출 버튼까지 눌러 주세요.</td></tr></tbody></table></div>
+<p>같은 자료라도 요청이 달라지면 결과의 형태가 달라집니다. 이 관계는 오후 p.55(“요청이 생성 내용의 조건이 된다”)에서 언어 모델의 작동으로 다시 설명됩니다.</p>
+<div class="box p"><h4>보충 · 자료 밖 내용</h4><p>“검색 결과와 같지 않다”는 두 방향으로 읽어야 합니다. 첫째, 생성된 문장에는 출처가 따로 붙어 있지 않으므로 사실 여부를 원문과 대조해야 합니다(p.131 환각). 둘째, 반대로 학습 자료에 많이 반복된 문장은 모델이 거의 그대로 재현하는 경우도 드물게 있습니다. 즉 “검색이 아니다”가 “학습 자료를 절대 그대로 내놓지 않는다”는 보증은 아닙니다.</p></div>
+</section>
+
+<section id="s07" aria-labelledby="s07-h"><h2 id="s07-h"><span class="num">07</span>신경망 · 딥러닝 · 개념의 관계<span class="pg">p.34–36</span></h2>
+<div class="flow"><div><b>입력</b><span>글을 수치로 표현</span></div><i>→</i><div><b>앞 계산층</b><span>입력값을 변환해 여러 값을 출력</span></div><i>→</i><div><b>다음 계산층</b><span>앞 층의 출력을 받아 다시 계산</span></div></div>
+<div class="src"><span class="pl">자료 p.35 · 설명용 가중치</span><p>입력 [1, 0] → 첫 층 1×0.6 + 0×0.3 = 0.6, 1×0.2 + 0×0.8 = 0.2 → 다음 층 0.6×0.5 + 0.2×0.5 = 0.4</p></div>
+<div class="box v"><h4>검증 <span class="tag ok">일치</span></h4><div class="calc">첫 층   [0.6, 0.2]
+다음 층  0.6×0.5 + 0.2×0.5 = 0.30 + 0.10 = 0.4</div><p>다음 층이 받는 값은 처음 입력 [1, 0]이 아니라 앞 층의 출력 [0.6, 0.2]라는 자료의 요점도 계산으로 확인됩니다.</p></div>
+<div class="nest"><b>AI</b> <span>인식·추론·문제 해결 등의 기능을 구현하는 분야</span>
+<div class="nest"><b>머신러닝</b> <span>그 기능을 자료에서 학습하는 방법</span>
+<div class="nest"><b>딥러닝</b> <span>머신러닝 중 깊은 신경망을 사용하는 방법</span></div></div></div>
+<div class="src"><span class="pl">자료 p.36</span><p>“생성형 AI는 ‘새 내용을 만드는 기능’에 붙인 이름이다. 현대의 주요 생성형 AI는 딥러닝을 쓴다.”</p></div>
+<div class="box w"><h4>주의 · 생성형 AI를 네 번째 상자로 그리지 않기</h4><p>AI ⊃ 머신러닝 ⊃ 딥러닝은 <strong>만드는 방법</strong>의 포함 관계입니다. 생성형 AI는 <strong>결과의 형태</strong>로 붙인 이름이라 같은 축에 놓이지 않습니다. 그림에서 딥러닝 안에 생성형 AI를 또 하나의 원으로 넣으면, 학습자가 “생성형 AI는 딥러닝의 한 종류”라고 오해하기 쉽습니다.</p></div>
+<div class="box p"><h4>보충 · 자료 밖 내용</h4><p>실제 신경망의 각 층에는 곱하고 더하는 계산 뒤에 ReLU 같은 <strong>활성화 함수</strong>가 들어갑니다. 이런 비선형 계산이 없으면 층을 아무리 쌓아도 하나의 곱셈·덧셈 계산과 같아져서, 층을 여러 개 두는 의미가 사라집니다. p.50의 질문 “여러 계산층을 사용하는 이유는?”의 핵심이 여기에 있습니다.</p></div>
+</section>
+
+<section id="s08" aria-labelledby="s08-h"><h2 id="s08-h"><span class="num">08</span>수업 설계 예시 · AI 입문자<span class="pg">p.37</span></h2>
+<div class="tbl"><table><thead><tr><th>교육 대상과 목표</th><th>준비할 설명과 학습 과정</th></tr></thead><tbody>
+<tr><td>AI를 처음 접하는 직장인 (예)<br>자기 업무에서 분류와 생성이 쓰일 일을 구분하도록 가르친다.</td><td>메일 분류와 답장 생성을 비교한다 → 입력과 결과의 차이를 설명한다 → AI와 자기 업무의 활용 예를 찾고 필요한 자료를 설명하게 한다.</td></tr></tbody></table></div>
+<div class="box t"><h4>강의 포인트 · 내 대상으로 바꿔 쓰기</h4><p>세 칸만 바꾸면 됩니다. ① 대상이 매일 다루는 입력(메일 대신 상담 기록, 민원, 과제물), ② 그 입력에서 필요한 결과 두 가지(하나는 범주, 하나는 새 글), ③ 그 결과를 만들 때 필요한 자료(라벨이 붙은 과거 기록인가, 참고할 안내문인가). 세 번째 칸이 “분류용 학습 자료”와 “생성 때 넣을 자료”로 갈리는지 학습자가 구분하면 목표를 달성한 것입니다.</p></div>
+</section>
+
+<section id="s09" aria-labelledby="s09-h"><h2 id="s09-h"><span class="num">09</span>모델과 서비스 · 파일 입력 · 멀티모달<span class="pg">p.38–42</span></h2>
+<p class="lead">오전 둘째 묶음은 모델이 사용자에게 닿는 경로를 다룹니다. 사용자가 쓰는 것은 모델 하나가 아니라 <strong>모델을 둘러싼 서비스 전체</strong>입니다.</p>
+<div class="flow"><div><b>화면과 자료 처리</b><span>질문을 받고 파일 내용을 전달</span></div><i>→</i><div><b>모델</b><span>전달받은 입력으로 응답을 생성</span></div><i>→</i><div><b>표시와 실행</b><span>응답을 보여 주거나 연결된 도구로 작업</span></div></div>
+<div class="src"><span class="pl">자료 p.40 · p.41</span><p>“검색·대화 저장·게시 기능은 서비스 구성에 따라 달라진다.”</p><p>안내 파일 첨부 → 파일 처리(내용을 읽어 텍스트 등으로 변환) → 모델 입력(질문과 관련 자료를 함께 전달) → 답변 표시</p></div>
+<div class="pair"><div><h4>이미지 + 글 (p.42)</h4><p>시간표 사진 + “수요일 오후 수업을 찾아서 설명해 줘.”</p></div><div><h4>음성 → 글 (p.42)</h4><p>강의 음성 → 녹취 → 요약. 하나의 모델 또는 연결된 여러 기능으로 처리</p></div></div>
+<div class="box p"><h4>보충 · 자료 밖 내용</h4><ul>
+<li>p.50의 질문 “같은 모델을 쓰는 서비스도 기능이 다를 수 있는 이유는?”의 답이 p.40입니다. 파일을 읽는 방식, 검색 여부, 대화 저장 여부, 연결된 도구가 서비스마다 다릅니다.</li>
+<li>긴 파일은 서비스가 전체를 넣지 않고 질문과 관련된 부분만 골라 넣기도 합니다. 그래서 “파일을 올렸다”와 “파일 내용 전체가 모델에 들어갔다”는 다른 말입니다. 이 차이는 p.80에서 다시 다룹니다.</li>
+<li>멀티모달 처리는 두 방식이 있습니다. 하나의 모델이 이미지·음성을 직접 입력으로 받는 방식과, 음성 인식처럼 별도 기능이 먼저 글로 바꾼 뒤 언어 모델에 넘기는 방식입니다. 자료의 “하나의 모델 또는 연결된 여러 기능”이 이 두 경우입니다.</li></ul></div>
+</section>
+
+<section id="s10" aria-labelledby="s10-h"><h2 id="s10-h"><span class="num">10</span>도구 실행 · 에이전트 · 자동화<span class="pg">p.43–48</span></h2>
+<div class="src"><span class="pl">자료 p.43 · p.44</span><p>도구: 검색·계산·게시처럼 실제 작업을 수행하는 프로그램.</p><p>“모델은 작업을 선택하고, 연결된 도구가 실제 검색·저장·게시를 실행한다.”</p></div>
+<div class="flow"><div><b>도구 요청</b><span>모델이 “공지 검색”을 요청</span></div><i>→</i><div><b>서비스 실행</b><span>검색 도구가 실제로 실행</span></div><i>→</i><div><b>결과 전달</b><span>“마감일 없음”을 모델에 다시 입력</span></div><i>→</i><div><b>다음 판단</b><span>다른 공지 검색을 선택</span></div></div>
+<div class="tbl"><table><thead><tr><th></th><th>고정된 작업 순서 (p.47)</th><th>에이전트 방식</th></tr></thead><tbody>
+<tr><td>순서를 정하는 주체</td><td>사람이 단계와 분기 조건을 정함</td><td>모델이 목표와 현재 결과를 보고 선택</td></tr>
+<tr><td>예</td><td>문서 검색 → 공지 작성 → 담당자 확인 → 게시</td><td>날짜 없음 → 다른 자료 검색 → 못 찾으면 담당자 문의</td></tr>
+<tr><td>자동화인가</td><td colspan="2">둘 다 자동화에 쓸 수 있다. 자동화는 “사람이 매번 실행하지 않아도 작업이 진행되는 것”</td></tr></tbody></table></div>
+<div class="tbl"><table><thead><tr><th>예 (p.48)</th><th>구분 기준</th><th>해당 개념</th></tr></thead><tbody>
+<tr><td>사진 속 표를 설명</td><td>정보 형태: 이미지와 글</td><td>멀티모달</td></tr>
+<tr><td>매일 9시 자료 수집·요약</td><td>실행 시점과 순서를 미리 지정</td><td>자동화</td></tr>
+<tr><td>날짜가 없어 다른 자료 검색</td><td>현재 결과를 보고 모델이 다음 작업 선택</td><td>에이전트</td></tr></tbody></table></div>
+<div class="box w"><h4>주의 · 모델의 말과 실제 실행은 다르다</h4><p>p.45: “모델의 답변만으로 검색이나 게시가 실제 수행됐다고 판단할 수는 없다.” 모델이 “게시했습니다”라고 써도, 도구가 반환한 실행 결과(등록된 게시물)를 확인해야 합니다.</p></div>
+<div class="box p"><h4>보충 · 자료 밖 내용</h4><p>도구 사용은 보통 이렇게 작동합니다. 모델은 도구를 직접 실행하지 못하고, “어떤 도구를 어떤 값으로 호출하라”는 요청을 정해진 형식의 글로 생성합니다. 서비스가 그 요청을 읽어 실제 프로그램을 실행하고, 결과를 다시 모델 입력에 넣습니다. 흔히 tool use 또는 function calling이라고 부릅니다.</p><p>Anthropic의 글 “Building effective agents”(2024)도 미리 정한 코드 경로로 모델과 도구를 엮는 ‘워크플로’와, 모델이 스스로 과정과 도구 사용을 정하는 ‘에이전트’를 구분합니다. 자료 p.47의 구분과 같은 축입니다.</p></div>
+</section>
+
+<section id="s11" aria-labelledby="s11-h"><h2 id="s11-h"><span class="num">11</span>개념 탐구 질문의 짧은 답<span class="pg">p.49–50</span></h2>
+<p class="lead">p.49–50의 탐구 질문에 이 문서에서 답을 찾을 수 있는 위치와 짧은 답을 정리했습니다. 먼저 스스로 답해 본 뒤 펼쳐 보세요.</p>
+<details><summary>p.49 질문 다섯 묶음의 짧은 답</summary>
+<div class="tbl"><table><thead><tr><th>질문</th><th>짧은 답</th><th>위치</th></tr></thead><tbody>
+<tr><td>머신러닝을 쓰지 않는 AI도 있는가?</td><td>있다. 규칙 기반 시스템</td><td>02</td></tr>
+<tr><td>규칙 기반은 머신러닝과 무엇이 다른가?</td><td>판별 방법을 사람이 쓰는가, 자료에서 학습하는가</td><td>02</td></tr>
+<tr><td>회귀는 무엇인가?</td><td>수치 예측. 범주 대신 값을 내놓는다</td><td>01</td></tr>
+<tr><td>생성형 AI로 분류도 할 수 있는가?</td><td>할 수 있다. 출력 형식을 범주로 제한하면 된다</td><td>01</td></tr>
+<tr><td>라벨 없이도 학습할 수 있는가?</td><td>있다. 비지도·자기지도 학습</td><td>03</td></tr>
+<tr><td>값이 바뀌면 결과는 왜 달라지는가?</td><td>결과가 입력과 가중치의 계산으로 정해지기 때문</td><td>04</td></tr></tbody></table></div></details>
+<details><summary>p.50 질문 다섯 묶음의 짧은 답</summary>
+<div class="tbl"><table><thead><tr><th>질문</th><th>짧은 답</th><th>위치</th></tr></thead><tbody>
+<tr><td>학습과 추론에서 무엇이 달라지는가?</td><td>학습은 매개변수를 바꾸고, 추론은 그대로 쓴다</td><td>05</td></tr>
+<tr><td>여러 계산층을 쓰는 이유는?</td><td>층마다 앞 층 출력을 다시 변환해 복잡한 관계를 표현한다(활성화 함수가 전제)</td><td>07</td></tr>
+<tr><td>같은 모델의 서비스도 기능이 다른 이유는?</td><td>파일 처리·검색·저장·도구 연결이 서비스마다 다르다</td><td>09</td></tr>
+<tr><td>멀티모달은 어디에 쓰는가?</td><td>사진 속 표 설명, 강의 음성 요약 등</td><td>09</td></tr>
+<tr><td>에이전트는 정해진 자동화와 어떻게 다른가?</td><td>다음 작업을 모델이 결과를 보고 고르는가, 사람이 미리 정했는가</td><td>10</td></tr></tbody></table></div></details>
+</section>
+
+<section id="s12" class="summary" aria-labelledby="s12-h"><h2 id="s12-h"><span class="num">12</span>핵심 정리</h2>
+<ul>
+<li>AI가 내놓는 결과는 <strong>분류·수치 예측·생성</strong>으로 나뉘고, 이 구분은 만드는 방법과 별개입니다.</li>
+<li>판별 기능은 <strong>사람이 규칙을 쓰거나</strong>, <strong>정답이 붙은 자료로 학습</strong>해 만듭니다.</li>
+<li>모델은 계산 구조이고, 학습은 그 안의 <strong>매개변수(가중치)</strong>를 예측과 라벨의 오차가 줄도록 조정하는 일입니다.</li>
+<li><strong>학습은 매개변수를 바꾸고, 추론은 그대로 씁니다.</strong> 오늘의 도착점인 “파일 제공 ≠ 학습”의 바탕입니다.</li>
+<li>사용자가 쓰는 것은 <strong>모델을 둘러싼 서비스</strong>이며, 도구·에이전트·자동화는 서비스 쪽 구성입니다.</li>
+</ul>
+</section>
+
+<section id="s13" aria-labelledby="s13-h"><h2 id="s13-h"><span class="num">13</span>검증 기록</h2>
+<div class="tbl"><table><thead><tr><th>쪽</th><th>항목</th><th>방법</th><th>결과</th></tr></thead><tbody>
+<tr><td>p.25</td><td>스팸 점수 0.3</td><td>재계산</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>p.27</td><td>가중치 0.7일 때 0.9</td><td>재계산</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>p.35</td><td>층 출력 [0.6, 0.2], 다음 층 0.4</td><td>재계산</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>p.17 / p.30</td><td>수요 예측의 분류 위치</td><td>페이지 간 대조</td><td><span class="tag na">표현 차이</span> 01절 주의 참고</td></tr>
+<tr><td>p.36</td><td>개념 포함 관계</td><td>일반적 정의와 대조</td><td><span class="tag ok">일치</span></td></tr></tbody></table></div>
+</section>
+
+</main></div>
+<footer><p>이 문서는 「AI 강사양성과정」 1일차 교육자료를 다시 쓴 학습 참고자료입니다. 자료 원문은 회색 인용 상자, 직접 다시 계산한 결과는 초록 ‘검증’ 상자, 자료에 없는 설명은 파란 ‘보충’ 상자로 구분했습니다. 보충 내용은 작성자의 지식에 기반하며 웹 검색으로 확인하지 않았습니다. 인용한 논문·문서의 제목과 연도는 원문을 직접 확인하세요. ‘설명용’, ‘가상’, ‘교육용 예’로 표시된 수치는 실제 측정값이 아닙니다.</p></footer>
+</body></html>
