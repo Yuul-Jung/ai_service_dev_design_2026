@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>2일차 강사 역량 · 학습자가 사용할 수 있는 안내 만들기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F1F2EE;--card:#FFFFFF;--ink:#15171C;--ink-2:#454A55;--ink-3:#6E7480;
+  --line:#DDDFD8;--accent:#4635B1;--accent-soft:#EDEAFA;
+  --ok:#1D6B45;--ok-soft:#E3F2E9;--warn:#7E5200;--warn-soft:#FBF0D9;--ng:#A8261D;--ng-soft:#FBE7E4;
+  --plus:#0F5E73;--plus-soft:#E2F1F5;--src:#F6F6F2;
+  --hero:#15171C;--hero-ink:#F1F2EE;--hero-2:#B9BDC4;--hero-3:#8D9299;--hl:#FFD24A;
+  --maxw:1180px;color-scheme:light;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#111216;--card:#1A1C22;--ink:#E7E8EB;--ink-2:#B8BDC7;--ink-3:#8E94A0;
+  --line:#2C2F37;--accent:#AEA2FF;--accent-soft:#2A2550;
+  --ok:#7FD9A8;--ok-soft:#16301F;--warn:#F3C86F;--warn-soft:#352911;--ng:#FF9A90;--ng-soft:#3A1916;
+  --plus:#7FD0E6;--plus-soft:#142C33;--src:#15171C;
+  --hero:#0B0C0F;color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --paper:#111216;--card:#1A1C22;--ink:#E7E8EB;--ink-2:#B8BDC7;--ink-3:#8E94A0;
+  --line:#2C2F37;--accent:#AEA2FF;--accent-soft:#2A2550;
+  --ok:#7FD9A8;--ok-soft:#16301F;--warn:#F3C86F;--warn-soft:#352911;--ng:#FF9A90;--ng-soft:#3A1916;
+  --plus:#7FD0E6;--plus-soft:#142C33;--src:#15171C;--hero:#0B0C0F;color-scheme:dark;}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans KR",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.75;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+code,.mono{font-family:"IBM Plex Mono","IBM Plex Sans KR",ui-monospace,monospace;font-size:.92em}
+a{color:var(--accent)}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.hero{position:relative;background:var(--hero);color:var(--hero-ink);overflow:hidden}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(to right,rgba(255,255,255,.055) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.055) 1px,transparent 1px);background-size:28px 28px;pointer-events:none}
+.hero-inner{position:relative;max-width:var(--maxw);margin:0 auto;padding:80px 32px 68px}
+.hero-kicker{margin:0 0 18px;font-size:clamp(1rem,2.2vw,1.18rem);font-weight:500;color:var(--hl);display:inline-block;padding-bottom:7px;border-bottom:2px solid var(--hl)}
+.hero h1{margin:0;font-size:clamp(2rem,5vw,3.3rem);font-weight:700;letter-spacing:-.035em;line-height:1.2;max-width:18ch}
+.hero .sub{margin:24px 0 0;max-width:52ch;color:var(--hero-2);font-size:1.03rem;font-weight:300}
+.hero-meta{margin-top:36px;display:flex;flex-wrap:wrap;gap:10px}
+.chip{font-family:"IBM Plex Mono",monospace;font-size:.78rem;color:#E4E6EA;border:1px solid rgba(255,255,255,.22);border-radius:2px;padding:5px 11px}
+.chip b{color:var(--hl);font-weight:600}
+.hero-terms{margin-top:48px;padding-top:32px;border-top:1px solid rgba(255,255,255,.15);display:grid;grid-template-columns:1fr 1fr;gap:30px 46px}
+.term h2{margin:0 0 8px;font-size:1.06rem;font-weight:600;color:#fff}
+.term h2 span{display:block;margin-top:3px;font-family:"IBM Plex Mono",monospace;font-size:.74rem;font-weight:400;color:var(--hero-3)}
+.term p{margin:0;font-size:.93rem;font-weight:300;color:var(--hero-2);max-width:46ch}
+.term-sum{grid-column:1/-1;margin:0;padding:15px 18px;background:rgba(255,210,74,.10);border-left:2px solid var(--hl);font-size:.95rem;font-weight:300;color:#D6D9DE}
+.hero strong,.hero b{color:var(--hl);font-weight:600}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px 96px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:52px;align-items:start}
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);padding:44px 0;max-height:100vh;overflow-y:auto}
+nav.toc h2{font-size:.8rem;color:var(--ink-3);margin:0 0 12px;font-weight:500}
+nav.toc ol{list-style:none;margin:0;padding:0}
+nav.toc a{display:flex;gap:10px;padding:4px 0 4px 10px;color:var(--ink-2);text-decoration:none;font-size:.85rem;line-height:1.5;border-left:2px solid transparent}
+nav.toc a:hover,nav.toc a:focus-visible{color:var(--accent);border-left-color:var(--accent)}
+nav.toc .n{font-family:"IBM Plex Mono",monospace;color:var(--ink-3);font-size:.78rem;min-width:18px}
+main{padding:44px 0 0;min-width:0}
+
+section{background:var(--card);border:1px solid var(--line);padding:34px 38px 36px;margin-bottom:18px;scroll-margin-top:20px}
+section>h2{margin:0 0 4px;font-size:1.42rem;font-weight:600;letter-spacing:-.02em;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+section>h2 .num{font-family:"IBM Plex Mono",monospace;font-size:.9rem;font-weight:500;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:2px}
+section>h2 .pg{font-family:"IBM Plex Mono",monospace;font-size:.78rem;font-weight:400;color:var(--ink-3);margin-left:auto}
+section h3{font-size:1.06rem;font-weight:600;margin:28px 0 8px}
+section p{margin:12px 0;max-width:72ch}
+.lead{color:var(--ink-2);margin-top:10px}
+section ul,section ol{padding-left:1.25em;max-width:72ch}
+section li{margin:4px 0}
+strong{font-weight:600}
+
+.src{margin:18px 0;padding:14px 18px;background:var(--src);border-left:3px solid var(--ink-3);font-size:.96rem}
+.src .pl{display:block;font-family:"IBM Plex Mono",monospace;font-size:.74rem;color:var(--ink-3);margin-bottom:4px}
+.src p{margin:4px 0}
+
+.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin:18px 0}
+.flow>div{flex:1 1 140px;border:1px solid var(--line);background:var(--card);padding:10px 12px;font-size:.9rem;position:relative}
+.flow>div b{display:block;font-weight:600;font-size:.93rem}
+.flow>div span{color:var(--ink-2);font-size:.86rem}
+.flow>i{align-self:center;font-style:normal;color:var(--ink-3);font-family:"IBM Plex Mono",monospace}
+
+.tbl{overflow-x:auto;margin:16px 0}
+table{border-collapse:collapse;width:100%;font-size:.92rem;min-width:420px}
+th,td{border-bottom:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+th{font-weight:600;color:var(--ink-2);background:var(--src);font-size:.86rem}
+td.c,th.c{text-align:center}
+td.r,th.r{text-align:right;font-family:"IBM Plex Mono",monospace}
+
+dl.ex{margin:16px 0;border-top:1px solid var(--line)}
+dl.ex dt{font-weight:600;padding-top:14px;font-size:.95rem}
+dl.ex dt code{background:var(--accent-soft);color:var(--accent);padding:1px 6px}
+dl.ex dd{margin:4px 0 0;padding-bottom:14px;border-bottom:1px solid var(--line);color:var(--ink-2);max-width:72ch}
+
+.box{margin:20px 0;padding:16px 20px;border:1px solid var(--line)}
+.box>h4{margin:0 0 6px;font-size:.88rem;font-weight:600;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.box p,.box li{font-size:.94rem}
+.box p:first-of-type{margin-top:4px}
+.box.v{background:var(--ok-soft);border-color:transparent}
+.box.v>h4{color:var(--ok)}
+.box.p{background:var(--plus-soft);border-color:transparent}
+.box.p>h4{color:var(--plus)}
+.box.w{background:var(--warn-soft);border-color:transparent}
+.box.w>h4{color:var(--warn)}
+.box.t{border-style:dashed}
+.box.t>h4{color:var(--accent)}
+.tag{font-family:"IBM Plex Mono",monospace;font-size:.72rem;font-weight:500;padding:1px 7px;border:1px solid currentColor;border-radius:2px}
+.tag.ok{color:var(--ok)}.tag.ng{color:var(--ng)}.tag.na{color:var(--ink-3)}.tag.add{color:var(--plus)}
+.calc{font-family:"IBM Plex Mono",monospace;font-size:.88rem;background:var(--card);padding:10px 12px;margin:8px 0;overflow-x:auto;white-space:pre;line-height:1.6}
+
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+.pair>div{border:1px solid var(--line);padding:14px 16px}
+.pair>div h4{margin:0 0 6px;font-size:.98rem;font-weight:600}
+.pair>div p,.pair>div li{font-size:.92rem;color:var(--ink-2)}
+.nest{border:1px solid var(--ink-3);padding:12px 14px;margin:14px 0}
+.nest .nest{margin:10px 0 0;border-color:var(--accent)}
+.nest .nest .nest{border-style:dashed}
+.nest b{font-weight:600}.nest span{color:var(--ink-2);font-size:.9rem}
+
+details{margin:16px 0;border:1px solid var(--line);padding:0 16px}
+details summary{cursor:pointer;padding:12px 0;font-weight:600;font-size:.94rem;color:var(--accent)}
+details[open] summary{border-bottom:1px solid var(--line);margin-bottom:8px}
+details>*:last-child{margin-bottom:14px}
+
+section.summary{background:var(--hero);color:var(--hero-ink);border-color:var(--hero)}
+section.summary>h2 .num{background:rgba(255,210,74,.15);color:var(--hl)}
+section.summary li{color:#D6D9DE}
+section.summary strong{color:var(--hl)}
+footer{max-width:var(--maxw);margin:0 auto;padding:0 32px 60px;color:var(--ink-3);font-size:.84rem}
+footer p{max-width:80ch}
+
+@media (max-width:900px){
+  .wrap{grid-template-columns:1fr;gap:0;padding:0 16px 64px}
+  nav.toc{position:static;max-height:none;padding:28px 0 8px}
+  nav.toc ol{columns:2;column-gap:16px}
+  .hero-inner{padding:56px 20px 48px}
+  .hero-terms{grid-template-columns:1fr}
+  section{padding:24px 18px 26px}
+  .pair{grid-template-columns:1fr}
+  section>h2 .pg{margin-left:0;width:100%}
+  footer{padding:0 16px 48px}
+}
+</style></head>
+<body>
+<header class="hero"><div class="hero-grid"></div><div class="hero-inner">
+<p class="hero-kicker">2일차 마지막 구간 · 17:00–18:00</p>
+<h1>학습자가 따라 할 수 있는 이용 안내 만들기</h1>
+<p class="sub">접속·요청·결과 확인의 순서를 안내로 쓰고, 20명이 10번씩 쓰는 수업의 비용과 동시 사용 한도, 오류가 났을 때 먼저 확인할 곳을 정리합니다.</p>
+<div class="hero-meta"><span class="chip">쪽 <b>p.106–123</b></span><span class="chip">수업 비용 <b>360원</b></span><span class="chip">분당 한도 영향 <b>최소 20분</b></span><span class="chip">오류 코드 <b>7종</b></span></div>
+<div class="hero-terms"><div class="term"><h2>요청 빈도 제한<span>Rate limit</span></h2><p>일정 시간 동안 처리할 수 있는 요청 수의 상한입니다. 총비용과 별개로 수업 진행 속도를 정할 수 있습니다(p.114–115).</p></div><div class="term"><h2>비용 알림<span>Budget alert</span></h2><p>설정한 지출 상태를 알려 주는 기능입니다. 알림만으로는 이용이 멈추지 않습니다(p.115).</p></div><p class="term-sum">안내의 모든 문장은 <strong>내가 설명할 수 있어야</strong> 합니다. 자료에 없는 화면·기능·조건은 <strong>확인할 질문</strong>으로 남깁니다.</p></div>
+</div></header>
+<div class="wrap">
+<nav class="toc" aria-label="목차"><h2>목차</h2><ol><li><a href="#s00"><span class="n">00</span>내가 쓰는 것과 여러 사람이 함께 쓰는 것</a></li><li><a href="#s01"><span class="n">01</span>공식 안내에서 이용 순서 찾기</a></li><li><a href="#s02"><span class="n">02</span>한 번의 비용을 수업 전체로</a></li><li><a href="#s03"><span class="n">03</span>총비용과 동시 사용 한도</a></li><li><a href="#s04"><span class="n">04</span>사용량 제한 · 비용 알림 · 실제 차단</a></li><li><a href="#s05"><span class="n">05</span>오류가 나면 먼저 확인할 곳</a></li><li><a href="#s06"><span class="n">06</span>실행이 막혀도 계속 배울 수 있는 자료</a></li><li><a href="#s07"><span class="n">07</span>학습자 안내 만들기</a></li><li><a href="#s08"><span class="n">08</span>마무리 질문 · 자료는 내부에만 남는가</a></li><li><a href="#s09"><span class="n">09</span>핵심 정리</a></li><li><a href="#s10"><span class="n">10</span>검증 기록</a></li></ol></nav>
+<main>
+<section id="s00" aria-labelledby="s00-h"><h2 id="s00-h"><span class="num">00</span>내가 쓰는 것과 여러 사람이 함께 쓰는 것<span class="pg">p.106–108</span></h2>
+<p class="lead">마지막 구간은 오늘 배운 이용 방법을 <strong>학습자가 따라 할 수 있는 안내</strong>로 바꾸는 시간입니다. 내 계정에서 되던 것이 수업에서도 된다는 보장은 없습니다.</p>
+<ul><li>내 계정에서 되던 기능을 학습자도 사용할 수 있는가?</li><li>요금과 호출 권한은 누가 관리하는가?</li><li>여러 사람이 동시에 요청해도 되는가?</li><li>막혔을 때 어디를 확인하도록 안내할 것인가?</li></ul>
+<div class="tbl"><table><thead><tr><th>항목 (p.108)</th><th>개인 계정 서비스</th><th>기관 공통 실습 화면</th></tr></thead><tbody>
+<tr><td>접속</td><td>본인 계정으로 로그인</td><td>기관이 정한 인증</td></tr>
+<tr><td>API 키</td><td>필요 없는 경로도 있음</td><td>운영 측에서 관리할 수 있음</td></tr>
+<tr><td>비용·한도</td><td>개인 이용 조건 확인</td><td>공통 운영 조건 확인</td></tr>
+<tr><td>결과 확인</td><td>해당 서비스 화면</td><td>공통 화면의 응답·상태</td></tr></tbody></table></div>
+</section>
+
+<section id="s01" aria-labelledby="s01-h"><h2 id="s01-h"><span class="num">01</span>공식 안내에서 이용 순서 찾기<span class="pg">p.109–111</span></h2>
+<div class="tbl"><table><thead><tr><th>공식 시작 안내의 항목 (p.109)</th><th>역할</th></tr></thead><tbody>
+<tr><td>Playground</td><td>모델과 대화할 화면</td></tr>
+<tr><td>Run settings</td><td>모델과 생성 설정</td></tr>
+<tr><td>Type something…</td><td>질문·자료를 넣는 입력</td></tr>
+<tr><td>Run</td><td>요청을 보내고 응답 받기</td></tr></tbody></table></div>
+<div class="box w"><h4>확인 불가 · 화면 항목 이름 <span class="tag na">미확인</span></h4><p>자료는 aistudio.google.com의 공식 시작 안내에서 항목 이름을 가져왔고, “화면 캡처는 아님”이라고 밝혔습니다. 이 환경에서는 해당 사이트에 접속할 수 없어 현재 화면과 대조하지 못했습니다. 서비스 화면은 자주 바뀌므로, 수업 직전에 실제 화면에서 이름과 위치를 다시 확인하세요.</p></div>
+<div class="flow"><div><b>허용된 계정으로 접속</b><span>Google AI Studio</span></div><i>→</i><div><b>Playground 열기</b><span>Run settings에서 모델과 설정 확인</span></div><i>→</i><div><b>요청 입력 후 Run</b></div><i>→</i><div><b>응답을 원자료와 대조</b></div></div>
+<div class="src"><span class="pl">자료 p.110 · 입력할 요청</span><p>“개인 준비물은 노트북과 충전기이며 이름표는 현장에서 제공합니다. 개인 준비물과 현장 제공품으로 나눠 주세요.”</p></div>
+<div class="box v"><h4>검증 · 기대 응답 (p.111) <span class="tag ok">일치</span></h4><p>개인 준비물: 노트북·충전기 / 현장 제공품: 이름표. 요청 문장 안의 두 종류를 그대로 나눈 결과이므로 원자료와 맞습니다. 안내에는 “응답이 원자료의 두 종류를 구별했는지 읽는다”는 확인 방법까지 함께 적혀 있습니다.</p></div>
+<p>p.110은 이 안내가 <strong>화면 이용</strong> 예이고 API 프로그램 연결과는 구별된다고 밝힙니다. 오후 첫 구간 p.67의 “화면 시험과 API 연동은 이용 경로가 다르다”와 같은 구분입니다.</p>
+</section>
+
+<section id="s02" aria-labelledby="s02-h"><h2 id="s02-h"><span class="num">02</span>한 번의 비용을 수업 전체로<span class="pg">p.112–113</span></h2>
+<div class="src"><span class="pl">자료 p.112 · 교육용 조건</span><p>가정: 20명이 각 10회 실행. 앞서 계산한 후보 가 사용(입력 100만 토큰당 1,000원, 출력 100만 토큰당 4,000원).</p></div>
+<div class="box v"><h4>검증 · 수업 규모의 예상 비용 (p.112–113) <span class="tag ok">일치</span></h4><div class="calc">요청 수   20명 × 10회               = 200회
+입력      200회 × 1,000토큰          = 200,000토큰
+출력      200회 × 200토큰            = 40,000토큰
+입력 비용  200,000 ÷ 1,000,000 × 1,000원 = 200원
+출력 비용   40,000 ÷ 1,000,000 × 4,000원 = 160원
+총비용     200원 + 160원              = 360원
+
+(교차 확인) 한 번 1.8원(p.75) × 200회 = 360원</div><p>두 방법의 결과가 같습니다. 후보 나(4.4원)를 썼다면 880원입니다(추가 계산).</p></div>
+<div class="box p"><h4>보충 · 실제 수업에서 더 넣을 것</h4><p>실제로는 학습자가 같은 요청을 고쳐 다시 보내고, 대화가 길어지면 앞의 대화가 매번 입력에 다시 들어갑니다(1일차 p.79–81). 그래서 회당 입력 토큰이 처음보다 커지는 경우가 많습니다. 예산을 잡을 때는 횟수와 입력 길이에 여유를 두고, 실제 사용량은 수업 뒤 응답의 사용량 기록이나 콘솔에서 확인하세요.</p></div>
+</section>
+
+<section id="s03" aria-labelledby="s03-h"><h2 id="s03-h"><span class="num">03</span>총비용과 동시 사용 한도<span class="pg">p.114</span></h2>
+<div class="pair"><div><h4>총비용 (p.114)</h4><p>20명 × 10회 = 200회. 얼마나 사용하는가.</p></div><div><h4>동시 요청 조건</h4><p>프로젝트 한도가 분당 10회라면, 20명이 한 번씩 동시에 시작할 때 제한될 수 있음. 한도의 적용 단위도 확인.</p></div></div>
+<div class="box v"><h4>추가 계산 · 한도가 수업 시간에 미치는 영향 <span class="tag add">추가</span></h4><div class="calc">동시 시작: 20명이 같은 1분 안에 요청 → 10회만 처리, 10회는 제한
+전체 실습: 200회 ÷ 분당 10회 = 최소 20분 (요청이 고르게 나뉠 때)</div><p>비용은 360원에 불과해도, 이 한도라면 200회 실습에 <strong>최소 20분</strong>이 필요합니다. 학습자가 몰려서 요청하면 실패와 재시도가 겹쳐 더 길어집니다. 수업 설계에서는 비용보다 이 한도가 더 큰 제약이 될 수 있습니다. 시작 시각을 조 단위로 나누거나, 한 번에 하나만 요청하도록 안내하는 이유입니다.</p></div>
+<p>오후 첫 구간 p.56의 원칙(“프로젝트별 한도라면 키를 나눠도 함께 계산한다”)이 여기서 쓰입니다. 학습자마다 키를 나눠 줘도 같은 프로젝트라면 한도는 하나입니다.</p>
+</section>
+
+<section id="s04" aria-labelledby="s04-h"><h2 id="s04-h"><span class="num">04</span>사용량 제한 · 비용 알림 · 실제 차단<span class="pg">p.115</span></h2>
+<div class="tbl"><table><thead><tr><th>기능 (p.115)</th><th>역할</th><th>안내할 내용</th></tr></thead><tbody>
+<tr><td>요청 빈도 제한</td><td>일정 시간의 처리량 제한</td><td>동시 시작과 재시도 방법</td></tr>
+<tr><td>비용 알림</td><td>설정한 지출 상태 통지</td><td>누가 알림을 보고 대응하는가</td></tr>
+<tr><td>호출·지출 차단</td><td>조건에 따라 이용 중단</td><td>차단 범위·복구·대체 자료</td></tr></tbody></table></div>
+<div class="box w"><h4>주의 · 알림은 멈추지 않는다 <span class="tag add">보충</span></h4><p>비용 알림과 차단을 혼동하기 쉽습니다. 작성자가 알고 있는 Google Cloud의 예산 기능은, 예산을 넘으면 <strong>알림을 보낼 뿐</strong> 기본적으로 사용을 멈추지 않습니다. 실제로 멈추려면 별도의 차단 설정이나 자동화가 필요합니다. 다른 서비스도 비슷한 경우가 많으니, “알림을 설정했으니 예산을 넘지 않는다”고 안내하지 않도록 사용할 서비스의 문서를 확인하세요.</p></div>
+</section>
+
+<section id="s05" aria-labelledby="s05-h"><h2 id="s05-h"><span class="num">05</span>오류가 나면 먼저 확인할 곳<span class="pg">p.116–117</span></h2>
+<div class="tbl"><table><thead><tr><th>상황 (p.116)</th><th>첫 확인과 대응</th></tr></thead><tbody>
+<tr><td>한 사람만 접속 불가</td><td>그 계정의 접속·권한</td></tr>
+<tr><td>모델 이용 권한 오류</td><td>키·접근 가능한 모델·권한</td></tr>
+<tr><td>동시 요청 한도</td><td>제한 범위와 시작 시각 조정</td></tr>
+<tr><td>제공자 장애</td><td>서비스 상태와 재시도 안내</td></tr></tbody></table></div>
+<div class="tbl"><table><thead><tr><th>표시 예 (p.117 · Gemini API)</th><th>먼저 확인할 내용</th><th>대응</th></tr></thead><tbody>
+<tr><td class="mono">403 PERMISSION_DENIED</td><td>키·프로젝트·모델의 접근 권한</td><td>권한과 설정을 확인</td></tr>
+<tr><td class="mono">429 RESOURCE_EXHAUSTED</td><td>어떤 할당량·요청 한도인가</td><td>한도 확인 후 간격·사용량 조정</td></tr>
+<tr><td class="mono">503 UNAVAILABLE</td><td>제공자 상태·일시 장애 안내</td><td>안내에 따라 대기·재시도</td></tr></tbody></table></div>
+<div class="box v"><h4>검증 <span class="tag ok">작성자 지식 기준 일치</span> <span class="tag na">공식 문서 미확인</span></h4><p>세 코드와 이름의 짝은 작성자가 알고 있는 Gemini API 오류 안내와 같습니다. 자료의 단서 “같은 숫자라도 반환된 상세 메시지를 함께 읽는다”도 맞습니다. 예를 들어 429는 분당 요청 수 한도와 일일 한도 등 여러 원인에 같이 쓰입니다.</p></div>
+<div class="box p"><h4>보충 · 수업에서 만날 수 있는 다른 코드</h4><div class="tbl"><table><thead><tr><th>표시 예</th><th>흔한 원인</th><th>재시도로 해결되는가</th></tr></thead><tbody>
+<tr><td class="mono">400 INVALID_ARGUMENT</td><td>요청 형식·필드 이름·값이 잘못됨 (p.64 “요청 항목이 잘못됐다”)</td><td>아니요. 요청을 고친다</td></tr>
+<tr><td class="mono">404 NOT_FOUND</td><td>모델 이름 오타, 없어졌거나 접근할 수 없는 모델</td><td>아니요. 모델 이름을 확인한다</td></tr>
+<tr><td class="mono">500 INTERNAL</td><td>제공자 쪽 내부 오류. 입력이 지나치게 길 때도 나타날 수 있음</td><td>잠시 뒤 재시도, 반복되면 입력을 줄인다</td></tr>
+<tr><td class="mono">504 DEADLINE_EXCEEDED</td><td>처리 시간이 제한을 넘음</td><td>입력이나 요청량을 줄여 재시도</td></tr></tbody></table></div><p>목록은 작성자 지식 기준입니다. 실제 의미는 공식 오류 안내에서 확인하세요. 오후 첫 구간 05절의 원칙대로, 권한·형식 오류는 기다려도 풀리지 않고 한도·장애는 간격을 두고 재시도합니다.</p></div>
+</section>
+
+<section id="s06" aria-labelledby="s06-h"><h2 id="s06-h"><span class="num">06</span>실행이 막혀도 계속 배울 수 있는 자료<span class="pg">p.118</span></h2>
+<div class="tbl"><table><thead><tr><th>배우려는 내용 (p.118)</th><th>대체로 볼 자료</th></tr></thead><tbody>
+<tr><td>요청과 응답 구조</td><td>교육용 요청·응답 또는 저장한 실제 기록</td></tr>
+<tr><td>결과의 내용 해석</td><td>원자료와 응답 예</td></tr>
+<tr><td>비용 계산</td><td>사용량과 단가가 명시된 계산 예</td></tr>
+<tr><td>실제 지연 측정</td><td>대체 자료만으로 실측 완료라 할 수 없음</td></tr></tbody></table></div>
+<div class="box t"><h4>강의 포인트</h4><p>네 줄 중 마지막 줄만 대체가 불가능합니다. 요청 구조, 내용 해석, 비용 계산은 저장된 예로 배울 수 있지만, 시간은 실제로 보내 봐야 압니다. 장애가 났을 때 수업 목표를 “측정”에서 “측정 방법 설명”으로 바꾸고, 기록 칸에는 “확인할 수 없음”을 적게 하세요(오후 첫 구간 p.66).</p></div>
+</section>
+
+<section id="s07" aria-labelledby="s07-h"><h2 id="s07-h"><span class="num">07</span>학습자 안내 만들기<span class="pg">p.119–122</span></h2>
+<div class="tbl"><table><thead><tr><th>안내가 답해야 할 질문 (p.119)</th></tr></thead><tbody>
+<tr><td>처음 쓰는 사람이 어디서 시작하고 무엇을 배울 수 있는가?</td></tr>
+<tr><td>어떤 자료를 넣고, 응답을 어떻게 읽고 더 질문하는가?</td></tr>
+<tr><td>이 경로의 비용·한도와 오류 때 확인할 곳은 어디인가?</td></tr></tbody></table></div>
+<p>p.120: 설명하기 어려운 개념은 다른 사례로 다시 공부하고, 자기 기록과 공식 안내를 바탕으로 초안 작성을 도움받습니다. <strong>자료에 없는 화면·기능·조건은 확인할 질문으로 남깁니다.</strong></p>
+<details><summary>안내 초안 예 · 오늘 자료만으로 채운 것</summary>
+<div class="tbl"><table><tbody>
+<tr><td>시작</td><td>기관이 허용한 계정으로 Google AI Studio에 접속해 Playground를 엽니다. (화면 이름은 수업 직전 확인)</td></tr>
+<tr><td>입력</td><td>“개인 준비물은 노트북과 충전기이며 이름표는 현장에서 제공합니다. 개인 준비물과 현장 제공품으로 나눠 주세요.”를 넣고 Run을 누릅니다.</td></tr>
+<tr><td>결과 확인</td><td>응답이 준비물(노트북·충전기)과 현장 제공품(이름표)을 나눴는지 원문과 비교합니다. 이해되지 않으면 이어서 질문합니다.</td></tr>
+<tr><td>자료 규칙</td><td>회사·기관 내부 자료와 개인정보는 넣지 않고, 제공된 공개용 예제만 씁니다.</td></tr>
+<tr><td>요청 간격</td><td>한 번 보낸 뒤 응답이 끝나면 다음 요청을 보냅니다. 오류가 나면 같은 요청을 연달아 누르지 않습니다.</td></tr>
+<tr><td>오류가 나면</td><td>화면의 오류 문구를 그대로 강사에게 보여 줍니다. 403은 권한, 429는 한도, 503은 서비스 장애입니다.</td></tr>
+<tr><td>확인할 질문으로 남김</td><td>이 계정의 무료/유료 구분과 약관 적용, 프로젝트의 분당 한도, 수업 중 비용 알림을 보는 사람</td></tr></tbody></table></div></details>
+<div class="tbl"><table><thead><tr><th>안내를 읽으며 확인 (p.122)</th><th>점검</th></tr></thead><tbody>
+<tr><td>처음 쓰는 사람이 어디서 무엇을 입력할지 알 수 있는가?</td><td></td></tr>
+<tr><td>결과를 보고 무엇이 되었는지 판단할 수 있는가?</td><td></td></tr>
+<tr><td>실제 화면에 없는 기능이나 설명하지 않은 용어가 있는가?</td><td></td></tr>
+<tr><td>내가 설명할 수 없는 문장이 있는가? → 더 공부해 고친다</td><td></td></tr></tbody></table></div>
+<div class="tbl"><table><thead><tr><th>운영 개념을 더 공부할 질문 (p.121)</th><th>이 자료의 답</th></tr></thead><tbody>
+<tr><td>한 사람의 이용량과 여러 사람의 동시 사용은 어떻게 다른가?</td><td>총량(비용)과 순간 처리량(한도)은 따로 계산한다 · 03절</td></tr>
+<tr><td>요청 빈도 제한은 어떤 단위에 적용되는가?</td><td>키·프로젝트·모델 등 서비스마다 다르다. 공식 안내에서 확인 · 03절</td></tr>
+<tr><td>비용 알림과 실제 사용 차단은 무엇이 다른가?</td><td>알림은 통지만, 차단은 이용을 멈춘다 · 04절</td></tr></tbody></table></div>
+</section>
+
+<section id="s08" aria-labelledby="s08-h"><h2 id="s08-h"><span class="num">08</span>마무리 질문 · 자료는 내부에만 남는가<span class="pg">p.123</span></h2>
+<div class="src"><span class="pl">자료 p.123</span><p>조직 안에서 모델을 실행해도 외부 검색 도구를 쓴다면, “자료가 모두 내부에만 남는다”고 안내할 수 있을까?</p></div>
+<details><summary>먼저 답해 본 뒤 펼치기</summary><p><strong>안내할 수 없습니다.</strong> 모델은 조직 안에서 계산되더라도, 검색 도구에는 검색어가 전달됩니다. 검색어는 보통 질문이나 자료의 일부로 만들어지므로, 내부 자료의 내용이 외부 검색 서비스로 나갈 수 있습니다. 오후 둘째 구간 p.99의 “내부 모델도 외부 검색 도구를 연결하면 정보를 밖으로 보낼 수 있다”가 근거입니다.</p><p>정확한 안내는 이렇게 씁니다. “모델은 조직 내부에서 실행됩니다. 단, 검색 기능을 쓰면 검색어가 외부 검색 서비스로 전송됩니다. 내부 자료는 검색 기능을 끈 상태에서만 사용하세요.”</p></details>
+<p>p.123은 다음 시간을 이렇게 예고합니다. “다음에는 모델이 자료에서 배우는 과정과 처음 보는 자료에서 성능을 확인하는 방법을 배운다.”</p>
+</section>
+
+<section id="s09" class="summary" aria-labelledby="s09-h"><h2 id="s09-h"><span class="num">09</span>핵심 정리</h2>
+<ul>
+<li>내 계정에서 되는 것과 <strong>수업에서 여러 사람이 쓰는 것</strong>은 접속·키·비용·한도가 다릅니다.</li>
+<li>수업 비용은 <strong>인원 × 횟수 × 회당 사용량 × 단가</strong>로 어림하고, 실제 사용량으로 다시 확인합니다.</li>
+<li>비용이 작아도 <strong>분당 한도</strong>가 수업 시간을 정할 수 있습니다.</li>
+<li><strong>비용 알림은 차단이 아닙니다.</strong> 오류는 코드와 상세 메시지를 함께 읽습니다.</li>
+<li>안내에 적은 모든 문장은 <strong>내가 설명할 수 있어야</strong> 하고, 모르는 조건은 확인할 질문으로 남깁니다.</li>
+</ul>
+</section>
+
+<section id="s10" aria-labelledby="s10-h"><h2 id="s10-h"><span class="num">10</span>검증 기록</h2>
+<div class="tbl"><table><thead><tr><th>쪽</th><th>항목</th><th>방법</th><th>결과</th></tr></thead><tbody>
+<tr><td>p.112–113</td><td>200회 · 입력 200,000 · 출력 40,000 · 360원</td><td>재계산 + 1.8원 × 200회 교차 확인</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>p.114</td><td>분당 10회 한도의 영향</td><td>추가 계산</td><td><span class="tag add">최소 20분</span></td></tr>
+<tr><td>p.111</td><td>준비물과 현장 제공품 구분</td><td>원자료 대조</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>p.117</td><td>403 · 429 · 503의 이름</td><td>작성자 지식과 대조</td><td><span class="tag ok">일치</span> <span class="tag na">공식 문서 미확인</span></td></tr>
+<tr><td>p.109</td><td>AI Studio 화면 항목</td><td>접속 불가</td><td><span class="tag na">확인 불가</span></td></tr></tbody></table></div>
+</section>
+
+</main></div>
+<footer><p>이 문서는 「AI 강사양성과정」 2일차 교육자료를 다시 쓴 학습 참고자료입니다. 자료 원문은 회색 인용 상자, 직접 다시 계산한 결과는 초록 ‘검증’ 상자, 자료에 없는 설명은 파란 ‘보충’ 상자로 구분했습니다. 보충 내용은 작성자의 지식에 기반하며 웹 검색으로 확인하지 않았습니다. 인용한 논문·문서의 제목과 연도는 원문을 직접 확인하세요. ‘설명용’, ‘가상’, ‘교육용 예’로 표시된 수치는 실제 측정값이 아닙니다.</p></footer>
+</body></html>

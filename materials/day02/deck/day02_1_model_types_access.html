@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>2일차 오전 · 모델의 종류와 이용 구조</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F1F2EE;--card:#FFFFFF;--ink:#15171C;--ink-2:#454A55;--ink-3:#6E7480;
+  --line:#DDDFD8;--accent:#4635B1;--accent-soft:#EDEAFA;
+  --ok:#1D6B45;--ok-soft:#E3F2E9;--warn:#7E5200;--warn-soft:#FBF0D9;--ng:#A8261D;--ng-soft:#FBE7E4;
+  --plus:#0F5E73;--plus-soft:#E2F1F5;--src:#F6F6F2;
+  --hero:#15171C;--hero-ink:#F1F2EE;--hero-2:#B9BDC4;--hero-3:#8D9299;--hl:#FFD24A;
+  --maxw:1180px;color-scheme:light;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#111216;--card:#1A1C22;--ink:#E7E8EB;--ink-2:#B8BDC7;--ink-3:#8E94A0;
+  --line:#2C2F37;--accent:#AEA2FF;--accent-soft:#2A2550;
+  --ok:#7FD9A8;--ok-soft:#16301F;--warn:#F3C86F;--warn-soft:#352911;--ng:#FF9A90;--ng-soft:#3A1916;
+  --plus:#7FD0E6;--plus-soft:#142C33;--src:#15171C;
+  --hero:#0B0C0F;color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --paper:#111216;--card:#1A1C22;--ink:#E7E8EB;--ink-2:#B8BDC7;--ink-3:#8E94A0;
+  --line:#2C2F37;--accent:#AEA2FF;--accent-soft:#2A2550;
+  --ok:#7FD9A8;--ok-soft:#16301F;--warn:#F3C86F;--warn-soft:#352911;--ng:#FF9A90;--ng-soft:#3A1916;
+  --plus:#7FD0E6;--plus-soft:#142C33;--src:#15171C;--hero:#0B0C0F;color-scheme:dark;}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans KR",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.75;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+code,.mono{font-family:"IBM Plex Mono","IBM Plex Sans KR",ui-monospace,monospace;font-size:.92em}
+a{color:var(--accent)}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.hero{position:relative;background:var(--hero);color:var(--hero-ink);overflow:hidden}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(to right,rgba(255,255,255,.055) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.055) 1px,transparent 1px);background-size:28px 28px;pointer-events:none}
+.hero-inner{position:relative;max-width:var(--maxw);margin:0 auto;padding:80px 32px 68px}
+.hero-kicker{margin:0 0 18px;font-size:clamp(1rem,2.2vw,1.18rem);font-weight:500;color:var(--hl);display:inline-block;padding-bottom:7px;border-bottom:2px solid var(--hl)}
+.hero h1{margin:0;font-size:clamp(2rem,5vw,3.3rem);font-weight:700;letter-spacing:-.035em;line-height:1.2;max-width:18ch}
+.hero .sub{margin:24px 0 0;max-width:52ch;color:var(--hero-2);font-size:1.03rem;font-weight:300}
+.hero-meta{margin-top:36px;display:flex;flex-wrap:wrap;gap:10px}
+.chip{font-family:"IBM Plex Mono",monospace;font-size:.78rem;color:#E4E6EA;border:1px solid rgba(255,255,255,.22);border-radius:2px;padding:5px 11px}
+.chip b{color:var(--hl);font-weight:600}
+.hero-terms{margin-top:48px;padding-top:32px;border-top:1px solid rgba(255,255,255,.15);display:grid;grid-template-columns:1fr 1fr;gap:30px 46px}
+.term h2{margin:0 0 8px;font-size:1.06rem;font-weight:600;color:#fff}
+.term h2 span{display:block;margin-top:3px;font-family:"IBM Plex Mono",monospace;font-size:.74rem;font-weight:400;color:var(--hero-3)}
+.term p{margin:0;font-size:.93rem;font-weight:300;color:var(--hero-2);max-width:46ch}
+.term-sum{grid-column:1/-1;margin:0;padding:15px 18px;background:rgba(255,210,74,.10);border-left:2px solid var(--hl);font-size:.95rem;font-weight:300;color:#D6D9DE}
+.hero strong,.hero b{color:var(--hl);font-weight:600}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px 96px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:52px;align-items:start}
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);padding:44px 0;max-height:100vh;overflow-y:auto}
+nav.toc h2{font-size:.8rem;color:var(--ink-3);margin:0 0 12px;font-weight:500}
+nav.toc ol{list-style:none;margin:0;padding:0}
+nav.toc a{display:flex;gap:10px;padding:4px 0 4px 10px;color:var(--ink-2);text-decoration:none;font-size:.85rem;line-height:1.5;border-left:2px solid transparent}
+nav.toc a:hover,nav.toc a:focus-visible{color:var(--accent);border-left-color:var(--accent)}
+nav.toc .n{font-family:"IBM Plex Mono",monospace;color:var(--ink-3);font-size:.78rem;min-width:18px}
+main{padding:44px 0 0;min-width:0}
+
+section{background:var(--card);border:1px solid var(--line);padding:34px 38px 36px;margin-bottom:18px;scroll-margin-top:20px}
+section>h2{margin:0 0 4px;font-size:1.42rem;font-weight:600;letter-spacing:-.02em;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+section>h2 .num{font-family:"IBM Plex Mono",monospace;font-size:.9rem;font-weight:500;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:2px}
+section>h2 .pg{font-family:"IBM Plex Mono",monospace;font-size:.78rem;font-weight:400;color:var(--ink-3);margin-left:auto}
+section h3{font-size:1.06rem;font-weight:600;margin:28px 0 8px}
+section p{margin:12px 0;max-width:72ch}
+.lead{color:var(--ink-2);margin-top:10px}
+section ul,section ol{padding-left:1.25em;max-width:72ch}
+section li{margin:4px 0}
+strong{font-weight:600}
+
+.src{margin:18px 0;padding:14px 18px;background:var(--src);border-left:3px solid var(--ink-3);font-size:.96rem}
+.src .pl{display:block;font-family:"IBM Plex Mono",monospace;font-size:.74rem;color:var(--ink-3);margin-bottom:4px}
+.src p{margin:4px 0}
+
+.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin:18px 0}
+.flow>div{flex:1 1 140px;border:1px solid var(--line);background:var(--card);padding:10px 12px;font-size:.9rem;position:relative}
+.flow>div b{display:block;font-weight:600;font-size:.93rem}
+.flow>div span{color:var(--ink-2);font-size:.86rem}
+.flow>i{align-self:center;font-style:normal;color:var(--ink-3);font-family:"IBM Plex Mono",monospace}
+
+.tbl{overflow-x:auto;margin:16px 0}
+table{border-collapse:collapse;width:100%;font-size:.92rem;min-width:420px}
+th,td{border-bottom:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+th{font-weight:600;color:var(--ink-2);background:var(--src);font-size:.86rem}
+td.c,th.c{text-align:center}
+td.r,th.r{text-align:right;font-family:"IBM Plex Mono",monospace}
+
+dl.ex{margin:16px 0;border-top:1px solid var(--line)}
+dl.ex dt{font-weight:600;padding-top:14px;font-size:.95rem}
+dl.ex dt code{background:var(--accent-soft);color:var(--accent);padding:1px 6px}
+dl.ex dd{margin:4px 0 0;padding-bottom:14px;border-bottom:1px solid var(--line);color:var(--ink-2);max-width:72ch}
+
+.box{margin:20px 0;padding:16px 20px;border:1px solid var(--line)}
+.box>h4{margin:0 0 6px;font-size:.88rem;font-weight:600;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.box p,.box li{font-size:.94rem}
+.box p:first-of-type{margin-top:4px}
+.box.v{background:var(--ok-soft);border-color:transparent}
+.box.v>h4{color:var(--ok)}
+.box.p{background:var(--plus-soft);border-color:transparent}
+.box.p>h4{color:var(--plus)}
+.box.w{background:var(--warn-soft);border-color:transparent}
+.box.w>h4{color:var(--warn)}
+.box.t{border-style:dashed}
+.box.t>h4{color:var(--accent)}
+.tag{font-family:"IBM Plex Mono",monospace;font-size:.72rem;font-weight:500;padding:1px 7px;border:1px solid currentColor;border-radius:2px}
+.tag.ok{color:var(--ok)}.tag.ng{color:var(--ng)}.tag.na{color:var(--ink-3)}.tag.add{color:var(--plus)}
+.calc{font-family:"IBM Plex Mono",monospace;font-size:.88rem;background:var(--card);padding:10px 12px;margin:8px 0;overflow-x:auto;white-space:pre;line-height:1.6}
+
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+.pair>div{border:1px solid var(--line);padding:14px 16px}
+.pair>div h4{margin:0 0 6px;font-size:.98rem;font-weight:600}
+.pair>div p,.pair>div li{font-size:.92rem;color:var(--ink-2)}
+.nest{border:1px solid var(--ink-3);padding:12px 14px;margin:14px 0}
+.nest .nest{margin:10px 0 0;border-color:var(--accent)}
+.nest .nest .nest{border-style:dashed}
+.nest b{font-weight:600}.nest span{color:var(--ink-2);font-size:.9rem}
+
+details{margin:16px 0;border:1px solid var(--line);padding:0 16px}
+details summary{cursor:pointer;padding:12px 0;font-weight:600;font-size:.94rem;color:var(--accent)}
+details[open] summary{border-bottom:1px solid var(--line);margin-bottom:8px}
+details>*:last-child{margin-bottom:14px}
+
+section.summary{background:var(--hero);color:var(--hero-ink);border-color:var(--hero)}
+section.summary>h2 .num{background:rgba(255,210,74,.15);color:var(--hl)}
+section.summary li{color:#D6D9DE}
+section.summary strong{color:var(--hl)}
+footer{max-width:var(--maxw);margin:0 auto;padding:0 32px 60px;color:var(--ink-3);font-size:.84rem}
+footer p{max-width:80ch}
+
+@media (max-width:900px){
+  .wrap{grid-template-columns:1fr;gap:0;padding:0 16px 64px}
+  nav.toc{position:static;max-height:none;padding:28px 0 8px}
+  nav.toc ol{columns:2;column-gap:16px}
+  .hero-inner{padding:56px 20px 48px}
+  .hero-terms{grid-template-columns:1fr}
+  section{padding:24px 18px 26px}
+  .pair{grid-template-columns:1fr}
+  section>h2 .pg{margin-left:0;width:100%}
+  footer{padding:0 16px 48px}
+}
+</style></head>
+<body>
+<header class="hero"><div class="hero-grid"></div><div class="hero-inner">
+<p class="hero-kicker">2일차 오전 · 09:00–12:00</p>
+<h1>모델은 누가 실행하고, 어떤 통로로 이용하는가</h1>
+<p class="sub">가중치와 실행 자원, 세 가지 이용 경로, 라이선스와 서비스 조건을 구분하고, 모델 카드·추론형 모델·멀티모달·벤치마크를 실제 자료로 읽는 방법을 정리합니다.</p>
+<div class="hero-meta"><span class="chip">쪽 <b>p.1–50</b></span><span class="chip">실제 모델 <b>Qwen2.5-0.5B</b></span><span class="chip">공식 자료 대조 <b>3건</b></span><span class="chip">일정 문제 <b>전수 확인</b></span></div>
+<div class="hero-terms"><div class="term"><h2>가중치<span>Weights</span></h2><p>학습으로 조정한 수치를 담은 파일입니다. 받기만 해서는 쓸 수 없고, 실행 프로그램과 컴퓨터가 함께 필요합니다(p.6–7).</p></div><div class="term"><h2>API<span>Application Programming Interface</span></h2><p>프로그램끼리 정해진 방식으로 요청과 결과를 주고받는 접점입니다. 사람은 화면으로, 프로그램은 API로 모델을 씁니다(p.10).</p></div><p class="term-sum"><strong>공개 여부·실행 주체·이용 통로·허용 용도</strong>는 서로 다른 질문입니다. 하나가 정해져도 나머지는 따로 확인합니다.</p></div>
+</div></header>
+<div class="wrap">
+<nav class="toc" aria-label="목차"><h2>목차</h2><ol><li><a href="#s00"><span class="n">00</span>오늘의 질문과 모델 생태계</a></li><li><a href="#s01"><span class="n">01</span>가중치와 모델 실행에 필요한 것</a></li><li><a href="#s02"><span class="n">02</span>세 가지 이용 경로</a></li><li><a href="#s03"><span class="n">03</span>공개 여부 · 실행 주체 · 이용 통로 · 라이선스</a></li><li><a href="#s04"><span class="n">04</span>모델마다 능력과 부담이 다른 이유</a></li><li><a href="#s05"><span class="n">05</span>규모 · 비트 · 메모리 · 양자화</a></li><li><a href="#s06"><span class="n">06</span>모델 카드 읽기</a></li><li><a href="#s07"><span class="n">07</span>추론형 모델과 일정 문제</a></li><li><a href="#s08"><span class="n">08</span>설명 · 추론 요약 · 사용량 · 도구 기록</a></li><li><a href="#s09"><span class="n">09</span>멀티모달 · 그림 · 음성 · 문서</a></li><li><a href="#s10"><span class="n">10</span>벤치마크와 리더보드 읽기</a></li><li><a href="#s11"><span class="n">11</span>개념 탐구 질문의 짧은 답</a></li><li><a href="#s12"><span class="n">12</span>핵심 정리</a></li><li><a href="#s13"><span class="n">13</span>검증 기록</a></li></ol></nav>
+<main>
+<section id="s00" aria-labelledby="s00-h"><h2 id="s00-h"><span class="num">00</span>오늘의 질문과 모델 생태계<span class="pg">p.1–5</span></h2>
+<p class="lead">1일차에는 모델이 입력으로 응답을 만드는 원리를 배웠습니다. 2일차는 그 모델을 <strong>누가, 어디에서 실행하고, 어떤 통로로 이용하는가</strong>를 다룹니다.</p>
+<div class="tbl"><table><thead><tr><th>가르치려는 상황 (p.2)</th><th>알아야 할 것</th></tr></thead><tbody>
+<tr><td>사진 자료를 설명받으려면?</td><td>모델의 입력·출력 능력</td></tr>
+<tr><td>내 프로그램에서 활용하려면?</td><td>모델을 이용하는 구조</td></tr>
+<tr><td>여러 사람이 수업에서 쓰려면?</td><td>접속·비용·운영 조건</td></tr></tbody></table></div>
+<div class="flow"><div><b>입력 화면과 자료 처리</b></div><i>→</i><div><b>모델의 응답 생성</b></div><i>→</i><div><b>응답 표시와 도구 실행</b></div></div>
+<p>p.3의 이 그림은 1일차 p.40(“모델과 서비스는 무엇이 다른가”)에서 처음 나왔습니다. 오늘은 가운데 상자를 <strong>누가 운영하는가</strong>로 나눠 봅니다.</p>
+<div class="pair"><div><h4>모델의 능력 (p.5)</h4><p>어떤 일을 도울 수 있는가? 어떤 자료를 읽고 만들 수 있는가? 능력은 어떻게 확인하는가?</p></div><div><h4>이용 방법과 조건</h4><p>누가 어디에서 실행하는가? 화면과 프로그램에서 어떻게 쓰는가? 필요한 자원·요금·자료 조건은?</p></div></div>
+<div class="src"><span class="pl">자료 p.5</span><p>“필요한 능력을 찾고, 그 능력을 이용할 방법과 조건을 함께 이해한다.”</p></div>
+</section>
+
+<section id="s01" aria-labelledby="s01-h"><h2 id="s01-h"><span class="num">01</span>가중치와 모델 실행에 필요한 것<span class="pg">p.6–8</span></h2>
+<div class="src"><span class="pl">자료 p.6</span><p>가중치: 학습으로 조정한 수치. 가중치 파일에는 그 수치들이 저장되어 있다. 파일을 받으면 그 값을 사용할 수 있지만, 실행할 프로그램과 컴퓨터도 필요하다.</p></div>
+<p>가중치와 매개변수는 1일차 p.24–25에서 처음 나왔습니다. 그때는 메일 점수에 곱하는 0.2, 0.1, 0.6이었고, 오늘은 그런 수치가 수억~수천억 개 담긴 <strong>파일</strong>로 다룹니다.</p>
+<div class="tbl"><table><thead><tr><th>역할 (p.8)</th><th>필요한 자원과 이유</th></tr></thead><tbody>
+<tr><td>수치를 읽고 보관</td><td>메모리: 가중치와 계산 중인 데이터를 담는다</td></tr>
+<tr><td>많은 수치로 계산</td><td>CPU·GPU: 계산을 수행하는 장치. GPU는 많은 연산을 병렬로 처리하는 데 쓰인다</td></tr>
+<tr><td>요청을 받고 결과 전달</td><td>실행 프로그램: 입력을 처리하고 모델의 출력을 돌려준다</td></tr></tbody></table></div>
+<div class="src"><span class="pl">자료 p.7</span><p>“가중치를 내려받는 것과 모델을 실행하는 것은 서로 다른 작업이다.”</p></div>
+<div class="box p"><h4>보충 · 자료 밖 내용</h4><p>공개 가중치를 내 컴퓨터에서 실행할 때 쓰는 실행 프로그램으로는 Ollama, llama.cpp, vLLM, Hugging Face Transformers 등이 널리 알려져 있습니다. 같은 가중치라도 어떤 실행 프로그램과 장치를 쓰느냐에 따라 속도와 필요한 메모리가 달라집니다. 05절에서 공식 측정값으로 확인합니다.</p></div>
+</section>
+
+<section id="s02" aria-labelledby="s02-h"><h2 id="s02-h"><span class="num">02</span>세 가지 이용 경로<span class="pg">p.9–12</span></h2>
+<h3>① 제공자의 서비스 화면 (p.9)</h3>
+<div class="flow"><div><b>사용자가 화면에 입력</b></div><i>→</i><div><b>제공자가 모델 실행</b></div><i>→</i><div><b>제공자가 운영하는 화면에서 응답 확인</b></div></div>
+<h3>② API로 내 프로그램에서 (p.10–11)</h3>
+<div class="flow"><div><b>내 프로그램의 요청</b><span>모델과 입력을 지정</span></div><i>→</i><div><b>외부 제공자의 모델 실행</b></div><i>→</i><div><b>내 프로그램이 응답 사용</b></div></div>
+<div class="src"><span class="pl">자료 p.10–11</span><p>API는 프로그램끼리 정해진 방식으로 요청과 결과를 주고받는 접점이다. “프로그램이 실행되는 곳과 모델이 실행되는 곳은 다를 수 있다.”</p></div>
+<h3>③ 공개 가중치로 직접 실행 (p.12)</h3>
+<div class="flow"><div><b>모델 가중치 확보</b></div><i>→</i><div><b>실행 프로그램과 컴퓨터 준비</b></div><i>→</i><div><b>모델 실행과 이용 화면 연결</b></div></div>
+<div class="src"><span class="pl">자료 p.12</span><p>“실행·접근 권한·기록·업데이트를 자신이나 조직이 관리한다.”</p></div>
+<div class="box t"><h4>강의 포인트</h4><p>세 경로를 “누가 컴퓨터를 켜 두고 있는가”로 설명하면 쉽습니다. ①과 ②는 제공자의 컴퓨터가 계산하고, ③은 내 컴퓨터나 조직의 컴퓨터가 계산합니다. ①과 ②의 차이는 계산하는 곳이 아니라 <strong>사람이 쓰느냐, 프로그램이 쓰느냐</strong>입니다.</p></div>
+</section>
+
+<section id="s03" aria-labelledby="s03-h"><h2 id="s03-h"><span class="num">03</span>공개 여부 · 실행 주체 · 이용 통로 · 라이선스<span class="pg">p.13–16</span></h2>
+<p class="lead">학습자가 가장 자주 섞는 네 가지 질문입니다. 하나의 답이 다른 질문의 답을 정하지 않습니다.</p>
+<div class="tbl"><table><thead><tr><th>질문 (p.13)</th><th>살펴볼 대상</th></tr></thead><tbody>
+<tr><td>모델을 배포받을 수 있는가?</td><td>가중치 공개 방식</td></tr>
+<tr><td>프로그램이 어떻게 이용하는가?</td><td>API</td></tr>
+<tr><td>누가 어디에서 실행하는가?</td><td>제공자·개인·조직의 실행 환경</td></tr>
+<tr><td>어떤 용도로 사용할 수 있는가?</td><td>라이선스와 서비스 조건</td></tr></tbody></table></div>
+<div class="tbl"><table><thead><tr><th>가중치 (p.16)</th><th>누가 실행하는가</th><th>어떻게 이용하는가</th></tr></thead><tbody>
+<tr><td>비공개</td><td>모델 제공자</td><td>제공자의 화면 또는 API</td></tr>
+<tr><td>공개</td><td>외부 서비스 제공자</td><td>그 서비스의 화면 또는 API</td></tr>
+<tr><td>공개</td><td>개인·조직</td><td>직접 만든 화면 또는 내부 API</td></tr></tbody></table></div>
+<div class="pair"><div><h4>모델 라이선스 (p.14)</h4><p>사용·수정·재배포 등 허용 조건. 공개되었다고 모든 용도가 허용되지는 않는다.</p></div><div><h4>서비스 조건</h4><p>이용 요금·자료 처리·접근 권한. 같은 모델이라도 제공 서비스에 따라 달라질 수 있다.</p></div></div>
+<div class="src"><span class="pl">자료 p.15 · 교육용 조건</span><p>조직 내부 명단은 외부 전송 금지 → 외부 모델 API에 그 명단을 보내는 경로는 사용할 수 없다. 공개 행사 안내문으로 자료 해석을 배울 수 있다. 내부 명단의 실제 사용 허가는 별도로 확인한다.</p></div>
+<div class="box v"><h4>검증 · 같은 계열 안에서도 라이선스가 다르다 <span class="tag ok">공식 자료로 확인</span></h4><p>Qwen2.5 공식 GitHub 저장소의 README(2025-01-12 판)는 라이선스를 이렇게 적고 있습니다.</p><div class="calc">"All our open-source models, except for the 3B and 72B variants,
+ are licensed under Apache 2.0."</div><p>같은 Qwen2.5 계열이라도 0.5B·7B는 Apache 2.0이고 3B·72B는 별도 라이선스입니다. p.14의 “공개되었다고 모든 용도가 허용되지는 않는다”를 보여 주는 실제 사례이고, 06절의 0.5B 모델 카드(Apache 2.0)와도 일치합니다.</p></div>
+<div class="box p"><h4>보충 · 자료 밖 내용 <span class="tag add">용어</span></h4><p>“공개 가중치(open weights)”와 “오픈소스”는 같은 말이 아닙니다. 오픈소스 이니셔티브(OSI)가 2024년에 발표한 오픈소스 AI 정의는 가중치뿐 아니라 학습 코드와 학습 자료에 관한 충분한 정보까지 공개되어야 오픈소스 AI로 봅니다. 그래서 가중치만 공개한 모델은 흔히 “공개 가중치 모델”로 따로 부릅니다. 수업에서는 학습자가 “오픈소스니까 마음대로 써도 된다”고 말할 때 이 구분과 라이선스 확인을 함께 짚어 주세요.</p></div>
+</section>
+
+<section id="s04" aria-labelledby="s04-h"><h2 id="s04-h"><span class="num">04</span>모델마다 능력과 부담이 다른 이유<span class="pg">p.17 · p.22–23</span></h2>
+<div class="tbl"><table><thead><tr><th>달라지는 부분 (p.17)</th><th>무엇에 영향을 주는가</th></tr></thead><tbody>
+<tr><td>학습 자료·학습 방식</td><td>익숙한 지식·언어·응답 행동</td></tr>
+<tr><td>모델 구조·규모</td><td>입력을 계산하는 방식과 필요한 자원</td></tr>
+<tr><td>추론에 쓰는 계산</td><td>복잡한 문제의 답변 준비와 시간</td></tr>
+<tr><td>서비스 실행 환경</td><td>대기 시간·추가 기능·이용 요금</td></tr></tbody></table></div>
+<div class="tbl"><table><thead><tr><th>조건 (p.22)</th><th>달라질 수 있는 것</th></tr></thead><tbody>
+<tr><td>모델 규모·계산 방식</td><td>한 번 생성에 필요한 계산과 메모리</td></tr>
+<tr><td>입력 길이·출력량·추론 설정</td><td>처리량과 응답까지의 시간</td></tr>
+<tr><td>실행 장치·동시 요청</td><td>실제 처리 속도와 대기 시간</td></tr>
+<tr><td>제공자의 요금 체계</td><td>사용자에게 청구되는 비용</td></tr></tbody></table></div>
+<div class="pair"><div><h4>형식이 분명한 짧은 변환 (p.23)</h4><p>제목 다섯 개를 지정 형식으로 정리. 작은 모델도 요구를 충족한다면 응답 시간과 비용이 낮은 후보를 선택.</p></div><div><h4>여러 조건을 함께 푸는 계획</h4><p>가능 시간·선후 조건을 맞춰 일정 제안. 조건을 함께 다루는 능력이 중요하고, 추가 계산을 쓰는 후보도 비교.</p></div></div>
+<div class="src"><span class="pl">자료 p.17 · p.23</span><p>“한 조건만으로 품질을 정할 수 없다.” “크기만으로 결정하지 않고, 필요한 결과를 내는지와 이용 부담을 함께 본다.”</p></div>
+<p>1일차 p.104(“매개변수 수가 같아도 같은 모델은 아니다”)와 p.144–146(모델 선택의 출발점, 입력 길이와 난이도)의 기준이 그대로 이어집니다.</p>
+</section>
+
+<section id="s05" aria-labelledby="s05-h"><h2 id="s05-h"><span class="num">05</span>규모 · 비트 · 메모리 · 양자화<span class="pg">p.18–21</span></h2>
+<div class="src"><span class="pl">자료 p.18–19</span><p>1B는 약 10억 개다. 저장량은 수치의 개수와 값 하나를 표현하는 비트 수에 따라 달라진다. 8비트는 1바이트, 16비트는 2바이트다. 다음 계산에서는 1GB를 10억 바이트로 둔다.</p></div>
+<div class="box v"><h4>검증 · 가중치 저장량 (p.20 · 교육용 계산) <span class="tag ok">일치</span></h4><div class="calc">16비트: 10억 개 × 2바이트 = 20억 바이트 = 약 2GB
+ 8비트: 10억 개 × 1바이트 = 10억 바이트 = 약 1GB
+ 4비트: 10억 개 × 0.5바이트 = 약 0.5GB        (추가)</div></div>
+<div class="tbl"><table><thead><tr><th>양자화 예 (p.21 · 원리용 단순 예)</th><th class="r">0.12</th><th class="r">0.48</th><th class="r">0.91</th></tr></thead><tbody>
+<tr><td>표현 가능한 값이 0.00 / 0.50 / 1.00뿐일 때</td><td class="r">0.00</td><td class="r">0.50</td><td class="r">1.00</td></tr>
+<tr><td>원래 값과의 차이 (추가 계산)</td><td class="r">0.12</td><td class="r">0.02</td><td class="r">0.09</td></tr></tbody></table></div>
+<div class="box v"><h4>검증 · 가장 가까운 값으로 대응 <span class="tag ok">일치</span></h4><p>0.12는 0.00까지 0.12, 0.50까지 0.38이므로 0.00으로 갑니다. 0.48은 0.50, 0.91은 1.00이 가장 가깝습니다. 자료의 대응과 같습니다. 표현할 수 있는 값이 적을수록 원래 수치와의 차이가 커질 수 있습니다.</p></div>
+<div class="box v"><h4>검증 · 실제 모델의 공식 측정값과 대조 <span class="tag ok">계산과 부합</span> <span class="tag add">자료 추가</span></h4><p>Qwen2.5 공식 저장소의 속도 벤치마크 문서(docs/source/benchmark/speed_benchmark.rst, 2025-01-12 판)에는 Qwen2.5-0.5B-Instruct를 A100 GPU 1장, Transformers로 실행하며 2,048토큰을 생성했을 때의 GPU 메모리가 기록되어 있습니다.</p>
+<div class="tbl"><table><thead><tr><th>입력 길이</th><th class="r">BF16 (16비트)</th><th class="r">GPTQ-Int8</th><th class="r">GPTQ-Int4</th></tr></thead><tbody>
+<tr><td>1토큰</td><td class="r">0.97GB</td><td class="r">0.64GB</td><td class="r">0.48GB</td></tr>
+<tr><td>6,144토큰</td><td class="r">1.23GB</td><td class="r">0.90GB</td><td class="r">0.73GB</td></tr>
+<tr><td>14,336토큰</td><td class="r">1.60GB</td><td class="r">1.26GB</td><td class="r">1.10GB</td></tr>
+<tr><td>30,720토큰</td><td class="r">2.34GB</td><td class="r">2.01GB</td><td class="r">1.85GB</td></tr></tbody></table></div>
+<ul>
+<li><strong>계산과 부합:</strong> 0.49B × 2바이트 = 약 0.98GB. 입력이 거의 없을 때 측정된 0.97GB와 거의 같습니다. p.20의 계산 방식이 실제와 맞습니다.</li>
+<li><strong>양자화가 정확히 절반이 되지는 않음:</strong> 8비트로 바꿔도 0.98GB의 절반(0.49GB)이 아니라 0.64GB입니다. 일부 값은 원래 정밀도로 남기고, 실행에 필요한 메모리가 따로 들기 때문입니다.</li>
+<li><strong>입력이 길수록 메모리가 늘어남:</strong> 같은 모델도 입력 30,720토큰에서는 2.34GB가 필요했습니다. 문맥을 계산하는 동안 쌓이는 중간 값 때문입니다. p.8의 “계산 중인 데이터”가 이것입니다.</li>
+<li><strong>적게 쓴다고 항상 빨라지지는 않음:</strong> 같은 표에서 생성 속도는 BF16이 초당 47.40토큰, GPTQ-Int8이 35.17토큰으로 8비트가 더 느렸습니다. 양자화는 메모리를 줄이지만, 속도는 실행 프로그램과 장치에 따라 달라집니다.</li></ul></div>
+<div class="box w"><h4>주의 · GB의 두 가지 뜻</h4><p>자료는 1GB를 10억 바이트로 둡니다. 운영체제나 일부 도구는 1GB를 2³⁰ = 1,073,741,824바이트(정확히는 GiB)로 표시해서, 같은 파일이 약 7% 작은 숫자로 보일 수 있습니다. 학습자가 “계산과 다르다”고 하면 단위부터 확인하세요.</p></div>
+</section>
+
+<section id="s06" aria-labelledby="s06-h"><h2 id="s06-h"><span class="num">06</span>모델 카드 읽기<span class="pg">p.24–27</span></h2>
+<div class="src"><span class="pl">자료 p.24</span><p>모델 카드: 용도와 특성을 설명하는 문서. 모델의 이름과 판본 / 학습·지원 기능·용도·제약 / 문맥 길이·평가 결과·라이선스</p></div>
+<div class="tbl"><table><thead><tr><th>항목 (p.25–26)</th><th>Qwen2.5-0.5B-Instruct 카드의 표기</th><th>읽는 법</th></tr></thead><tbody>
+<tr><td>매개변수 수</td><td class="mono">Number of Parameters: 0.49B</td><td>약 4억 9천만 개</td></tr>
+<tr><td>문맥 길이</td><td class="mono">Context Length: Full 32,768 tokens</td><td>32,768토큰</td></tr>
+<tr><td>생성 길이</td><td class="mono">and generation 8192 tokens</td><td>8,192토큰</td></tr>
+<tr><td>라이선스</td><td class="mono">Apache 2.0</td><td>03절 검증과 일치</td></tr></tbody></table></div>
+<div class="box v"><h4>검증 · 계열 소개와 개별 카드의 숫자가 다르다 <span class="tag ok">부합</span> <span class="tag na">카드 원문은 미확인</span></h4><p>이 환경에서는 모델 카드 페이지(Hugging Face)에 접속할 수 없어 카드 원문은 확인하지 못했습니다. 대신 공식 GitHub README(2025-01-12 판)는 Qwen2.5 계열 전체를 이렇게 소개합니다.</p><div class="calc">"Context length support up to 128K tokens and can generate up to 8K tokens."</div><p>계열 소개의 128K는 큰 모델 기준이고, 0.5B의 개별 카드는 32,768토큰입니다. 생성 상한 8K는 양쪽이 같습니다. p.25가 “개별 모델 소개 부분”을 읽으라고 강조하는 이유가 이 차이입니다.</p></div>
+<div class="pair"><div><h4>문맥 길이 (p.27)</h4><p>입력과 이어지는 생성을 처리하는 범위. 입력이 길수록 남는 생성 여유가 줄어드는 제한 방식이 있다.</p></div><div><h4>생성 길이</h4><p>한 번에 생성할 수 있는 출력의 상한. 문맥에 여유가 있어도 생성 상한을 넘겨 출력할 수는 없다.</p></div></div>
+<p>1일차 p.120(문맥 한도와 출력 한도)의 가상 모델 설명을 실제 모델 카드에서 확인하는 페이지입니다.</p>
+<div class="box w"><h4>주의 · 카드도 판본이 있다</h4><p>자료는 “2026-11-03 확인”, “최신 추천 순위가 아님”이라고 밝혔습니다. 모델 카드는 수정될 수 있으므로, 수업 자료에 옮길 때는 확인한 날짜와 판본 이름(예: -Instruct, 기본 모델)을 함께 적습니다.</p></div>
+</section>
+
+<section id="s07" aria-labelledby="s07-h"><h2 id="s07-h"><span class="num">07</span>추론형 모델과 일정 문제<span class="pg">p.28–33</span></h2>
+<div class="flow"><div><b>입력</b><span>문제와 자료, 함께 지켜야 할 조건</span></div><i>→</i><div><b>답변 준비</b><span>조건 관계를 다루는 추가 계산</span></div><i>→</i><div><b>최종 답변</b><span>풀이·계획·설명</span></div></div>
+<p>‘추론’의 두 뜻은 1일차 p.123에서 처음 나왔습니다. 여기서는 “문제 풀이를 위한 추가 계산”의 뜻입니다.</p>
+<div class="tbl"><table><thead><tr><th>발표 (p.29 · 교육용 상황)</th><th>가능한 시작</th><th>추가 조건</th></tr></thead><tbody>
+<tr><td>가</td><td>09:00 또는 09:30</td><td>나보다 먼저</td></tr>
+<tr><td>나</td><td>09:30 또는 10:00</td><td>가 다음</td></tr>
+<tr><td>다</td><td>09:00</td><td>없음</td></tr></tbody></table></div>
+<p>각 발표 30분, 동시 진행 없음. p.30은 이 표와 함께 “모두 만족할 수 없다면 충돌하는 조건과 조정할 대안을 알려 줘”를 요청에 넣으라고 합니다.</p>
+<div class="box v"><h4>검증 · 가능한 배치를 모두 확인 <span class="tag ok">일치 · 해가 하나뿐</span></h4><div class="calc">다는 09:00만 가능 → 다 = 09:00
+가는 09:00 또는 09:30 → 09:00은 다가 사용 → 가 = 09:30
+나는 09:30 또는 10:00, 가보다 뒤 → 나 = 10:00
+→ 다 09:00 · 가 09:30 · 나 10:00   (조건을 만족하는 유일한 배치)</div><p>p.31의 해설과 같고, 다른 배치는 없습니다.</p></div>
+<div class="box v"><h4>검증 · 조건이 바뀐 경우 (p.32–33) <span class="tag ok">일치</span></h4><div class="calc">변경: 나는 09:30만 가능
+  다 09:00, 나 09:30 → 가는 나보다 먼저여야 하는데 남은 앞자리 없음 → 해 없음
+
+대안 1: 나의 10:00을 다시 허용      → 다 09:00 · 가 09:30 · 나 10:00  ○
+대안 2: 가의 시작을 10:00까지 넓힘 + 가→나 선후 조건 해제
+                                  → 다 09:00 · 나 09:30 · 가 10:00  ○
+  (확인) 대안 2에서 하나만 바꾸면?
+   10:00만 허용하고 선후 조건 유지 → 가가 나(09:30)보다 앞서야 함 → 해 없음
+   선후 조건만 해제               → 가의 자리(09:00·09:30)가 모두 참 → 해 없음</div><p>대안 2가 “가의 두 조건”을 함께 바꿔야 하는 이유까지 확인됩니다.</p></div>
+<div class="src"><span class="pl">자료 p.33</span><p>“AI와 대안을 찾고, 실제로 바꿀 수 있는 조건인지 담당자가 판단한다.”</p></div>
+</section>
+
+<section id="s08" aria-labelledby="s08-h"><h2 id="s08-h"><span class="num">08</span>설명 · 추론 요약 · 사용량 · 도구 기록<span class="pg">p.34–35</span></h2>
+<div class="tbl"><table><thead><tr><th>보이는 내용 (p.34 · 교육용 예)</th><th>무엇을 알 수 있는가</th></tr></thead><tbody>
+<tr><td>최종 답변: 다 → 가 → 나</td><td>모델이 제안한 순서</td></tr>
+<tr><td>설명: 다의 가능 시간이 하나뿐</td><td>결과를 설명하기 위해 제시한 근거</td></tr>
+<tr><td>추론 요약: 조건 충돌을 검토함</td><td>제공자가 보여 주는 요약. 내부 계산 전체의 기록은 아님</td></tr>
+<tr><td>사용량: 추론 토큰 등</td><td>제공된 처리량 정보. 답변이 맞다는 증거와는 다름</td></tr></tbody></table></div>
+<div class="pair"><div><h4>모델의 제안 (p.35)</h4><p>“09:00 다, 09:30 가, 10:00 나 순서가 가능합니다.”<br>일정안을 작성했음. <strong>아직 예약된 것은 아님.</strong></p></div><div><h4>예약 도구의 기록 (교육용)</h4><p>요청: 회의실 A · 09:00–10:30 / 반환: 상태=성공 · 예약번호=R-001<br>예약 도구가 처리한 결과. 필요하면 예약 목록에서도 확인.</p></div></div>
+<div class="box w"><h4>주의</h4><p>1일차 p.45의 원칙과 같습니다. “모델의 답변만으로 검색이나 게시가 실제 수행됐다고 판단할 수는 없다.” 예약이 됐는지는 도구가 돌려준 기록으로 확인합니다. 덧붙여 예약 시간 09:00–10:30은 발표 셋 × 30분 = 90분과 일치합니다.</p></div>
+</section>
+
+<section id="s09" aria-labelledby="s09-h"><h2 id="s09-h"><span class="num">09</span>멀티모달 · 그림 · 음성 · 문서<span class="pg">p.36–43</span></h2>
+<div class="src"><span class="pl">자료 p.36</span><p>이미지 → 글 설명, 음성 → 글 기록, 글 → 음성 생성. 원하는 입력과 출력을 각각 지원하는지 확인한다. “이미지 입력 지원만으로 이미지 생성도 가능하다고 볼 수는 없다.”</p></div>
+<h3>그림에는 연결 정보가 있다 (p.37–39)</h3>
+<svg viewBox="0 0 520 230" role="img" aria-labelledby="mapT" style="width:100%;max-width:520px;display:block;margin:12px 0"><title id="mapT">교육용 행사장 배치도: 휴게실–입구–접수대가 세로로 이어지고, 접수대에서 강의실로 가로 길이 있다</title>
+<g fill="none" stroke="var(--plus)" stroke-width="3"><line x1="110" y1="62" x2="110" y2="102"/><line x1="110" y1="142" x2="110" y2="172"/><line x1="170" y1="42" x2="330" y2="42"/></g>
+<g fill="var(--card)" stroke="var(--line)"><rect x="50" y="22" width="120" height="40"/><rect x="330" y="22" width="120" height="40"/><rect x="50" y="102" width="120" height="40"/><rect x="50" y="172" width="120" height="40"/></g>
+<g fill="var(--ink)" font-size="15" font-family="IBM Plex Sans KR, sans-serif" text-anchor="middle"><text x="110" y="47">접수대</text><text x="390" y="47">강의실</text><text x="110" y="127">입구</text><text x="110" y="197">휴게실</text></g></svg>
+<div class="pair"><div><h4>그림의 관계 (p.38)</h4><p>입구 → 접수대 이동 가능, 접수대 → 강의실 이동 가능. 따라서 입구 → 접수대 → 강의실.</p></div><div><h4>글자만 모은 목록</h4><p>접수대 / 강의실 / 입구 / 휴게실. 목록만으로는 서로 연결된 길을 알 수 없다.</p></div></div>
+<p>p.39: 이미지로 된 안내문까지 만들려면 이미지 출력 또는 별도 제작 기능이 필요합니다. 그림을 <strong>읽는</strong> 능력과 그림을 <strong>만드는</strong> 능력은 따로 확인합니다.</p>
+<h3>음성에서 얻고 싶은 결과 (p.40–41)</h3>
+<div class="tbl"><table><thead><tr><th>처리</th><th>하는 일</th><th>발화 “실습 자료는 오늘, 아니 내일 오후에 올리겠습니다.”에서 나오는 결과</th></tr></thead><tbody>
+<tr><td>음성 인식</td><td>소리 → 글 기록</td><td>오늘, 아니 내일 오후에 올리겠습니다.</td></tr>
+<tr><td>내용 해석·생성</td><td>의도 → 공지 문장</td><td>실습 자료는 내일 오후에 게시합니다.</td></tr>
+<tr><td>음성 합성</td><td>공지 글 → 소리</td><td>작성한 공지 문장을 음성으로 전달</td></tr></tbody></table></div>
+<p>음성 인식은 말한 그대로(정정 표현 포함)를 남기는 것이 목적이고, 공지문 생성은 최종 의도만 남기는 것이 목적입니다. 둘을 섞으면 “회의록이 원래 말과 다르다”는 문제가 생깁니다.</p>
+<h3>문서 파일이 모델에 전달되는 방법 (p.42–43)</h3>
+<div class="tbl"><table><thead><tr><th>처리 방식 (p.42)</th><th>모델에 전달할 정보</th></tr></thead><tbody>
+<tr><td>글자 추출</td><td>추출한 텍스트</td></tr>
+<tr><td>페이지의 시각 정보 처리</td><td>글과 그림·표·배치 등의 정보</td></tr>
+<tr><td>관련 부분 검색</td><td>질문에 맞춰 찾은 문서 일부</td></tr></tbody></table></div>
+<div class="pair"><div><h4>원래 문서의 표 (p.43 · 교육용)</h4><div class="tbl"><table style="min-width:0"><thead><tr><th>구분</th><th>오전</th><th>오후</th></tr></thead><tbody><tr><td>입문반</td><td>8명</td><td>12명</td></tr><tr><td>심화반</td><td>15명</td><td>5명</td></tr></tbody></table></div></div><div><h4>표 구조가 사라진 글자 목록</h4><p class="mono">구분 오전 오후 입문반 심화반 8 12 15 5</p><p>숫자만으로는 어느 행·열의 값인지 확실하게 연결하기 어렵다.</p></div></div>
+<div class="box v"><h4>검증 <span class="tag ok">일치</span></h4><p>질문 “오후 입문반은 몇 명인가?”의 답은 표에서 12명입니다. 글자 목록에서는 8·12·15·5가 행 순서인지 열 순서인지 알 수 없어, 같은 질문에 8이나 15를 답할 근거도 생깁니다. 이 자료집을 만들 때 원본 PDF에서도 같은 일이 있었습니다. 글자만 뽑으면 여러 칸으로 된 슬라이드의 줄 순서가 섞여, 일부 페이지는 그림을 직접 보고 구조를 확인했습니다.</p></div>
+</section>
+
+<section id="s10" aria-labelledby="s10-h"><h2 id="s10-h"><span class="num">10</span>벤치마크와 리더보드 읽기<span class="pg">p.44–48</span></h2>
+<div class="src"><span class="pl">자료 p.44</span><p>벤치마크: 정해진 과제와 채점 방법으로 성능을 측정하는 시험. 리더보드: 여러 모델의 평가 결과를 모아 비교한 표. 점수를 읽으려면 시험 과제·설정·모델 판본을 함께 봐야 한다.</p></div>
+<div class="flow"><div><b>문제와 채점</b><span>정답 B와 모델의 선택을 대조</span></div><i>→</i><div><b>점수로 묶기</b><span>맞힌 문항 수 ÷ 전체 문항 수 → 정답률</span></div><i>→</i><div><b>집계</b><span>여러 분야 점수를 정해진 방식으로</span></div></div>
+<div class="box v"><h4>검증 · 설명용 문항 (p.46) <span class="tag ok">일치</span></h4><p>물 100g이 20℃에서 30℃가 됐을 때 온도 변화는 30 − 20 = 10℃, 정답 B. 질량 100g은 답에 필요 없는 정보입니다. 시험 문항에 이런 군더더기가 있으면, 모델이 관련 정보를 골라내는지도 함께 측정하게 됩니다.</p></div>
+<div class="tbl"><table><thead><tr><th>같은 평가 조건 (p.47)</th><th class="r">Qwen2-7B</th><th class="r">Qwen2.5-7B</th></tr></thead><tbody>
+<tr><td>발표 시기</td><td class="r" colspan="2">2024년 · 기본 모델 판본</td></tr>
+<tr><td>MMLU · 5-shot · 정답률(%)</td><td class="r">70.3</td><td class="r">74.2</td></tr></tbody></table></div>
+<div class="box v"><h4>검증 <span class="tag ok">계산 일치</span> <span class="tag na">수치 출처는 미확인</span></h4><p>74.2 − 70.3 = 3.9점으로 계산은 맞습니다. 두 점수는 작성자가 알고 있는 Qwen2.5 발표 자료의 값과 같지만, 이 환경에서는 원문 페이지에 접속할 수 없어 출처는 확인하지 못했습니다.</p></div>
+<div class="tbl"><table><thead><tr><th>공개 평가로 아는 것 (p.48)</th><th>내 과제에서 더 볼 것</th></tr></thead><tbody>
+<tr><td>어떤 시험에서 어떤 결과를 냈는가</td><td>내 자료와 요청에 유용한가</td></tr>
+<tr><td>후보를 찾고 능력의 일부를 비교</td><td>시간·비용·접속·자료 조건이 맞는가</td></tr></tbody></table></div>
+<div class="box p"><h4>보충 · 자료 밖 내용</h4><ul>
+<li>MMLU는 Hendrycks 등(2021, ICLR)이 제안한 평가로, 57개 과제의 객관식 문제로 이루어져 있습니다(p.45와 일치).</li>
+<li><strong>5-shot</strong>은 문제 앞에 풀이 예시 다섯 개를 입력으로 넣는 설정입니다. 1일차 p.99의 “입력에 예시 제공하기”와 같은 방식이라, 설정이 다르면(0-shot 등) 같은 모델도 점수가 달라집니다.</li>
+<li><strong>점수를 읽을 때 주의할 점:</strong> 시험 문제가 학습 자료에 섞여 들어가면 점수가 실제 능력보다 높게 나올 수 있습니다(오염, contamination). 상위 모델들의 점수가 모여 차이가 잘 드러나지 않는 포화 문제도 있습니다. MMLU 문항 일부에 정답 오류가 있다는 분석(예: MMLU-Redux)과, 더 어려운 변형(예: MMLU-Pro)도 나와 있습니다.</li></ul>
+<p>그래서 p.48의 결론처럼, 공개 점수는 <strong>후보를 좁히는 데</strong> 쓰고, 최종 선택은 내 자료로 직접 시험한 결과로 합니다.</p></div>
+</section>
+
+<section id="s11" aria-labelledby="s11-h"><h2 id="s11-h"><span class="num">11</span>개념 탐구 질문의 짧은 답<span class="pg">p.49–50</span></h2>
+<details><summary>p.49–50 질문 열 묶음의 짧은 답</summary>
+<div class="tbl"><table><thead><tr><th>개념</th><th>짧은 답</th><th>위치</th></tr></thead><tbody>
+<tr><td>공개 가중치·라이선스</td><td>공개는 받을 수 있다는 뜻, 라이선스는 무엇을 해도 되는지. 실행에는 별도로 자원이 든다</td><td>01 · 03</td></tr>
+<tr><td>모델·서비스·API</td><td>화면은 사람이, API는 프로그램이 쓰는 통로. 공개 모델도 외부 API로 쓸 수 있다</td><td>02 · 03</td></tr>
+<tr><td>규모·비트·바이트</td><td>저장량 = 수치 개수 × 값 하나의 바이트 수</td><td>05</td></tr>
+<tr><td>양자화·계산 자원</td><td>양자화는 저장량을, 메모리는 담을 수 있는 양을, 계산 장치는 속도를 좌우. 서로 독립적으로 바뀐다</td><td>05</td></tr>
+<tr><td>모델 카드·판본</td><td>규모·문맥·라이선스 등. 같은 계열도 판본마다 값이 다르다</td><td>06</td></tr>
+<tr><td>추론형·추론 요약·도구 기록</td><td>추가 계산은 조건이 얽힌 문제에 도움. 설명·요약은 모델의 글, 실행 여부는 도구 기록으로 확인</td><td>07 · 08</td></tr>
+<tr><td>멀티모달·음성 인식·합성</td><td>인식은 소리→글, 합성은 글→소리. 입력·출력 지원을 따로 확인</td><td>09</td></tr>
+<tr><td>그림·문서 구조 전달</td><td>글자 추출, 시각 정보 처리, 관련 부분 검색 중 무엇인지에 따라 구조가 남거나 사라진다</td><td>09</td></tr>
+<tr><td>벤치마크·예시 제공 평가</td><td>과제·채점·설정·판본을 함께 읽고, 내 과제와 비슷한 평가를 찾는다</td><td>10</td></tr></tbody></table></div></details>
+</section>
+
+<section id="s12" class="summary" aria-labelledby="s12-h"><h2 id="s12-h"><span class="num">12</span>핵심 정리</h2>
+<ul>
+<li>모델을 쓰려면 <strong>가중치 + 실행 프로그램 + 컴퓨터</strong>가 필요하고, 내려받기와 실행은 다른 일입니다.</li>
+<li><strong>공개 여부, 실행 주체, 이용 통로, 허용 용도</strong>는 서로 다른 질문입니다. 같은 계열 모델도 라이선스가 다를 수 있습니다.</li>
+<li>저장량은 <strong>수치 개수 × 값 하나의 바이트 수</strong>로 어림할 수 있고, 실제 메모리는 입력 길이에 따라 더 늘어납니다.</li>
+<li>모델 카드는 <strong>개별 판본</strong>의 값을 읽고, 벤치마크 점수는 <strong>과제·설정·판본</strong>과 함께 읽습니다.</li>
+<li>모델의 <strong>제안과 설명</strong>은 실행의 증거가 아닙니다. 실행은 <strong>도구 기록</strong>으로 확인합니다.</li>
+</ul>
+</section>
+
+<section id="s13" aria-labelledby="s13-h"><h2 id="s13-h"><span class="num">13</span>검증 기록</h2>
+<div class="tbl"><table><thead><tr><th>쪽</th><th>항목</th><th>방법</th><th>결과</th></tr></thead><tbody>
+<tr><td>p.20</td><td>16비트 2GB · 8비트 1GB</td><td>재계산</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>p.20</td><td>계산이 실제 메모리와 맞는가</td><td>Qwen2.5 공식 속도 벤치마크 문서와 대조</td><td><span class="tag ok">0.98GB 계산 ≈ 0.97GB 측정</span></td></tr>
+<tr><td>p.21</td><td>가장 가까운 값 대응</td><td>거리 계산</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>p.14 · p.26</td><td>0.5B의 Apache 2.0 라이선스</td><td>Qwen2.5 공식 README 대조</td><td><span class="tag ok">일치</span> 3B·72B는 예외</td></tr>
+<tr><td>p.25–26</td><td>문맥 32,768 · 생성 8,192</td><td>공식 README의 계열 소개와 대조</td><td><span class="tag ok">생성 8K 일치</span> <span class="tag na">카드 원문 미확인</span></td></tr>
+<tr><td>p.31–33</td><td>일정 배치와 두 대안</td><td>가능한 배치 전수 확인</td><td><span class="tag ok">일치 · 해 1개</span></td></tr>
+<tr><td>p.35</td><td>예약 시간 90분</td><td>3 × 30분</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>p.43</td><td>오후 입문반 12명</td><td>표 대조</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>p.45</td><td>MMLU 57개 과제</td><td>원 논문 내용(작성자 지식)</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>p.47</td><td>70.3 → 74.2, 차이 3.9</td><td>재계산 · 출처 접속 불가</td><td><span class="tag ok">계산 일치</span> <span class="tag na">출처 미확인</span></td></tr></tbody></table></div>
+</section>
+
+</main></div>
+<footer><p>이 문서는 「AI 강사양성과정」 2일차 교육자료를 다시 쓴 학습 참고자료입니다. 자료 원문은 회색 인용 상자, 직접 다시 계산한 결과는 초록 ‘검증’ 상자, 자료에 없는 설명은 파란 ‘보충’ 상자로 구분했습니다. 보충 내용은 작성자의 지식에 기반하며 웹 검색으로 확인하지 않았습니다. 인용한 논문·문서의 제목과 연도는 원문을 직접 확인하세요. ‘설명용’, ‘가상’, ‘교육용 예’로 표시된 수치는 실제 측정값이 아닙니다.</p></footer>
+</body></html>

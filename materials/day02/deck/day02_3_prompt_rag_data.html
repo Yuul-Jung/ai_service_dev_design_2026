@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>2일차 오후 둘째 구간 · 입력·검색·추가 학습과 자료 처리</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F1F2EE;--card:#FFFFFF;--ink:#15171C;--ink-2:#454A55;--ink-3:#6E7480;
+  --line:#DDDFD8;--accent:#4635B1;--accent-soft:#EDEAFA;
+  --ok:#1D6B45;--ok-soft:#E3F2E9;--warn:#7E5200;--warn-soft:#FBF0D9;--ng:#A8261D;--ng-soft:#FBE7E4;
+  --plus:#0F5E73;--plus-soft:#E2F1F5;--src:#F6F6F2;
+  --hero:#15171C;--hero-ink:#F1F2EE;--hero-2:#B9BDC4;--hero-3:#8D9299;--hl:#FFD24A;
+  --maxw:1180px;color-scheme:light;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#111216;--card:#1A1C22;--ink:#E7E8EB;--ink-2:#B8BDC7;--ink-3:#8E94A0;
+  --line:#2C2F37;--accent:#AEA2FF;--accent-soft:#2A2550;
+  --ok:#7FD9A8;--ok-soft:#16301F;--warn:#F3C86F;--warn-soft:#352911;--ng:#FF9A90;--ng-soft:#3A1916;
+  --plus:#7FD0E6;--plus-soft:#142C33;--src:#15171C;
+  --hero:#0B0C0F;color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --paper:#111216;--card:#1A1C22;--ink:#E7E8EB;--ink-2:#B8BDC7;--ink-3:#8E94A0;
+  --line:#2C2F37;--accent:#AEA2FF;--accent-soft:#2A2550;
+  --ok:#7FD9A8;--ok-soft:#16301F;--warn:#F3C86F;--warn-soft:#352911;--ng:#FF9A90;--ng-soft:#3A1916;
+  --plus:#7FD0E6;--plus-soft:#142C33;--src:#15171C;--hero:#0B0C0F;color-scheme:dark;}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans KR",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.75;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+code,.mono{font-family:"IBM Plex Mono","IBM Plex Sans KR",ui-monospace,monospace;font-size:.92em}
+a{color:var(--accent)}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.hero{position:relative;background:var(--hero);color:var(--hero-ink);overflow:hidden}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(to right,rgba(255,255,255,.055) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.055) 1px,transparent 1px);background-size:28px 28px;pointer-events:none}
+.hero-inner{position:relative;max-width:var(--maxw);margin:0 auto;padding:80px 32px 68px}
+.hero-kicker{margin:0 0 18px;font-size:clamp(1rem,2.2vw,1.18rem);font-weight:500;color:var(--hl);display:inline-block;padding-bottom:7px;border-bottom:2px solid var(--hl)}
+.hero h1{margin:0;font-size:clamp(2rem,5vw,3.3rem);font-weight:700;letter-spacing:-.035em;line-height:1.2;max-width:18ch}
+.hero .sub{margin:24px 0 0;max-width:52ch;color:var(--hero-2);font-size:1.03rem;font-weight:300}
+.hero-meta{margin-top:36px;display:flex;flex-wrap:wrap;gap:10px}
+.chip{font-family:"IBM Plex Mono",monospace;font-size:.78rem;color:#E4E6EA;border:1px solid rgba(255,255,255,.22);border-radius:2px;padding:5px 11px}
+.chip b{color:var(--hl);font-weight:600}
+.hero-terms{margin-top:48px;padding-top:32px;border-top:1px solid rgba(255,255,255,.15);display:grid;grid-template-columns:1fr 1fr;gap:30px 46px}
+.term h2{margin:0 0 8px;font-size:1.06rem;font-weight:600;color:#fff}
+.term h2 span{display:block;margin-top:3px;font-family:"IBM Plex Mono",monospace;font-size:.74rem;font-weight:400;color:var(--hero-3)}
+.term p{margin:0;font-size:.93rem;font-weight:300;color:var(--hero-2);max-width:46ch}
+.term-sum{grid-column:1/-1;margin:0;padding:15px 18px;background:rgba(255,210,74,.10);border-left:2px solid var(--hl);font-size:.95rem;font-weight:300;color:#D6D9DE}
+.hero strong,.hero b{color:var(--hl);font-weight:600}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px 96px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:52px;align-items:start}
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);padding:44px 0;max-height:100vh;overflow-y:auto}
+nav.toc h2{font-size:.8rem;color:var(--ink-3);margin:0 0 12px;font-weight:500}
+nav.toc ol{list-style:none;margin:0;padding:0}
+nav.toc a{display:flex;gap:10px;padding:4px 0 4px 10px;color:var(--ink-2);text-decoration:none;font-size:.85rem;line-height:1.5;border-left:2px solid transparent}
+nav.toc a:hover,nav.toc a:focus-visible{color:var(--accent);border-left-color:var(--accent)}
+nav.toc .n{font-family:"IBM Plex Mono",monospace;color:var(--ink-3);font-size:.78rem;min-width:18px}
+main{padding:44px 0 0;min-width:0}
+
+section{background:var(--card);border:1px solid var(--line);padding:34px 38px 36px;margin-bottom:18px;scroll-margin-top:20px}
+section>h2{margin:0 0 4px;font-size:1.42rem;font-weight:600;letter-spacing:-.02em;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+section>h2 .num{font-family:"IBM Plex Mono",monospace;font-size:.9rem;font-weight:500;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:2px}
+section>h2 .pg{font-family:"IBM Plex Mono",monospace;font-size:.78rem;font-weight:400;color:var(--ink-3);margin-left:auto}
+section h3{font-size:1.06rem;font-weight:600;margin:28px 0 8px}
+section p{margin:12px 0;max-width:72ch}
+.lead{color:var(--ink-2);margin-top:10px}
+section ul,section ol{padding-left:1.25em;max-width:72ch}
+section li{margin:4px 0}
+strong{font-weight:600}
+
+.src{margin:18px 0;padding:14px 18px;background:var(--src);border-left:3px solid var(--ink-3);font-size:.96rem}
+.src .pl{display:block;font-family:"IBM Plex Mono",monospace;font-size:.74rem;color:var(--ink-3);margin-bottom:4px}
+.src p{margin:4px 0}
+
+.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin:18px 0}
+.flow>div{flex:1 1 140px;border:1px solid var(--line);background:var(--card);padding:10px 12px;font-size:.9rem;position:relative}
+.flow>div b{display:block;font-weight:600;font-size:.93rem}
+.flow>div span{color:var(--ink-2);font-size:.86rem}
+.flow>i{align-self:center;font-style:normal;color:var(--ink-3);font-family:"IBM Plex Mono",monospace}
+
+.tbl{overflow-x:auto;margin:16px 0}
+table{border-collapse:collapse;width:100%;font-size:.92rem;min-width:420px}
+th,td{border-bottom:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+th{font-weight:600;color:var(--ink-2);background:var(--src);font-size:.86rem}
+td.c,th.c{text-align:center}
+td.r,th.r{text-align:right;font-family:"IBM Plex Mono",monospace}
+
+dl.ex{margin:16px 0;border-top:1px solid var(--line)}
+dl.ex dt{font-weight:600;padding-top:14px;font-size:.95rem}
+dl.ex dt code{background:var(--accent-soft);color:var(--accent);padding:1px 6px}
+dl.ex dd{margin:4px 0 0;padding-bottom:14px;border-bottom:1px solid var(--line);color:var(--ink-2);max-width:72ch}
+
+.box{margin:20px 0;padding:16px 20px;border:1px solid var(--line)}
+.box>h4{margin:0 0 6px;font-size:.88rem;font-weight:600;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.box p,.box li{font-size:.94rem}
+.box p:first-of-type{margin-top:4px}
+.box.v{background:var(--ok-soft);border-color:transparent}
+.box.v>h4{color:var(--ok)}
+.box.p{background:var(--plus-soft);border-color:transparent}
+.box.p>h4{color:var(--plus)}
+.box.w{background:var(--warn-soft);border-color:transparent}
+.box.w>h4{color:var(--warn)}
+.box.t{border-style:dashed}
+.box.t>h4{color:var(--accent)}
+.tag{font-family:"IBM Plex Mono",monospace;font-size:.72rem;font-weight:500;padding:1px 7px;border:1px solid currentColor;border-radius:2px}
+.tag.ok{color:var(--ok)}.tag.ng{color:var(--ng)}.tag.na{color:var(--ink-3)}.tag.add{color:var(--plus)}
+.calc{font-family:"IBM Plex Mono",monospace;font-size:.88rem;background:var(--card);padding:10px 12px;margin:8px 0;overflow-x:auto;white-space:pre;line-height:1.6}
+
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+.pair>div{border:1px solid var(--line);padding:14px 16px}
+.pair>div h4{margin:0 0 6px;font-size:.98rem;font-weight:600}
+.pair>div p,.pair>div li{font-size:.92rem;color:var(--ink-2)}
+.nest{border:1px solid var(--ink-3);padding:12px 14px;margin:14px 0}
+.nest .nest{margin:10px 0 0;border-color:var(--accent)}
+.nest .nest .nest{border-style:dashed}
+.nest b{font-weight:600}.nest span{color:var(--ink-2);font-size:.9rem}
+
+details{margin:16px 0;border:1px solid var(--line);padding:0 16px}
+details summary{cursor:pointer;padding:12px 0;font-weight:600;font-size:.94rem;color:var(--accent)}
+details[open] summary{border-bottom:1px solid var(--line);margin-bottom:8px}
+details>*:last-child{margin-bottom:14px}
+
+section.summary{background:var(--hero);color:var(--hero-ink);border-color:var(--hero)}
+section.summary>h2 .num{background:rgba(255,210,74,.15);color:var(--hl)}
+section.summary li{color:#D6D9DE}
+section.summary strong{color:var(--hl)}
+footer{max-width:var(--maxw);margin:0 auto;padding:0 32px 60px;color:var(--ink-3);font-size:.84rem}
+footer p{max-width:80ch}
+
+@media (max-width:900px){
+  .wrap{grid-template-columns:1fr;gap:0;padding:0 16px 64px}
+  nav.toc{position:static;max-height:none;padding:28px 0 8px}
+  nav.toc ol{columns:2;column-gap:16px}
+  .hero-inner{padding:56px 20px 48px}
+  .hero-terms{grid-template-columns:1fr}
+  section{padding:24px 18px 26px}
+  .pair{grid-template-columns:1fr}
+  section>h2 .pg{margin-left:0;width:100%}
+  footer{padding:0 16px 48px}
+}
+</style></head>
+<body>
+<header class="hero"><div class="hero-grid"></div><div class="hero-inner">
+<p class="hero-kicker">2일차 오후 둘째 구간 · 15:00–17:00</p>
+<h1>입력을 바꿀 것인가, 모델을 바꿀 것인가</h1>
+<p class="sub">프롬프팅·검색 증강 생성·미세조정이 각각 무엇을 바꾸는지 행사 안내 예로 구별하고, 클라우드·운영 주체·접근 권한·약관의 학습 이용과 기록 보존 조항을 따로 읽는 방법을 정리합니다.</p>
+<div class="hero-meta"><span class="chip">쪽 <b>p.83–105</b></span><span class="chip">활용 방법 <b>3가지</b></span><span class="chip">예제 <b>행사 안내</b></span><span class="chip">약관 <b>학습 이용 · 보존</b></span></div>
+<div class="hero-terms"><div class="term"><h2>검색 증강 생성<span>RAG</span></h2><p>질문으로 관련 자료를 찾아 입력에 넣고, 기존 모델이 그 자료를 근거로 답하게 하는 구성입니다(p.90). 모델은 바뀌지 않습니다.</p></div><div class="term"><h2>미세조정<span>Fine-tuning</span></h2><p>학습 예로 매개변수를 추가 조정해 이후 응답 행동을 바꿉니다(p.94). 바뀌는 사실을 알려 주는 데는 맞지 않습니다.</p></div><p class="term-sum">프롬프팅과 RAG는 <strong>입력</strong>을, 미세조정은 <strong>모델</strong>을 바꿉니다. 자료가 어디로 가는지는 <strong>실행 장소·접근 권한·연결된 도구</strong>를 따로 봅니다.</p></div>
+</div></header>
+<div class="wrap">
+<nav class="toc" aria-label="목차"><h2>목차</h2><ol><li><a href="#s00"><span class="n">00</span>입력을 구성하는 것과 모델을 학습시키는 것</a></li><li><a href="#s01"><span class="n">01</span>참고 자료를 직접 넣기</a></li><li><a href="#s02"><span class="n">02</span>검색 증강 생성 (RAG)</a></li><li><a href="#s03"><span class="n">03</span>응답 예시로 형식을 알려 주기</a></li><li><a href="#s04"><span class="n">04</span>입력 예시와 미세조정</a></li><li><a href="#s05"><span class="n">05</span>클라우드 · 운영 주체 · 접근 제한</a></li><li><a href="#s06"><span class="n">06</span>학습 이용과 기록 보존</a></li><li><a href="#s07"><span class="n">07</span>자기 과제에 필요한 방법 탐색</a></li><li><a href="#s08"><span class="n">08</span>개념 탐구 질문의 짧은 답</a></li><li><a href="#s09"><span class="n">09</span>핵심 정리</a></li><li><a href="#s10"><span class="n">10</span>검증 기록</a></li></ol></nav>
+<main>
+<section id="s00" aria-labelledby="s00-h"><h2 id="s00-h"><span class="num">00</span>입력을 구성하는 것과 모델을 학습시키는 것<span class="pg">p.83–85</span></h2>
+<p class="lead">이 구간은 1일차의 도착점이었던 “파일 제공 ≠ 학습”을 실제 활용 방법 세 가지(프롬프팅·검색 증강 생성·미세조정)로 나눠 봅니다. 그리고 그 자료가 어디로 가고 어떻게 남는지를 확인합니다.</p>
+<div class="pair"><div><h4>이번 입력을 구성 (p.84)</h4><p>질문·지시·참고 자료 제공. 기존 모델이 그 입력으로 응답.</p></div><div><h4>매개변수를 조정</h4><p>학습 예와 목표로 추가 학습. 이후 사용할 모델의 값이 바뀜.</p></div></div>
+<p>이 구분은 1일차 p.91(학습과 추론)과 p.99(입력에 예시 제공하기와 예시로 추가 학습하기)에서 처음 나왔습니다.</p>
+<div class="tbl"><table><thead><tr><th>프롬프팅의 구성 요소 (p.85)</th><th>역할</th></tr></thead><tbody>
+<tr><td>지시</td><td>어떤 일을 할지</td></tr>
+<tr><td>맥락과 자료</td><td>무엇을 바탕으로 할지</td></tr>
+<tr><td>예시</td><td>어떤 형태의 결과를 참고할지</td></tr></tbody></table></div>
+<div class="src"><span class="pl">자료 p.85</span><p>“모델이 응답할 때 참고하는 것은 실제로 전달된 입력이다.”</p></div>
+</section>
+
+<section id="s01" aria-labelledby="s01-h"><h2 id="s01-h"><span class="num">01</span>참고 자료를 직접 넣기<span class="pg">p.86–87</span></h2>
+<div class="src"><span class="pl">자료 p.86 · 교육용 행사 안내</span><p>장소: 2층 강의실. 시작: 오전 10시. 개인 준비물: 노트북과 충전기. 이름표는 현장에서 제공한다.</p><p>질문: 내가 가져갈 준비물은 무엇인가?</p></div>
+<div class="flow"><div><b>질문과 안내문 전체</b></div><i>→</i><div><b>기존 모델이 자료를 참고</b></div><i>→</i><div><b>노트북과 충전기</b></div></div>
+<p>“이 자료는 짧아서 전체를 직접 전달할 수 있다”(p.87). 이름표는 준비물이 아니라 현장 제공품이라는 점을 구별하는지가 이 질문의 요점입니다. 마지막 구간 p.110–111의 안내 예가 같은 자료를 다시 씁니다.</p>
+</section>
+
+<section id="s02" aria-labelledby="s02-h"><h2 id="s02-h"><span class="num">02</span>검색 증강 생성 (RAG)<span class="pg">p.88–92</span></h2>
+<div class="src"><span class="pl">자료 p.88</span><p>여러 행사의 자료가 따로 저장되어 있다. 질문마다 필요한 내용이 다르다. 관련된 부분을 찾아 모델에 전달하는 구성을 사용할 수 있다.</p></div>
+<div class="tbl"><table><thead><tr><th>교육용 문서 (p.89)</th><th>개인 준비물</th><th>문서에 있는 추가 안내</th></tr></thead><tbody>
+<tr><td>11월 입문 행사</td><td>노트북·충전기</td><td>이름표는 현장 제공</td></tr>
+<tr><td>11월 심화 행사</td><td>노트북</td><td>실습 자료 사전 설치</td></tr>
+<tr><td>12월 입문 행사</td><td>개인 기기 불필요</td><td>공용 기기 사용</td></tr></tbody></table></div>
+<div class="flow"><div><b>질문으로 관련 자료 검색</b></div><i>→</i><div><b>검색 결과와 질문을 입력에 포함</b></div><i>→</i><div><b>기존 모델이 근거로 응답</b></div></div>
+<div class="box v"><h4>검증 · 질문 “11월 입문 행사에 가져갈 준비물은?” (p.91) <span class="tag ok">일치</span></h4><p>표에서 11월 입문 행사 줄을 찾으면 노트북·충전기입니다. 자료의 해설 답 “노트북과 충전기”와 같습니다.</p></div>
+<div class="box w"><h4>주의 · 검색이 틀리면 답도 틀린다 <span class="tag add">추가 사례</span></h4><p>세 문서는 “11월”, “입문”, “노트북” 같은 표현이 서로 겹칩니다. 검색이 11월 <strong>심화</strong> 행사 문서를 가져오면, 모델은 그 자료를 근거로 “노트북, 실습 자료 사전 설치”라고 자신 있게 답합니다. 모델의 문장만 보면 근거가 있는 답처럼 보입니다. RAG에서 틀린 답이 나오면 생성보다 <strong>검색 결과부터</strong> 확인하는 이유입니다. 1일차 p.132(“틀린 답을 고치기 전에, 사용한 자료부터 대조한다”)와 같은 원칙입니다.</p></div>
+<div class="tbl"><table><thead><tr><th>p.92</th><th>자료 직접 입력</th><th>검색 후 입력</th></tr></thead><tbody>
+<tr><td>방법</td><td>사람이나 프로그램이 자료를 함께 전달</td><td>질문에 관련된 자료를 찾아 전달</td></tr>
+<tr><td>쓰는 경우</td><td>짧은 자료를 바로 넣을 때</td><td>자료가 많거나 갱신될 때</td></tr></tbody></table></div>
+<div class="src"><span class="pl">자료 p.92</span><p>“차이는 모델에 참고 자료를 공급하는 과정에 있다.” 두 방식 모두 모델은 바뀌지 않는다.</p></div>
+<div class="box p"><h4>보충 · 자료 밖 내용</h4><p>실제 RAG는 보통 문서를 작은 조각으로 나누고, 각 조각을 임베딩(1일차 p.63)과 비슷한 수치 묶음으로 바꿔 저장해 둡니다. 질문도 같은 방식으로 바꾼 뒤 가까운 조각을 찾아 입력에 넣습니다. 이름과 출처는 1일차 오후 첫 구간 자료의 검색·생성 절(Lewis 등, 2020)에 정리했습니다. 문서를 너무 크게 나누면 관련 없는 내용이 섞이고, 너무 작게 나누면 “11월 입문 행사”라는 제목과 준비물 문장이 서로 다른 조각으로 갈라질 수 있습니다.</p></div>
+</section>
+
+<section id="s03" aria-labelledby="s03-h"><h2 id="s03-h"><span class="num">03</span>응답 예시로 형식을 알려 주기<span class="pg">p.93</span></h2>
+<div class="tbl"><table><thead><tr><th>질문 (p.93)</th><th>답변</th><th>근거</th><th>자료에서 알 수 없는 것</th></tr></thead><tbody>
+<tr><td>개인 준비물은?</td><td>노트북과 충전기</td><td>개인 준비물 항목</td><td>없음</td></tr>
+<tr><td>주차는 무료인가?</td><td>자료로는 확인할 수 없음</td><td>주차 안내 없음</td><td>주차요금</td></tr></tbody></table></div>
+<p>두 번째 줄이 중요합니다. 예시에 “확인할 수 없음”이 들어 있으면 모델도 자료에 없는 질문에 그 형식으로 답할 가능성이 커집니다. 1일차 p.137(‘미정’과 ‘자료에 없음’의 차이)을 응답 형식으로 고정한 것입니다.</p>
+</section>
+
+<section id="s04" aria-labelledby="s04-h"><h2 id="s04-h"><span class="num">04</span>입력 예시와 미세조정<span class="pg">p.94–96</span></h2>
+<div class="pair"><div><h4>입력에 예시 제공 (p.94)</h4><p>요청과 함께 예시를 전달. 이번 응답에서 예시를 참고.</p></div><div><h4>미세조정</h4><p>학습 예로 매개변수를 추가 조정. 이후 응답 행동에 영향을 줌.</p></div></div>
+<div class="tbl"><table><thead><tr><th>입력 예시로 해결되는 경우 (p.95)</th><th>추가 학습을 검토할 경우</th></tr></thead><tbody>
+<tr><td>요청에 형식과 예를 넣으면 필요한 결과가 안정적으로 나옴</td><td>같은 행동을 많은 요청에 반복 적용</td></tr>
+<tr><td>입력 구성을 유지하면서 사용</td><td>좋은 학습 예를 충분히 모을 수 있음. 입력 방식의 한계와 함께 학습·평가·갱신 비용까지 비교</td></tr></tbody></table></div>
+<div class="src"><span class="pl">자료 p.95</span><p>“바뀌는 사실을 알려 주려는 목적과 반복 행동을 학습시키려는 목적은 구별한다.”</p></div>
+<div class="tbl"><table><thead><tr><th>필요 (p.96)</th><th>먼저 살펴볼 방법</th></tr></thead><tbody>
+<tr><td>지시나 응답 형식이 모호함</td><td>지시·맥락·예시 구성</td></tr>
+<tr><td>많거나 갱신되는 자료의 근거가 필요함</td><td>관련 자료를 찾아 입력에 제공</td></tr>
+<tr><td>반복 작업의 행동·형식을 학습시키려 함</td><td>입력 예시로 충분한지 보고 추가 학습 검토</td></tr></tbody></table></div>
+<div class="src"><span class="pl">자료 p.96</span><p>“세 방법은 순서대로 거쳐야 하는 단계가 아니다.”</p></div>
+<div class="box p"><h4>보충 · 자료 밖 내용</h4><ul>
+<li><strong>미세조정으로 사실을 넣는 것은 비효율적입니다.</strong> 학습한 사실은 바뀔 때마다 다시 학습해야 하고, 모델이 그 사실을 정확히 꺼낸다는 보장도 약합니다. 1일차 p.106(“날짜 갱신에 재학습부터 하지 않는다”)과 같은 결론입니다.</li>
+<li>요즘 미세조정은 전체 매개변수가 아니라 작은 추가 수치만 학습하는 방식(예: LoRA)도 많이 씁니다. 그래도 학습 자료 준비, 결과 평가, 기반 모델이 바뀔 때의 재학습 비용은 그대로 남습니다.</li>
+<li>세 방법은 함께 쓸 수 있습니다. 예를 들어 미세조정으로 답변 형식을 익힌 모델에 RAG로 최신 자료를 넣는 구성입니다.</li></ul></div>
+</section>
+
+<section id="s05" aria-labelledby="s05-h"><h2 id="s05-h"><span class="num">05</span>클라우드 · 운영 주체 · 접근 제한<span class="pg">p.97–99</span></h2>
+<div class="src"><span class="pl">자료 p.97</span><p>클라우드: 네트워크를 통해 필요한 컴퓨팅 자원을 할당받아 사용하는 방식. 여러 고객에게 제공하는 퍼블릭 클라우드와 한 조직이 전용으로 쓰는 프라이빗 클라우드가 있다. “클라우드인지와 누가 모델을 운영하는지는 별개다.”</p></div>
+<div class="tbl"><table><thead><tr><th>구성 예 (p.98)</th><th>모델 운영</th><th>입력의 이동</th></tr></thead><tbody>
+<tr><td>외부 모델 API</td><td>서비스 제공자</td><td>내 화면 → 제공자 모델 서비스</td></tr>
+<tr><td>조직이 빌린 클라우드</td><td>조직이 구성·운영</td><td>내 화면 → 조직의 클라우드 환경</td></tr>
+<tr><td>조직 내 서버</td><td>조직이 구성·운영</td><td>내 화면 → 조직 내 실행 환경</td></tr></tbody></table></div>
+<div class="src"><span class="pl">자료 p.98 · p.99</span><p>“서버 위치만으로 자료 보존·외부 전송 여부가 결정되지는 않는다.”</p><p>“내부 모델도 외부 검색 도구를 연결하면 정보를 밖으로 보낼 수 있다. 실행 장소·접근 권한·연결된 도구를 각각 살핀다.”</p></div>
+<div class="nest"><b>세 가지를 따로 확인</b>
+<div class="nest"><b>실행 장소</b> <span>모델이 계산되는 컴퓨터가 어디에 있는가</span></div>
+<div class="nest"><b>접근 권한</b> <span>누가 그 화면과 API에 접속할 수 있는가</span></div>
+<div class="nest"><b>연결된 도구</b> <span>검색·저장·전송 도구가 입력의 일부를 어디로 보내는가</span></div></div>
+<div class="box p"><h4>보충 · 자료 밖 내용</h4><p>클라우드의 정의로 자주 인용되는 미국 NIST 문서(SP 800-145, 2011)는 배치 방식으로 퍼블릭·프라이빗 외에 커뮤니티 클라우드와, 둘 이상을 섞은 하이브리드 클라우드도 둡니다. 기관이 “우리는 프라이빗 클라우드라서 안전하다”고 할 때도, p.99의 세 가지(장소·권한·도구)는 따로 확인해야 합니다.</p></div>
+</section>
+
+<section id="s06" aria-labelledby="s06-h"><h2 id="s06-h"><span class="num">06</span>학습 이용과 기록 보존<span class="pg">p.100–102</span></h2>
+<div class="pair"><div><h4>학습·제품 개선에 이용 (p.100)</h4><p>입력과 응답을 모델·제품 개선에 쓰는가?</p></div><div><h4>기록·보존</h4><p>서비스 운영 등의 목적으로 무엇을 얼마나 남기는가?</p></div></div>
+<div class="tbl"><table><thead><tr><th>Gemini API 유료 서비스 약관의 요지 (p.101 · 2026-11-03 확인)</th><th></th></tr></thead><tbody>
+<tr><td>제품 개선에 이용하는가</td><td>유료 서비스의 입력·응답은 제품 개선에 사용하지 않는다는 조항</td></tr>
+<tr><td>기록을 남기는가</td><td>정책 위반 방지 등 목적에 대해 제한된 기간 기록한다는 조항</td></tr>
+<tr><td>확인 위치</td><td>Paid Services → How Google Uses Your Data. 같은 절에 있는 보존 설명을 별도로 읽어야 함</td></tr></tbody></table></div>
+<div class="box v"><h4>검증 <span class="tag ok">요지 부합(작성자 지식 기준)</span> <span class="tag na">약관 원문 미확인</span></h4><p>작성자가 알고 있는 Gemini API 추가 약관의 내용과 자료의 요지가 같습니다. 이 환경에서는 약관 페이지에 접속할 수 없어 2026-11-03 판 원문과 대조하지는 못했습니다.</p></div>
+<div class="box w"><h4>주의 · 무료 이용은 조항이 다를 수 있다 <span class="tag add">보충</span></h4><p>자료는 <strong>유료</strong> 서비스 조항만 다룹니다. 작성자가 알고 있는 같은 약관에서는, 무료(Unpaid) 서비스의 입력·응답은 제품 개선에 쓰일 수 있고 사람이 검토할 수 있다고 따로 적고 있습니다. 또 지역에 따라 무료 이용에도 유료 조항을 적용한다는 예외가 있었던 것으로 기억합니다. 약관은 자주 바뀌므로, 수업에서는 학습자가 쓰는 <strong>요금제와 지역</strong>의 조항을 직접 확인하게 하세요. p.101의 “적용 대상도 함께 확인”이 이 뜻입니다.</p></div>
+<div class="tbl"><table><thead><tr><th>질문 (p.102)</th><th>확인할 자료</th></tr></thead><tbody>
+<tr><td>누가 어디서 실행하는가?</td><td>시스템 구성과 제공자 안내</td></tr>
+<tr><td>무엇이 밖으로 전달되는가?</td><td>입력·파일 처리·도구 연결</td></tr>
+<tr><td>어떻게 이용하고 보존하는가?</td><td>적용 약관·정책·설정</td></tr>
+<tr><td>이 자료를 수업에 써도 되는가?</td><td>자료 권한과 기관 규정</td></tr></tbody></table></div>
+<p>마지막 질문은 앞의 셋과 성격이 다릅니다. 앞의 셋은 서비스에 관한 질문이고, 마지막은 <strong>자료의 주인과 규정</strong>에 관한 질문입니다. 서비스가 안전해도 자료를 쓸 권한이 없으면 쓸 수 없습니다(p.15).</p>
+</section>
+
+<section id="s07" aria-labelledby="s07-h"><h2 id="s07-h"><span class="num">07</span>자기 과제에 필요한 방법 탐색<span class="pg">p.103</span></h2>
+<div class="tbl"><table><thead><tr><th>순서 (p.103)</th><th>확인할 질문</th></tr></thead><tbody>
+<tr><td>1. 지시·자료·예시 구체화</td><td>내 목적에 무엇을 넣어야 하는가</td></tr>
+<tr><td>2. 직접 넣을 자료와 검색해 제공할 자료 구별</td><td>자료가 짧고 고정인가, 많고 바뀌는가</td></tr>
+<tr><td>3. 추가 학습 제안을 받으면 더 묻기</td><td>무엇을 학습시킬지, 입력 예시만으로는 왜 부족한지</td></tr>
+<tr><td>4. 자료를 보낼 수 있는 경로인지 확인</td><td>05–06절의 장소·권한·도구·약관</td></tr>
+<tr><td>5. 선택한 방법을 설명</td><td>입력이 바뀌는가, 모델이 바뀌는가</td></tr></tbody></table></div>
+<div class="box t"><h4>강의 포인트</h4><p>AI에게 “미세조정이 필요할까요?”라고 물으면 그렇다고 답하는 경우가 많습니다. 3단계의 두 질문(무엇을 학습시킬지, 왜 예시만으로 부족한지)을 이어서 묻게 하면, 학습자가 그 제안을 스스로 평가하는 연습이 됩니다.</p></div>
+</section>
+
+<section id="s08" aria-labelledby="s08-h"><h2 id="s08-h"><span class="num">08</span>개념 탐구 질문의 짧은 답<span class="pg">p.104–105</span></h2>
+<details><summary>p.104–105 질문 여섯 묶음의 짧은 답</summary>
+<div class="tbl"><table><thead><tr><th>개념</th><th>짧은 답</th><th>위치</th></tr></thead><tbody>
+<tr><td>프롬프팅</td><td>지시는 할 일, 맥락은 바탕 자료, 예시는 결과 형태. 예시를 넣어도 모델은 바뀌지 않는다</td><td>00 · 03</td></tr>
+<tr><td>검색 증강 생성</td><td>찾은 자료를 입력에 넣는다. 자료가 많거나 자주 바뀔수록 직접 입력과 차이가 커진다</td><td>02</td></tr>
+<tr><td>미세조정</td><td>매개변수를 바꿔 반복 행동을 익힌다. 최신 사실이나 정확성은 보장하지 않는다</td><td>04</td></tr>
+<tr><td>클라우드·운영 주체</td><td>클라우드는 자원을 빌리는 방식이라, 조직이 빌린 클라우드에서 직접 운영할 수 있다</td><td>05</td></tr>
+<tr><td>접근 통제</td><td>실행 장소와 별개로 누가 접속하고 자료가 어느 도구로 가는지 본다</td><td>05</td></tr>
+<tr><td>데이터 보존·학습 이용</td><td>보존은 기록을 남기는 것, 학습 이용은 모델 개선에 쓰는 것. 두 조항을 따로 읽는다</td><td>06</td></tr></tbody></table></div></details>
+</section>
+
+<section id="s09" class="summary" aria-labelledby="s09-h"><h2 id="s09-h"><span class="num">09</span>핵심 정리</h2>
+<ul>
+<li>프롬프팅과 RAG는 <strong>입력을 바꾸고</strong>, 미세조정은 <strong>모델을 바꿉니다</strong>.</li>
+<li>RAG의 답이 틀리면 <strong>검색 결과부터</strong> 확인합니다.</li>
+<li><strong>바뀌는 사실</strong>은 입력으로, <strong>반복 행동</strong>은 예시나 추가 학습으로 다룹니다. 세 방법은 순서가 아니라 필요에 따른 선택입니다.</li>
+<li><strong>실행 장소·접근 권한·연결된 도구</strong>는 서로 다른 조건입니다.</li>
+<li>약관은 <strong>학습 이용</strong>과 <strong>기록 보존</strong>을 따로 읽고, 내 <strong>요금제와 지역</strong>에 적용되는 조항인지 확인합니다.</li>
+</ul>
+</section>
+
+<section id="s10" aria-labelledby="s10-h"><h2 id="s10-h"><span class="num">10</span>검증 기록</h2>
+<div class="tbl"><table><thead><tr><th>쪽</th><th>항목</th><th>방법</th><th>결과</th></tr></thead><tbody>
+<tr><td>p.87</td><td>준비물 노트북과 충전기</td><td>안내문 대조</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>p.91</td><td>11월 입문 행사 준비물</td><td>문서 표 대조</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>p.93</td><td>“확인할 수 없음” 형식</td><td>안내문에 주차 정보가 없는지 확인</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>p.101</td><td>Gemini API 유료 약관 요지</td><td>작성자 지식과 대조</td><td><span class="tag ok">부합</span> <span class="tag na">원문 미확인</span></td></tr>
+<tr><td>p.97</td><td>퍼블릭·프라이빗 클라우드</td><td>일반 정의와 대조</td><td><span class="tag ok">일치</span> 커뮤니티·하이브리드 보충</td></tr></tbody></table></div>
+</section>
+
+</main></div>
+<footer><p>이 문서는 「AI 강사양성과정」 2일차 교육자료를 다시 쓴 학습 참고자료입니다. 자료 원문은 회색 인용 상자, 직접 다시 계산한 결과는 초록 ‘검증’ 상자, 자료에 없는 설명은 파란 ‘보충’ 상자로 구분했습니다. 보충 내용은 작성자의 지식에 기반하며 웹 검색으로 확인하지 않았습니다. 인용한 논문·문서의 제목과 연도는 원문을 직접 확인하세요. ‘설명용’, ‘가상’, ‘교육용 예’로 표시된 수치는 실제 측정값이 아닙니다.</p></footer>
+</body></html>
