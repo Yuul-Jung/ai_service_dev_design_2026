@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>2일차 강사 역량 · 학습자가 사용할 수 있는 안내 만들기</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
 <style>
 :root{
   --paper:#F1F2EE;--card:#FFFFFF;--ink:#15171C;--ink-2:#454A55;--ink-3:#6E7480;
@@ -101,10 +101,12 @@ dl.ex dd{margin:4px 0 0;padding-bottom:14px;border-bottom:1px solid var(--line);
 .box.p>h4{color:var(--plus)}
 .box.w{background:var(--warn-soft);border-color:transparent}
 .box.w>h4{color:var(--warn)}
+.box.l{background:var(--accent-soft);border-color:transparent}
+.box.l>h4{color:var(--accent)}
 .box.t{border-style:dashed}
 .box.t>h4{color:var(--accent)}
 .tag{font-family:"IBM Plex Mono",monospace;font-size:.72rem;font-weight:500;padding:1px 7px;border:1px solid currentColor;border-radius:2px}
-.tag.ok{color:var(--ok)}.tag.ng{color:var(--ng)}.tag.na{color:var(--ink-3)}.tag.add{color:var(--plus)}
+.tag.lec{color:var(--accent)}.tag.ok{color:var(--ok)}.tag.ng{color:var(--ng)}.tag.na{color:var(--ink-3)}.tag.add{color:var(--plus)}
 .calc{font-family:"IBM Plex Mono",monospace;font-size:.88rem;background:var(--card);padding:10px 12px;margin:8px 0;overflow-x:auto;white-space:pre;line-height:1.6}
 
 .pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
@@ -212,12 +214,12 @@ footer p{max-width:80ch}
 <tr><td class="mono">403 PERMISSION_DENIED</td><td>키·프로젝트·모델의 접근 권한</td><td>권한과 설정을 확인</td></tr>
 <tr><td class="mono">429 RESOURCE_EXHAUSTED</td><td>어떤 할당량·요청 한도인가</td><td>한도 확인 후 간격·사용량 조정</td></tr>
 <tr><td class="mono">503 UNAVAILABLE</td><td>제공자 상태·일시 장애 안내</td><td>안내에 따라 대기·재시도</td></tr></tbody></table></div>
-<div class="box v"><h4>검증 <span class="tag ok">작성자 지식 기준 일치</span> <span class="tag na">공식 문서 미확인</span></h4><p>세 코드와 이름의 짝은 작성자가 알고 있는 Gemini API 오류 안내와 같습니다. 자료의 단서 “같은 숫자라도 반환된 상세 메시지를 함께 읽는다”도 맞습니다. 예를 들어 429는 분당 요청 수 한도와 일일 한도 등 여러 원인에 같이 쓰입니다.</p></div>
+<div class="box v"><h4>검증 <span class="tag ok">공식 정의로 확인</span></h4><p>세 코드와 이름의 짝은 Google의 공식 오류 코드 정의(googleapis 저장소의 <span class="mono">google/rpc/code.proto</span>)와 같습니다. 이 정의에서 PERMISSION_DENIED는 HTTP 403, RESOURCE_EXHAUSTED는 429, UNAVAILABLE은 503에 대응하고, 아래 보충의 INVALID_ARGUMENT(400), NOT_FOUND(404), INTERNAL(500), DEADLINE_EXCEEDED(504)도 같은 파일에서 확인했습니다. Gemini API가 이 코드 체계를 따른다는 것은 작성자 지식입니다. 자료의 단서 “같은 숫자라도 반환된 상세 메시지를 함께 읽는다”도 맞습니다. 예를 들어 429는 분당 요청 수 한도와 일일 한도 등 여러 원인에 같이 쓰입니다.</p></div>
 <div class="box p"><h4>보충 · 수업에서 만날 수 있는 다른 코드</h4><div class="tbl"><table><thead><tr><th>표시 예</th><th>흔한 원인</th><th>재시도로 해결되는가</th></tr></thead><tbody>
 <tr><td class="mono">400 INVALID_ARGUMENT</td><td>요청 형식·필드 이름·값이 잘못됨 (p.64 “요청 항목이 잘못됐다”)</td><td>아니요. 요청을 고친다</td></tr>
 <tr><td class="mono">404 NOT_FOUND</td><td>모델 이름 오타, 없어졌거나 접근할 수 없는 모델</td><td>아니요. 모델 이름을 확인한다</td></tr>
 <tr><td class="mono">500 INTERNAL</td><td>제공자 쪽 내부 오류. 입력이 지나치게 길 때도 나타날 수 있음</td><td>잠시 뒤 재시도, 반복되면 입력을 줄인다</td></tr>
-<tr><td class="mono">504 DEADLINE_EXCEEDED</td><td>처리 시간이 제한을 넘음</td><td>입력이나 요청량을 줄여 재시도</td></tr></tbody></table></div><p>목록은 작성자 지식 기준입니다. 실제 의미는 공식 오류 안내에서 확인하세요. 오후 첫 구간 05절의 원칙대로, 권한·형식 오류는 기다려도 풀리지 않고 한도·장애는 간격을 두고 재시도합니다.</p></div>
+<tr><td class="mono">504 DEADLINE_EXCEEDED</td><td>처리 시간이 제한을 넘음</td><td>입력이나 요청량을 줄여 재시도</td></tr></tbody></table></div><p>목록의 코드와 이름은 위의 공식 정의로 확인했습니다. 서비스에서 나타나는 구체적인 원인은 공식 오류 안내에서 확인하세요. 오후 첫 구간 05절의 원칙대로, 권한·형식 오류는 기다려도 풀리지 않고 한도·장애는 간격을 두고 재시도합니다.</p></div>
 </section>
 
 <section id="s06" aria-labelledby="s06-h"><h2 id="s06-h"><span class="num">06</span>실행이 막혀도 계속 배울 수 있는 자료<span class="pg">p.118</span></h2>
@@ -276,10 +278,10 @@ footer p{max-width:80ch}
 <tr><td>p.112–113</td><td>200회 · 입력 200,000 · 출력 40,000 · 360원</td><td>재계산 + 1.8원 × 200회 교차 확인</td><td><span class="tag ok">일치</span></td></tr>
 <tr><td>p.114</td><td>분당 10회 한도의 영향</td><td>추가 계산</td><td><span class="tag add">최소 20분</span></td></tr>
 <tr><td>p.111</td><td>준비물과 현장 제공품 구분</td><td>원자료 대조</td><td><span class="tag ok">일치</span></td></tr>
-<tr><td>p.117</td><td>403 · 429 · 503의 이름</td><td>작성자 지식과 대조</td><td><span class="tag ok">일치</span> <span class="tag na">공식 문서 미확인</span></td></tr>
+<tr><td>p.117</td><td>403 · 429 · 503과 보충한 400 · 404 · 500 · 504의 이름</td><td>googleapis code.proto와 대조</td><td><span class="tag ok">일치</span></td></tr>
 <tr><td>p.109</td><td>AI Studio 화면 항목</td><td>접속 불가</td><td><span class="tag na">확인 불가</span></td></tr></tbody></table></div>
 </section>
 
 </main></div>
-<footer><p>이 문서는 「AI 강사양성과정」 2일차 교육자료를 다시 쓴 학습 참고자료입니다. 자료 원문은 회색 인용 상자, 직접 다시 계산한 결과는 초록 ‘검증’ 상자, 자료에 없는 설명은 파란 ‘보충’ 상자로 구분했습니다. 보충 내용은 작성자의 지식에 기반하며 웹 검색으로 확인하지 않았습니다. 인용한 논문·문서의 제목과 연도는 원문을 직접 확인하세요. ‘설명용’, ‘가상’, ‘교육용 예’로 표시된 수치는 실제 측정값이 아닙니다.</p></footer>
+<footer><p>이 문서는 「AI 강사양성과정」 2일차 교육자료를 다시 쓴 학습 참고자료입니다. 회색 상자는 자료 원문을 인용하거나 요약한 것(표의 칸이나 여러 칸으로 된 슬라이드를 문장으로 풀어 쓴 곳 포함), 직접 다시 계산한 결과는 초록 ‘검증’ 상자, 자료에 없는 설명은 파란 ‘보충’ 상자로 구분했습니다. 보충 내용은 작성자의 지식에 기반하며 웹 검색으로 확인하지 않았습니다. 인용한 논문·문서의 제목과 연도는 원문을 직접 확인하세요. ‘설명용’, ‘가상’, ‘교육용 예’로 표시된 수치는 실제 측정값이 아닙니다.</p></footer>
 </body></html>

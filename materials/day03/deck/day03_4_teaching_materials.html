@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>3일차 강사 역량 · 배운 내용을 교육자료로 정리하기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F1F2EE;--card:#FFFFFF;--ink:#15171C;--ink-2:#454A55;--ink-3:#6E7480;
+  --line:#DDDFD8;--accent:#4635B1;--accent-soft:#EDEAFA;
+  --ok:#1D6B45;--ok-soft:#E3F2E9;--warn:#7E5200;--warn-soft:#FBF0D9;--ng:#A8261D;--ng-soft:#FBE7E4;
+  --plus:#0F5E73;--plus-soft:#E2F1F5;--src:#F6F6F2;
+  --hero:#15171C;--hero-ink:#F1F2EE;--hero-2:#B9BDC4;--hero-3:#8D9299;--hl:#FFD24A;
+  --maxw:1180px;color-scheme:light;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#111216;--card:#1A1C22;--ink:#E7E8EB;--ink-2:#B8BDC7;--ink-3:#8E94A0;
+  --line:#2C2F37;--accent:#AEA2FF;--accent-soft:#2A2550;
+  --ok:#7FD9A8;--ok-soft:#16301F;--warn:#F3C86F;--warn-soft:#352911;--ng:#FF9A90;--ng-soft:#3A1916;
+  --plus:#7FD0E6;--plus-soft:#142C33;--src:#15171C;
+  --hero:#0B0C0F;color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --paper:#111216;--card:#1A1C22;--ink:#E7E8EB;--ink-2:#B8BDC7;--ink-3:#8E94A0;
+  --line:#2C2F37;--accent:#AEA2FF;--accent-soft:#2A2550;
+  --ok:#7FD9A8;--ok-soft:#16301F;--warn:#F3C86F;--warn-soft:#352911;--ng:#FF9A90;--ng-soft:#3A1916;
+  --plus:#7FD0E6;--plus-soft:#142C33;--src:#15171C;--hero:#0B0C0F;color-scheme:dark;}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans KR",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.75;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+code,.mono{font-family:"IBM Plex Mono","IBM Plex Sans KR",ui-monospace,monospace;font-size:.92em}
+a{color:var(--accent)}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.hero{position:relative;background:var(--hero);color:var(--hero-ink);overflow:hidden}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(to right,rgba(255,255,255,.055) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.055) 1px,transparent 1px);background-size:28px 28px;pointer-events:none}
+.hero-inner{position:relative;max-width:var(--maxw);margin:0 auto;padding:80px 32px 68px}
+.hero-kicker{margin:0 0 18px;font-size:clamp(1rem,2.2vw,1.18rem);font-weight:500;color:var(--hl);display:inline-block;padding-bottom:7px;border-bottom:2px solid var(--hl)}
+.hero h1{margin:0;font-size:clamp(2rem,5vw,3.3rem);font-weight:700;letter-spacing:-.035em;line-height:1.2;max-width:18ch}
+.hero .sub{margin:24px 0 0;max-width:52ch;color:var(--hero-2);font-size:1.03rem;font-weight:300}
+.hero-meta{margin-top:36px;display:flex;flex-wrap:wrap;gap:10px}
+.chip{font-family:"IBM Plex Mono",monospace;font-size:.78rem;color:#E4E6EA;border:1px solid rgba(255,255,255,.22);border-radius:2px;padding:5px 11px}
+.chip b{color:var(--hl);font-weight:600}
+.hero-terms{margin-top:48px;padding-top:32px;border-top:1px solid rgba(255,255,255,.15);display:grid;grid-template-columns:1fr 1fr;gap:30px 46px}
+.term h2{margin:0 0 8px;font-size:1.06rem;font-weight:600;color:#fff}
+.term h2 span{display:block;margin-top:3px;font-family:"IBM Plex Mono",monospace;font-size:.74rem;font-weight:400;color:var(--hero-3)}
+.term p{margin:0;font-size:.93rem;font-weight:300;color:var(--hero-2);max-width:46ch}
+.term-sum{grid-column:1/-1;margin:0;padding:15px 18px;background:rgba(255,210,74,.10);border-left:2px solid var(--hl);font-size:.95rem;font-weight:300;color:#D6D9DE}
+.hero strong,.hero b{color:var(--hl);font-weight:600}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px 96px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:52px;align-items:start}
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);padding:44px 0;max-height:100vh;overflow-y:auto}
+nav.toc h2{font-size:.8rem;color:var(--ink-3);margin:0 0 12px;font-weight:500}
+nav.toc ol{list-style:none;margin:0;padding:0}
+nav.toc a{display:flex;gap:10px;padding:4px 0 4px 10px;color:var(--ink-2);text-decoration:none;font-size:.85rem;line-height:1.5;border-left:2px solid transparent}
+nav.toc a:hover,nav.toc a:focus-visible{color:var(--accent);border-left-color:var(--accent)}
+nav.toc .n{font-family:"IBM Plex Mono",monospace;color:var(--ink-3);font-size:.78rem;min-width:18px}
+main{padding:44px 0 0;min-width:0}
+
+section{background:var(--card);border:1px solid var(--line);padding:34px 38px 36px;margin-bottom:18px;scroll-margin-top:20px}
+section>h2{margin:0 0 4px;font-size:1.42rem;font-weight:600;letter-spacing:-.02em;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+section>h2 .num{font-family:"IBM Plex Mono",monospace;font-size:.9rem;font-weight:500;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:2px}
+section>h2 .pg{font-family:"IBM Plex Mono",monospace;font-size:.78rem;font-weight:400;color:var(--ink-3);margin-left:auto}
+section h3{font-size:1.06rem;font-weight:600;margin:28px 0 8px}
+section p{margin:12px 0;max-width:72ch}
+.lead{color:var(--ink-2);margin-top:10px}
+section ul,section ol{padding-left:1.25em;max-width:72ch}
+section li{margin:4px 0}
+strong{font-weight:600}
+
+.src{margin:18px 0;padding:14px 18px;background:var(--src);border-left:3px solid var(--ink-3);font-size:.96rem}
+.src .pl{display:block;font-family:"IBM Plex Mono",monospace;font-size:.74rem;color:var(--ink-3);margin-bottom:4px}
+.src p{margin:4px 0}
+
+.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin:18px 0}
+.flow>div{flex:1 1 140px;border:1px solid var(--line);background:var(--card);padding:10px 12px;font-size:.9rem;position:relative}
+.flow>div b{display:block;font-weight:600;font-size:.93rem}
+.flow>div span{color:var(--ink-2);font-size:.86rem}
+.flow>i{align-self:center;font-style:normal;color:var(--ink-3);font-family:"IBM Plex Mono",monospace}
+
+.tbl{overflow-x:auto;margin:16px 0}
+table{border-collapse:collapse;width:100%;font-size:.92rem;min-width:420px}
+th,td{border-bottom:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+th{font-weight:600;color:var(--ink-2);background:var(--src);font-size:.86rem}
+td.c,th.c{text-align:center}
+td.r,th.r{text-align:right;font-family:"IBM Plex Mono",monospace}
+
+dl.ex{margin:16px 0;border-top:1px solid var(--line)}
+dl.ex dt{font-weight:600;padding-top:14px;font-size:.95rem}
+dl.ex dt code{background:var(--accent-soft);color:var(--accent);padding:1px 6px}
+dl.ex dd{margin:4px 0 0;padding-bottom:14px;border-bottom:1px solid var(--line);color:var(--ink-2);max-width:72ch}
+
+.box{margin:20px 0;padding:16px 20px;border:1px solid var(--line)}
+.box>h4{margin:0 0 6px;font-size:.88rem;font-weight:600;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.box p,.box li{font-size:.94rem}
+.box p:first-of-type{margin-top:4px}
+.box.v{background:var(--ok-soft);border-color:transparent}
+.box.v>h4{color:var(--ok)}
+.box.p{background:var(--plus-soft);border-color:transparent}
+.box.p>h4{color:var(--plus)}
+.box.w{background:var(--warn-soft);border-color:transparent}
+.box.w>h4{color:var(--warn)}
+.box.l{background:var(--accent-soft);border-color:transparent}
+.box.l>h4{color:var(--accent)}
+.box.t{border-style:dashed}
+.box.t>h4{color:var(--accent)}
+.tag{font-family:"IBM Plex Mono",monospace;font-size:.72rem;font-weight:500;padding:1px 7px;border:1px solid currentColor;border-radius:2px}
+.tag.lec{color:var(--accent)}.tag.ok{color:var(--ok)}.tag.ng{color:var(--ng)}.tag.na{color:var(--ink-3)}.tag.add{color:var(--plus)}
+.calc{font-family:"IBM Plex Mono",monospace;font-size:.88rem;background:var(--card);padding:10px 12px;margin:8px 0;overflow-x:auto;white-space:pre;line-height:1.6}
+
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+.pair>div{border:1px solid var(--line);padding:14px 16px}
+.pair>div h4{margin:0 0 6px;font-size:.98rem;font-weight:600}
+.pair>div p,.pair>div li{font-size:.92rem;color:var(--ink-2)}
+.nest{border:1px solid var(--ink-3);padding:12px 14px;margin:14px 0}
+.nest .nest{margin:10px 0 0;border-color:var(--accent)}
+.nest .nest .nest{border-style:dashed}
+.nest b{font-weight:600}.nest span{color:var(--ink-2);font-size:.9rem}
+
+details{margin:16px 0;border:1px solid var(--line);padding:0 16px}
+details summary{cursor:pointer;padding:12px 0;font-weight:600;font-size:.94rem;color:var(--accent)}
+details[open] summary{border-bottom:1px solid var(--line);margin-bottom:8px}
+details>*:last-child{margin-bottom:14px}
+
+section.summary{background:var(--hero);color:var(--hero-ink);border-color:var(--hero)}
+section.summary>h2 .num{background:rgba(255,210,74,.15);color:var(--hl)}
+section.summary li{color:#D6D9DE}
+section.summary strong{color:var(--hl)}
+footer{max-width:var(--maxw);margin:0 auto;padding:0 32px 60px;color:var(--ink-3);font-size:.84rem}
+footer p{max-width:80ch}
+
+@media (max-width:900px){
+  .wrap{grid-template-columns:1fr;gap:0;padding:0 16px 64px}
+  nav.toc{position:static;max-height:none;padding:28px 0 8px}
+  nav.toc ol{columns:2;column-gap:16px}
+  .hero-inner{padding:56px 20px 48px}
+  .hero-terms{grid-template-columns:1fr}
+  section{padding:24px 18px 26px}
+  .pair{grid-template-columns:1fr}
+  section>h2 .pg{margin-left:0;width:100%}
+  footer{padding:0 16px 48px}
+}
+</style></head>
+<body>
+<header class="hero"><div class="hero-grid"></div><div class="hero-inner">
+<p class="hero-kicker">3일차 마지막 구간 · 17:00–18:00</p>
+<h1>배운 내용을 교육자료로 정리하기</h1>
+<p class="sub">오늘 배운 것 중 하나를 골라 대상에게 설명할 자료로 만드는 과정을 정리하고, 세 주제의 수업 뼈대, AI 초안의 오류 찾기 연습, 3일차 전체의 흔한 오해 14가지와 보완 자료를 더했습니다.</p>
+<div class="hero-meta"><span class="chip">쪽 <b>p.105–110</b></span><span class="chip">수업 뼈대 <b>3주제</b></span><span class="chip">흔한 오해 <b>14가지</b></span><span class="chip">연습 초안 <b>오류 3곳</b></span></div>
+<div class="hero-terms"><div class="term"><h2>설명할 관계<span>Relation to explain</span></h2><p>개념의 정의가 아니라 개념 사이의 관계(무엇으로 무엇을 조정하는가, 곡선에서 보이는 사실은 무엇인가, 무엇을 무엇으로 나누는가)를 가르칠 내용으로 정합니다(p.107).</p></div><div class="term"><h2>새 사례 확인 질문<span>Transfer question</span></h2><p>조건 하나를 바꾼 새 상황을 주고, 답과 이유가 달라졌는지로 이해를 판단합니다. 설명이 매끄러운지는 이해의 증거가 아닙니다.</p></div><p class="term-sum">AI와 공부하며 만든 자료도 <strong>숫자·출처·관계</strong>를 직접 확인해야 하고, 이해는 <strong>새 사례의 답이 달라졌는가</strong>로 확인합니다.</p></div>
+</div></header>
+<div class="wrap">
+<nav class="toc" aria-label="목차"><h2>목차</h2><ol><li><a href="#s00"><span class="n">00</span>오늘 배운 것을 다른 사람에게 설명할 자료로</a></li><li><a href="#s01"><span class="n">01</span>선택한 개념에서 설명할 관계 찾기</a></li><li><a href="#s02"><span class="n">02</span>AI와 공부하며 교육자료 만들기</a></li><li><a href="#s03"><span class="n">03</span>읽고 설명하며 교육자료 고치기</a></li><li><a href="#s04"><span class="n">04</span>3일차의 흔한 오해와 보완 자료</a></li><li><a href="#s05"><span class="n">05</span>다음 시간 · 학습 자료의 품질</a></li><li><a href="#s06"><span class="n">06</span>핵심 정리</a></li><li><a href="#s07"><span class="n">07</span>검증 기록</a></li></ol></nav>
+<main>
+<section id="s00" aria-labelledby="s00-h"><h2 id="s00-h"><span class="num">00</span>오늘 배운 것을 다른 사람에게 설명할 자료로<span class="pg">p.105–106</span></h2>
+<p class="lead">마지막 구간은 새 개념을 배우는 시간이 아니라, 오늘 배운 것 중 <strong>하나</strong>를 골라 누군가에게 설명할 자료로 만드는 시간입니다. 막히는 부분은 LLM과 더 공부하며 보완합니다.</p>
+<div class="flow"><div><b>주제와 대상 고르기</b><span>더 이해하고 설명하고 싶은 개념이나 관계 하나</span></div><i>→</i><div><b>설명할 관계 정하기</b><span>상대가 이해해야 할 관계</span></div><i>→</i><div><b>AI와 공부하며 구성</b><span>글·도식·슬라이드</span></div><i>→</i><div><b>읽고 설명하며 고치기</b><span>막힌 곳을 다시 구성</span></div></div>
+<div class="src"><span class="pl">자료 p.106</span><p>“누구에게 설명할지, 그 사람이 이미 아는 것은 무엇인지 생각하며 자료를 정리한다.”</p></div>
+<div class="box t"><h4>강의 포인트 · 주제를 고를 때의 기준</h4><p>가장 쉬운 주제가 아니라 <strong>내가 오늘 새 사례에서 틀렸거나 망설인 관계</strong>를 고르세요. 설명하다 막히는 곳이 곧 자료에서 가장 공들일 부분이고, 1일차의 평가 기준(“새 사례에 적용하는가”)과도 맞습니다.</p></div>
+</section>
+
+<section id="s01" aria-labelledby="s01-h"><h2 id="s01-h"><span class="num">01</span>선택한 개념에서 설명할 관계 찾기<span class="pg">p.107</span></h2>
+<div class="tbl"><table><thead><tr><th>고른 주제 (p.107)</th><th>상대가 이해해야 할 관계</th></tr></thead><tbody>
+<tr><td>학습</td><td>어떤 자료로 무엇을 조정하고, 그 결과를 새 입력에 어떻게 사용하는가</td></tr>
+<tr><td>과적합</td><td>학습 자료와 새 자료의 결과가 왜 다를 수 있나. 곡선에서 보이는 사실은 무엇인가</td></tr>
+<tr><td>평가지표</td><td>무엇을 세고 무엇으로 나누는가. 그 비율이 실제 목적에 왜 중요한가</td></tr></tbody></table></div>
+<p>자료는 이것이 “선택을 돕는 예”이고 다른 주제를 골라도 되며 세 주제를 모두 만들 필요는 없다고 말합니다. 아래는 세 주제마다 <strong>수업 한 칸의 뼈대</strong>를 채워 본 예입니다. 1일차 p.171·p.177의 틀(같게 둘 것 / 다르게 둘 것 / 확인 질문 / 다시 보여 줄 자료)을 그대로 썼습니다.</p>
+<div class="tbl"><table><thead><tr><th>항목</th><th>① 학습 · 문맥과 매개변수</th><th>② 과적합 · 학습 곡선</th><th>③ 평가지표 · 분모</th></tr></thead><tbody>
+<tr><td>대상 (예)</td><td>AI 채팅을 매일 쓰는 사무직 직원</td><td>데이터 분석을 처음 맡은 담당자</td><td>고객센터 운영 관리자</td></tr>
+<tr><td>목표</td><td>“고쳐 주면 학습한다”를 문맥과 학습으로 구별</td><td>곡선의 사실과 해석을 구별</td><td>세 지표가 서로 다른 질문임을 설명</td></tr>
+<tr><td>같게 둘 것</td><td>같은 질문, 같은 모델</td><td>같은 모델, 같은 자료</td><td>같은 문의 100건과 같은 예측</td></tr>
+<tr><td>다르게 둘 것</td><td>수정 내용이 이번 입력에 포함됐는가(새 대화인가)</td><td>학습 반복 횟수(3과 5)</td><td>지표가 묻는 질문(분모)</td></tr>
+<tr><td>확인 질문</td><td>어제 고쳐 준 내용을 새 대화에서 모른다면 무엇부터 확인하나?</td><td>학습 손실 0.10, 검증 손실 0.63이면 말할 수 있는 것과 말할 수 없는 것은?</td><td>모두 “환불 아님”이라고 예측하는 방법과 이 모델 중 무엇을 쓸까?</td></tr>
+<tr><td>다시 보여 줄 자료</td><td>입력에 수정이 있는/없는 두 요청 (1일차 p.81)</td><td>학습·검증 두 곡선 (오후 첫 구간 03절)</td><td>혼동행렬 점 그림 (오후 둘째 구간 02절)</td></tr></tbody></table></div>
+<div class="box w"><h4>주의 · 뼈대는 대상에 맞게 바꿔 쓴다</h4><p>위 세 대상은 예시입니다. 내 대상이 다르면 <strong>예(문의 분류)와 비용 가정</strong>부터 바꿔야 합니다. 회사 내부 자료나 개인정보로 예를 만들지 말고 공개용 예제로 바꾸세요(1일차 p.140, 2일차 p.15).</p></div>
+</section>
+
+<section id="s02" aria-labelledby="s02-h"><h2 id="s02-h"><span class="num">02</span>AI와 공부하며 교육자료 만들기<span class="pg">p.108</span></h2>
+<div class="src"><span class="pl">자료 p.108</span><p>설명하기 어려운 관계를 질문하고, 이해한 내용을 글·도식·슬라이드로 구성한다. 더 쉬운 설명 · 다른 예 · 비교 · 빠진 전제 같은 필요한 도움을 요청하며 내용을 발전시킨다.</p></div>
+<div class="box p"><h4>보충 · 요청 문장 예 (1일차 p.162의 틀을 오늘 주제에 적용)</h4>
+<div class="calc">내가 이해한 내용은 다음과 같아: [내 설명 두세 문장]
+빠진 전제와 틀린 부분을 짚어 줘. 숫자가 있으면 직접 계산해서 맞는지 알려 줘.
+이 내용을 [대상]에게 설명하려면 쓸 수 있는 예를 두 가지 제안해 줘.
+마지막으로 내가 답해 볼 새 사례를 하나 내 줘. 내 답을 본 뒤에 피드백해 줘.</div>
+<div class="tbl"><table><thead><tr><th>요청하는 도움 (p.108)</th><th>이렇게 묻는다</th></tr></thead><tbody>
+<tr><td>더 쉬운 설명</td><td>“이 설명을 [대상]이 이미 아는 말로 다시 써 줘. 어떤 용어를 바꿨는지도 알려 줘.”</td></tr>
+<tr><td>다른 예</td><td>“문의 분류 대신 [내 대상의 업무]에서 같은 관계를 보여 주는 예를 만들어 줘.”</td></tr>
+<tr><td>비교</td><td>“과적합과 데이터 누수를 같은 표에서 비교해 줘. 보이는 모습과 원인을 따로 적어 줘.”</td></tr>
+<tr><td>빠진 전제</td><td>“이 설명을 이해하려면 먼저 알아야 하는데 내가 안 쓴 것은 무엇이야?”</td></tr></tbody></table></div></div>
+<div class="box w"><h4>주의 · AI가 만든 자료는 초안일 뿐</h4><p>AI가 만든 설명에 들어 있는 <strong>숫자와 출처, 연구 인용</strong>은 틀릴 수 있습니다(1일차 p.131의 환각). 자료에 옮기기 전에 직접 계산하고 원문을 확인하세요. 이 자료집에서도 BCG 연구의 출처 연도, 라마 3 방식, 딥시크 R1 사례를 “원문 미확인”으로 표시한 것이 같은 이유입니다.</p></div>
+</section>
+
+<section id="s03" aria-labelledby="s03-h"><h2 id="s03-h"><span class="num">03</span>읽고 설명하며 교육자료 고치기<span class="pg">p.109</span></h2>
+<div class="tbl"><table><thead><tr><th>확인 항목 (p.109)</th><th>확인 질문</th></tr></thead><tbody>
+<tr><td>용어의 뜻</td><td>대상에게 설명할 수 있는가? 모르면 다시 공부</td></tr>
+<tr><td>개념 사이 관계</td><td>왜 이어지는지. 빠진 전제와 설명 보완</td></tr>
+<tr><td>그림·예시·수치</td><td>어떤 관계를 보여 주는지와 출처 확인</td></tr>
+<tr><td>관찰과 원인 해석</td><td>자료에서 읽은 사실과 추정한 이유를 구별</td></tr>
+<tr><td>전체 설명</td><td>자기 말로 설명하며 막힌 부분을 다시 구성</td></tr></tbody></table></div>
+<h3>연습 · AI가 쓴 초안에서 틀린 곳 찾기 (작성자 구성)</h3>
+<p>아래는 AI가 쓴 것처럼 만든 짧은 초안입니다. 위 다섯 가지 확인 항목으로 읽으며 틀리거나 부족한 문장을 찾아 보세요. 숨은 문제는 세 곳입니다.</p>
+<div class="src"><span class="pl">연습용 초안</span><p>① 환불 문의를 찾는 모델의 정확도가 90%이므로 이 모델은 환불 요청을 잘 찾는다고 볼 수 있다. ② 학습 손실이 0.10까지 내려갔으니 새 문의에서도 잘 맞힐 것이다. ③ 검증 자료에서 가장 점수가 높은 설정을 골랐고, 그 검증 점수 88%를 최종 성능으로 보고한다.</p></div>
+<details><summary>답과 고치는 방법 펼치기</summary>
+<div class="tbl"><table><thead><tr><th>문장</th><th>문제</th><th>고친 문장</th><th>근거</th></tr></thead><tbody>
+<tr><td>①</td><td>정확도 90%는 모두 “환불 아님”으로 예측해도 나오는 값(재현율 0%). 환불을 잘 찾는지는 <strong>재현율</strong>로 봐야 함</td><td>“정확도 90%는 기준선과 같은 수준이다. 환불 재현율과 오탐을 함께 확인해야 한다.”</td><td>오후 둘째 01–03절</td></tr>
+<tr><td>②</td><td>학습 손실은 <strong>학습 자료</strong>에서의 값. 새 자료의 성능은 검증·테스트로 확인(과적합 가능)</td><td>“학습 손실이 낮아졌지만, 새 문의에서의 성능은 검증 손실과 테스트로 확인해야 한다.”</td><td>오후 첫 03절</td></tr>
+<tr><td>③</td><td>검증 점수로 설정을 <strong>골랐으므로</strong> 그 점수는 부풀려져 있음(시뮬레이션: 50% 모델 50개 중 최고가 59.2%). 최종 성능은 선택에 쓰지 않은 테스트 자료로 보고</td><td>“검증 점수로 설정을 선택했고, 최종 성능은 선택에 쓰지 않은 테스트 자료로 평가한 값을 보고한다.”</td><td>오후 첫 01절</td></tr></tbody></table></div></details>
+<p>세 문장은 모두 <strong>문장 자체는 자연스러워서</strong> 읽기만 해서는 틀린 곳이 보이지 않습니다. “자연스러운 문장과 근거 있는 답은 다르다”(1일차 p.129)가 그대로 적용됩니다. 자료를 만들 때도 같은 방식으로 자기 초안을 점검하세요.</p>
+</section>
+
+<section id="s04" aria-labelledby="s04-h"><h2 id="s04-h"><span class="num">04</span>3일차의 흔한 오해와 보완 자료<span class="pg">3일차 전체</span></h2>
+<p class="lead">수업에서 학습자가 말하기 쉬운 문장과, 그때 다시 보여 줄 자료를 한곳에 모았습니다. 1일차 p.176(“학습자의 답에 따라 다시 보여 줄 자료를 고른다”)과 같은 형식입니다.</p>
+<div class="tbl"><table><thead><tr><th>학습자가 하기 쉬운 말</th><th>무엇이 섞였나</th><th>다시 보여 줄 자료</th><th>새 사례 확인 질문</th></tr></thead><tbody>
+<tr><td>“고쳐 주면 모델이 학습해요.”</td><td>문맥과 매개변수 학습</td><td>오전 09절 · 1일차 p.81</td><td>새 대화에서 방금 고친 내용을 기억할까?</td></tr>
+<tr><td>“지도학습이니까 Transformer를 쓰죠.”</td><td>학습 방법과 계산 구조</td><td>오전 01절 · 11절(BERT)</td><td>같은 구조에서 학습 자료를 바꾸면 무엇이 달라지나?</td></tr>
+<tr><td>“숫자로 적었으니 회귀예요.”</td><td>숫자 코드와 수치</td><td>오전 03절</td><td>결제=1, 계정=2에서 예측값 1.5의 의미는?</td></tr>
+<tr><td>“군집이 정답 부서를 맞혔어요.”</td><td>묶음과 이름 붙이기</td><td>오전 04절</td><td>다른 유사도 기준이면 묶음은 어떻게 달라질까?</td></tr>
+<tr><td>“자기지도학습은 사람이 할 일이 없어요.”</td><td>라벨링과 자료·목표 설계</td><td>오전 05절</td><td>라벨은 안 붙이는데 사람이 정해야 하는 것은?</td></tr>
+<tr><td>“추론 모델은 풀이하면서 학습해요.”</td><td>풀이 능력의 학습과 풀이의 생성</td><td>오전 09절 · p.50</td><td>풀이를 길게 쓰면 정답이 보장될까?</td></tr>
+<tr><td>“층을 많이 쌓으면 더 복잡한 걸 배워요.”</td><td>층의 수와 비선형 변환</td><td>오전 10절</td><td>비선형 변환이 없다면 두 층은 몇 층과 같을까?</td></tr>
+<tr><td>“학습 손실이 낮으니 좋은 모델이에요.”</td><td>학습 자료와 새 자료</td><td>오후 첫 03절</td><td>학습 0.10, 검증 0.63일 때 말할 수 있는 것은?</td></tr>
+<tr><td>“검증 점수를 최종 성능으로 써도 돼요.”</td><td>선택에 쓴 자료와 평가 자료</td><td>오후 첫 01절(시뮬레이션)</td><td>모델 50개 중 최고의 검증 점수를 그대로 믿어도 될까?</td></tr>
+<tr><td>“테스트 점수가 높을수록 믿을 만해요.”</td><td>높은 점수와 누수</td><td>오후 첫 06–07절</td><td>완료 시각이 입력에 들어 있다면 점수는 무엇을 말하나?</td></tr>
+<tr><td>“정확도 90%면 환불을 잘 찾아요.”</td><td>정확도와 재현율</td><td>오후 둘째 01–03절</td><td>모두 “환불 아님”도 90%라면?</td></tr>
+<tr><td>“오차를 평균하면 돼요.”</td><td>부호와 크기, 평균과 최댓값</td><td>오후 둘째 04절</td><td>오차가 +1, −1, 0이면 평균은 몇이고 의미는?</td></tr>
+<tr><td>“AI를 쓰면 일을 더 잘해요(또는 못해요).”</td><td>과제·조건 한정</td><td>오후 둘째 06절</td><td>완료율과 정답률이 반대로 나온 이유는?</td></tr>
+<tr><td>“AI와 잘 만들었으니 이해한 거예요.”</td><td>과제 성과와 학습</td><td>오후 둘째 07절 · 1일차 p.157</td><td>AI를 끄고 새 사례에 답해 보세요.</td></tr></tbody></table></div>
+<div class="box t"><h4>강의 포인트</h4><p>가운데 두 열(“무엇이 섞였나”, “다시 보여 줄 자료”)을 먼저 보고 오른쪽 질문으로 확인하세요. 학습자의 답이 같아도 <strong>이유를 한 번 더 물어야</strong> 어느 관계가 섞였는지 알 수 있습니다. 이해는 설명이 매끄러워졌는지가 아니라 <strong>새 사례의 답이 달라졌는지</strong>로 판단합니다.</p></div>
+</section>
+
+<section id="s05" aria-labelledby="s05-h"><h2 id="s05-h"><span class="num">05</span>다음 시간 · 학습 자료의 품질<span class="pg">p.110</span></h2>
+<div class="src"><span class="pl">자료 p.110</span><p>모델은 자료에서 배운다. 그 자료의 오류와 판단 차이는 무엇을 바꿀까? 누락·오류·중복·대표성, 라벨 기준과 편향을 이어서 살펴본다.</p></div>
+<p>오늘의 내용 중 이미 다음 시간의 질문에 닿아 있던 곳이 많았습니다. 미리 이어서 읽어 두면 4일차 도입이 쉬워집니다.</p>
+<div class="tbl"><table><thead><tr><th>다음 시간의 키워드</th><th>오늘 이미 나온 곳</th><th>한 줄 연결</th></tr></thead><tbody>
+<tr><td>누락</td><td>자료 분포 변화(오후 첫 05절)</td><td>학습 자료에 없던 종류의 문의(접속 실패)는 맞히기 어렵다</td></tr>
+<tr><td>오류</td><td>라벨은 사람의 판단(오전 02절)</td><td>같은 문의에 다른 라벨이 붙으면 모델도 흔들림을 배운다</td></tr>
+<tr><td>중복</td><td>같은 기록이 학습·테스트에 겹침(오후 첫 06절)</td><td>중복은 새 자료의 성능을 가린다</td></tr>
+<tr><td>대표성</td><td>밤·낮 수집 시각이 다른 자료(오후 첫 03절)</td><td>자료가 실제 사용 환경을 닮지 않으면 우연한 단서를 배운다</td></tr>
+<tr><td>라벨 기준·편향</td><td>선호 자료의 기준 문장(오전 08절)</td><td>어떤 기준으로 골랐는가가 모델의 경향이 된다</td></tr></tbody></table></div>
+</section>
+
+<section id="s06" class="summary" aria-labelledby="s06-h"><h2 id="s06-h"><span class="num">06</span>핵심 정리</h2>
+<ul>
+<li>교육자료는 <strong>대상이 이미 아는 것</strong>에서 출발해, 한 가지 <strong>관계</strong>를 설명하도록 만듭니다.</li>
+<li>AI와 공부할 때는 <strong>내 설명을 먼저 쓰고</strong>, 빠진 전제·다른 예·새 사례를 요청합니다.</li>
+<li>AI 초안은 문장이 자연스러워도 <strong>숫자·출처·관계</strong>가 틀릴 수 있어서 직접 계산하고 원문을 확인합니다.</li>
+<li>설명의 점검은 <strong>용어·관계·그림과 수치·관찰과 해석·전체 설명</strong> 다섯 가지로 합니다.</li>
+<li>이해는 설명이 매끄러운지가 아니라 <strong>새 사례의 답이 달라졌는지</strong>로 확인합니다.</li>
+</ul>
+</section>
+
+<section id="s07" aria-labelledby="s07-h"><h2 id="s07-h"><span class="num">07</span>검증 기록</h2>
+<div class="tbl"><table><thead><tr><th>쪽</th><th>항목</th><th>방법</th><th>결과</th></tr></thead><tbody>
+<tr><td>p.107</td><td>세 주제의 설명할 관계</td><td>앞 세 페이지의 내용과 대조</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>p.109</td><td>연습 초안의 세 오류</td><td>정확도 90% = 기준선, 학습 손실, 검증 점수 부풀림 시뮬레이션과 대조</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>p.110</td><td>다음 시간 키워드와 오늘 내용의 연결</td><td>쪽 대조</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>—</td><td>연습 초안 · 오해 표 · 수업 뼈대</td><td>작성자 구성</td><td><span class="tag add">보충(자료에 없음)</span></td></tr></tbody></table></div>
+</section>
+
+</main></div>
+<footer><p>이 문서는 「AI 강사양성과정」 3일차 교육자료를 다시 쓴 학습 참고자료입니다. 회색 상자는 자료 원문을 인용하거나 요약한 것(표의 칸이나 여러 칸으로 된 슬라이드를 문장으로 풀어 쓴 곳 포함), 직접 다시 계산한 결과는 초록 ‘검증’ 상자, 자료에 없는 설명은 파란 ‘보충’ 상자로 구분했습니다. 보충 내용은 작성자의 지식에 기반하며 웹 검색으로 확인하지 않았습니다. 인용한 논문·문서의 제목과 연도는 원문을 직접 확인하세요. ‘설명용’, ‘가상’, ‘교육용 예’로 표시된 수치는 실제 측정값이 아닙니다. 이 PDF에는 발표자 노트가 들어 있지 않아 노트에만 적힌 출처·세부 조건은 확인하지 못했습니다. 그림에서 읽은 값은 ‘근삿값’, 작성자가 만든 계산·반례·시뮬레이션은 ‘추가’, 원문을 확인하지 못한 외부 사실은 ‘미확인’으로 표시했습니다.</p></footer>
+</body></html>

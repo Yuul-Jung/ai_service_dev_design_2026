@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>2일차 오전 · 모델의 종류와 이용 구조</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
 <style>
 :root{
   --paper:#F1F2EE;--card:#FFFFFF;--ink:#15171C;--ink-2:#454A55;--ink-3:#6E7480;
@@ -101,10 +101,12 @@ dl.ex dd{margin:4px 0 0;padding-bottom:14px;border-bottom:1px solid var(--line);
 .box.p>h4{color:var(--plus)}
 .box.w{background:var(--warn-soft);border-color:transparent}
 .box.w>h4{color:var(--warn)}
+.box.l{background:var(--accent-soft);border-color:transparent}
+.box.l>h4{color:var(--accent)}
 .box.t{border-style:dashed}
 .box.t>h4{color:var(--accent)}
 .tag{font-family:"IBM Plex Mono",monospace;font-size:.72rem;font-weight:500;padding:1px 7px;border:1px solid currentColor;border-radius:2px}
-.tag.ok{color:var(--ok)}.tag.ng{color:var(--ng)}.tag.na{color:var(--ink-3)}.tag.add{color:var(--plus)}
+.tag.lec{color:var(--accent)}.tag.ok{color:var(--ok)}.tag.ng{color:var(--ng)}.tag.na{color:var(--ink-3)}.tag.add{color:var(--plus)}
 .calc{font-family:"IBM Plex Mono",monospace;font-size:.88rem;background:var(--card);padding:10px 12px;margin:8px 0;overflow-x:auto;white-space:pre;line-height:1.6}
 
 .pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
@@ -144,12 +146,12 @@ footer p{max-width:80ch}
 <header class="hero"><div class="hero-grid"></div><div class="hero-inner">
 <p class="hero-kicker">2일차 오전 · 09:00–12:00</p>
 <h1>모델은 누가 실행하고, 어떤 통로로 이용하는가</h1>
-<p class="sub">가중치와 실행 자원, 세 가지 이용 경로, 라이선스와 서비스 조건을 구분하고, 모델 카드·추론형 모델·멀티모달·벤치마크를 실제 자료로 읽는 방법을 정리합니다.</p>
-<div class="hero-meta"><span class="chip">쪽 <b>p.1–50</b></span><span class="chip">실제 모델 <b>Qwen2.5-0.5B</b></span><span class="chip">공식 자료 대조 <b>3건</b></span><span class="chip">일정 문제 <b>전수 확인</b></span></div>
+<p class="sub">가중치와 실행 자원, 세 가지 이용 경로, 라이선스와 서비스 조건을 구분하고, 모델 카드·추론형 모델·멀티모달·벤치마크를 실제 자료로 읽는 방법을 정리합니다. 강의 음성 기록을 반영해 로컬 실행 시연, 중계 서비스, 가격–지능 그래프를 더했습니다.</p>
+<div class="hero-meta"><span class="chip">쪽 <b>p.1–50</b></span><span class="chip">강의 음성 <b>2건 반영</b></span><span class="chip">실제 모델 <b>Qwen2.5-0.5B</b></span><span class="chip">공식 자료 대조 <b>3건</b></span><span class="chip">로컬 실행 · 가격–지능 그래프 <b>추가</b></span></div>
 <div class="hero-terms"><div class="term"><h2>가중치<span>Weights</span></h2><p>학습으로 조정한 수치를 담은 파일입니다. 받기만 해서는 쓸 수 없고, 실행 프로그램과 컴퓨터가 함께 필요합니다(p.6–7).</p></div><div class="term"><h2>API<span>Application Programming Interface</span></h2><p>프로그램끼리 정해진 방식으로 요청과 결과를 주고받는 접점입니다. 사람은 화면으로, 프로그램은 API로 모델을 씁니다(p.10).</p></div><p class="term-sum"><strong>공개 여부·실행 주체·이용 통로·허용 용도</strong>는 서로 다른 질문입니다. 하나가 정해져도 나머지는 따로 확인합니다.</p></div>
 </div></header>
 <div class="wrap">
-<nav class="toc" aria-label="목차"><h2>목차</h2><ol><li><a href="#s00"><span class="n">00</span>오늘의 질문과 모델 생태계</a></li><li><a href="#s01"><span class="n">01</span>가중치와 모델 실행에 필요한 것</a></li><li><a href="#s02"><span class="n">02</span>세 가지 이용 경로</a></li><li><a href="#s03"><span class="n">03</span>공개 여부 · 실행 주체 · 이용 통로 · 라이선스</a></li><li><a href="#s04"><span class="n">04</span>모델마다 능력과 부담이 다른 이유</a></li><li><a href="#s05"><span class="n">05</span>규모 · 비트 · 메모리 · 양자화</a></li><li><a href="#s06"><span class="n">06</span>모델 카드 읽기</a></li><li><a href="#s07"><span class="n">07</span>추론형 모델과 일정 문제</a></li><li><a href="#s08"><span class="n">08</span>설명 · 추론 요약 · 사용량 · 도구 기록</a></li><li><a href="#s09"><span class="n">09</span>멀티모달 · 그림 · 음성 · 문서</a></li><li><a href="#s10"><span class="n">10</span>벤치마크와 리더보드 읽기</a></li><li><a href="#s11"><span class="n">11</span>개념 탐구 질문의 짧은 답</a></li><li><a href="#s12"><span class="n">12</span>핵심 정리</a></li><li><a href="#s13"><span class="n">13</span>검증 기록</a></li></ol></nav>
+<nav class="toc" aria-label="목차"><h2>목차</h2><ol><li><a href="#s00"><span class="n">00</span>오늘의 질문과 모델 생태계</a></li><li><a href="#s01"><span class="n">01</span>가중치와 모델 실행에 필요한 것</a></li><li><a href="#s02"><span class="n">02</span>세 가지 이용 경로</a></li><li><a href="#s03"><span class="n">03</span>공개 여부 · 실행 주체 · 이용 통로 · 라이선스</a></li><li><a href="#s04"><span class="n">04</span>모델마다 능력과 부담이 다른 이유</a></li><li><a href="#s05"><span class="n">05</span>규모 · 비트 · 메모리 · 양자화</a></li><li><a href="#s06"><span class="n">06</span>내 컴퓨터에서 모델 돌려 보기 (강의 시연)</a></li><li><a href="#s07"><span class="n">07</span>모델 카드 읽기</a></li><li><a href="#s08"><span class="n">08</span>추론형 모델과 일정 문제</a></li><li><a href="#s09"><span class="n">09</span>설명 · 추론 요약 · 사용량 · 도구 기록</a></li><li><a href="#s10"><span class="n">10</span>멀티모달 · 그림 · 음성 · 문서</a></li><li><a href="#s11"><span class="n">11</span>벤치마크와 리더보드 읽기</a></li><li><a href="#s12"><span class="n">12</span>개념 탐구 질문의 짧은 답</a></li><li><a href="#s13"><span class="n">13</span>핵심 정리</a></li><li><a href="#s14"><span class="n">14</span>검증 기록</a></li></ol></nav>
 <main>
 <section id="s00" aria-labelledby="s00-h"><h2 id="s00-h"><span class="num">00</span>오늘의 질문과 모델 생태계<span class="pg">p.1–5</span></h2>
 <p class="lead">1일차에는 모델이 입력으로 응답을 만드는 원리를 배웠습니다. 2일차는 그 모델을 <strong>누가, 어디에서 실행하고, 어떤 통로로 이용하는가</strong>를 다룹니다.</p>
@@ -161,6 +163,12 @@ footer p{max-width:80ch}
 <p>p.3의 이 그림은 1일차 p.40(“모델과 서비스는 무엇이 다른가”)에서 처음 나왔습니다. 오늘은 가운데 상자를 <strong>누가 운영하는가</strong>로 나눠 봅니다.</p>
 <div class="pair"><div><h4>모델의 능력 (p.5)</h4><p>어떤 일을 도울 수 있는가? 어떤 자료를 읽고 만들 수 있는가? 능력은 어떻게 확인하는가?</p></div><div><h4>이용 방법과 조건</h4><p>누가 어디에서 실행하는가? 화면과 프로그램에서 어떻게 쓰는가? 필요한 자원·요금·자료 조건은?</p></div></div>
 <div class="src"><span class="pl">자료 p.5</span><p>“필요한 능력을 찾고, 그 능력을 이용할 방법과 조건을 함께 이해한다.”</p></div>
+<div class="box l"><h4>강의에서 덧붙인 말 <span class="tag lec">강의</span></h4>
+<p>강사는 첫머리에서 “새로운 모델이 나올 때마다 계속 공부해야 한다”고 강조했습니다. 어떤 모델이 무엇에 강하고 약한지에 대한 <strong>감각을 예민하게 키우는 것</strong>이 목표이고, 그 출발점이 모델 카드에서 정보를 찾는 일입니다(07절).</p>
+<p>전날 내용의 복습으로는 ‘규칙 기반 전문가 시스템 → 머신러닝 → 딥러닝·인공신경망 → LLM’의 흐름, ‘모델은 사고하는 뇌를 가상으로 만든 덩어리이며 모델만으로는 아무것도 못 한다’, 입력이 토큰화되어 계산층을 거쳐 다음 토큰을 순서대로 만든다는 과정, 온도(낮추면 확신하는 답, 높이면 다양한 답), 매개변수, 답변 전에 생각 토큰을 먼저 만드는 추론을 짚었습니다. 1일차 자료의 p.24, p.59, p.74–77, p.116, p.123에 해당합니다.</p>
+<p>또 지금 쓰는 채팅 앱은 AI 회사가 만든 <strong>서비스의 일부</strong>일 뿐이라고 했습니다. AI를 제대로 쓰려면 모델을 고르고 접속하는 방법(API·로컬 실행)과 비용·운영을 알아야 한다는 것이 오늘의 출발점입니다.</p>
+<p><em>※ 강의 음성은 AI가 자동으로 받아 적은 글이라 모델명·숫자에 인식 오류가 많습니다. 뜻이 분명한 내용만 옮겼고, 모델명과 수치는 단정하지 않았습니다.</em></p></div>
+<div class="box t"><h4>강의 포인트 · 비전공 입문자 수업 (강사의 조언)</h4><p>AI를 처음 배우는 사람에게 가장 좋은 수업은 <strong>학습자가 매일 반복하는 자기 업무를 AI로 바꿔 보게 하는 것</strong>이라고 했습니다. 개념부터 가르치지 않고 학습자의 일에서 출발하면, 오늘 배우는 입력·모델·이용 경로가 곧바로 자기 업무와 연결됩니다.</p></div>
 </section>
 
 <section id="s01" aria-labelledby="s01-h"><h2 id="s01-h"><span class="num">01</span>가중치와 모델 실행에 필요한 것<span class="pg">p.6–8</span></h2>
@@ -172,6 +180,13 @@ footer p{max-width:80ch}
 <tr><td>요청을 받고 결과 전달</td><td>실행 프로그램: 입력을 처리하고 모델의 출력을 돌려준다</td></tr></tbody></table></div>
 <div class="src"><span class="pl">자료 p.7</span><p>“가중치를 내려받는 것과 모델을 실행하는 것은 서로 다른 작업이다.”</p></div>
 <div class="box p"><h4>보충 · 자료 밖 내용</h4><p>공개 가중치를 내 컴퓨터에서 실행할 때 쓰는 실행 프로그램으로는 Ollama, llama.cpp, vLLM, Hugging Face Transformers 등이 널리 알려져 있습니다. 같은 가중치라도 어떤 실행 프로그램과 장치를 쓰느냐에 따라 속도와 필요한 메모리가 달라집니다. 05절에서 공식 측정값으로 확인합니다.</p></div>
+<div class="box l"><h4>강의에서 덧붙인 말 · 가중치와 실행 환경 <span class="tag lec">강의</span></h4>
+<p>강사는 매개변수를 “입력이 들어올 때 어떻게 연산할지에 대한 수많은 계산 값”으로 풀고, 그것을 모두 모은 모델 전체의 수치 데이터를 <strong>가중치 데이터</strong>라고 했습니다. 공개 모델이라면 “모델을 쓴다 = 가중치 데이터를 내려받는다”고 볼 수 있다고 했습니다.</p>
+<p>실행에는 가중치(숫자 덩어리)와 이를 읽어 계산하는 프로그램이 필요하고, <strong>램은 가중치를 올려 두는 공간, GPU는 계산하는 장치</strong>입니다. CPU로도 계산은 되지만 그동안 컴퓨터가 멈춘 듯 느려져서, 웬만하면 GPU가 있는 편이 낫다고 했습니다. 직접 돌려 본 과정은 06절에 정리했습니다.</p></div>
+
+<div class="box l"><h4>강의에서 덧붙인 말 · “가중치를 직접 고쳤다”는 기사 <span class="tag lec">강의</span></h4>
+<p>강사는 오후 수업을 열며 최근 기사를 하나 소개했습니다. 한 AI 회사가 자사 모델을 이용해 <strong>아주 작은 공개 모델(0.8B급)</strong>의 매개변수를 읽고 가중치를 직접 고쳐서 문제 풀이 점수를 크게 올렸다는 내용입니다. 강사의 요점은 “매개변수는 학습하면서 <strong>자동으로 만들어지는 것</strong>이라 사람이 읽고 이해해 직접 고치는 것은 거의 불가능에 가깝다”이고, 이 기사는 모델이 작아서 가능했던 예외로 소개한 것입니다. 사람의 뇌에서 뉴런을 하나하나 분석하기는 불가능하지만 초파리 뇌는 전부 분석했다는 비유도 곁들였습니다.</p>
+<p><strong>확인 불가:</strong> 기사의 회사·모델 이름·점수 향상 폭은 음성 기록이 불분명하고 이 환경에서 확인하지 못했습니다. 작성자가 아는 범위에서는 모델 내부를 해석하려는 연구 분야(해석가능성)가 있고 작은 모델에서 시도되며, 초파리 뇌 전체의 연결 지도는 2024년에 공개된 것으로 압니다(작성자 지식, 미확인). 수업에서 사실로 전하려면 출처를 먼저 확인하세요. 이 기사가 맞더라도 “큰 상용 모델의 가중치를 사람이 직접 고칠 수 있다”는 뜻은 아닙니다(03절).</p></div>
 </section>
 
 <section id="s02" aria-labelledby="s02-h"><h2 id="s02-h"><span class="num">02</span>세 가지 이용 경로<span class="pg">p.9–12</span></h2>
@@ -184,6 +199,11 @@ footer p{max-width:80ch}
 <div class="flow"><div><b>모델 가중치 확보</b></div><i>→</i><div><b>실행 프로그램과 컴퓨터 준비</b></div><i>→</i><div><b>모델 실행과 이용 화면 연결</b></div></div>
 <div class="src"><span class="pl">자료 p.12</span><p>“실행·접근 권한·기록·업데이트를 자신이나 조직이 관리한다.”</p></div>
 <div class="box t"><h4>강의 포인트</h4><p>세 경로를 “누가 컴퓨터를 켜 두고 있는가”로 설명하면 쉽습니다. ①과 ②는 제공자의 컴퓨터가 계산하고, ③은 내 컴퓨터나 조직의 컴퓨터가 계산합니다. ①과 ②의 차이는 계산하는 곳이 아니라 <strong>사람이 쓰느냐, 프로그램이 쓰느냐</strong>입니다.</p></div>
+<div class="box l"><h4>강의에서 덧붙인 말 · 채팅 화면은 껍데기, API는 직접 쓰는 통로 <span class="tag lec">강의</span></h4>
+<p>강사는 채팅 프로그램을 “누가 만들어 놓은 것이고, <strong>AI 자체가 아니라 AI를 쓸 수 있는 껍데기</strong>”라고 했습니다. 껍데기 없이 모델을 직접 가져다 쓰려면 API를 씁니다. 같은 모델을 화면으로 쓸 수도, API로 쓸 수도 있다는 점이 p.9–11의 요점입니다.</p>
+<p>시연에서는 LM Studio의 <strong>로컬 서버</strong> 기능을 보여 주었습니다. 내 컴퓨터에 올려 둔 모델에 API 서버를 열어 두면, 채팅창 없이도 다른 프로그램이 필요할 때마다 그 모델을 불러 쓸 수 있습니다. 외부 모델 API를 쓰는 것(p.11)과 같은 구조이고, 모델이 도는 컴퓨터가 내 것이라는 점만 다릅니다.</p></div>
+<div class="box p"><h4>보충 · 자료 밖 내용 <span class="tag ok">공식 문서 확인</span></h4><p>LM Studio 공식 문서 저장소(lmstudio-ai/docs)에 “OpenAI Compatibility Endpoints” 항목이 있어, 로컬 서버가 널리 쓰이는 외부 API와 같은 형식(OpenAI 호환)을 제공함을 확인했습니다. 따라서 같은 프로그램에서 접속 주소만 바꿔 외부 모델과 로컬 모델을 번갈아 시험할 수 있습니다. 지원하는 항목의 범위는 쓰는 버전의 문서에서 확인하세요.</p></div>
+<div class="box w"><h4>확인 불가 · 구독과 API 크레딧 <span class="tag na">미확인</span></h4><p>강사는 월 100달러 이상 구독하면 같은 금액의 API 크레딧을 받는다고 설명했습니다. 구독 요금제와 API 요금은 서로 다른 상품인 경우가 많고, 이런 혜택이 있는지와 조건은 서비스와 시기에 따라 달라서 제 쪽에서는 확인할 수 없었습니다. 수업에서 그대로 전하지 말고 각 서비스의 공식 안내에서 확인하세요(예: Claude 구독은 support.claude.com, API는 docs.claude.com).</p></div>
 </section>
 
 <section id="s03" aria-labelledby="s03-h"><h2 id="s03-h"><span class="num">03</span>공개 여부 · 실행 주체 · 이용 통로 · 라이선스<span class="pg">p.13–16</span></h2>
@@ -200,8 +220,23 @@ footer p{max-width:80ch}
 <div class="pair"><div><h4>모델 라이선스 (p.14)</h4><p>사용·수정·재배포 등 허용 조건. 공개되었다고 모든 용도가 허용되지는 않는다.</p></div><div><h4>서비스 조건</h4><p>이용 요금·자료 처리·접근 권한. 같은 모델이라도 제공 서비스에 따라 달라질 수 있다.</p></div></div>
 <div class="src"><span class="pl">자료 p.15 · 교육용 조건</span><p>조직 내부 명단은 외부 전송 금지 → 외부 모델 API에 그 명단을 보내는 경로는 사용할 수 없다. 공개 행사 안내문으로 자료 해석을 배울 수 있다. 내부 명단의 실제 사용 허가는 별도로 확인한다.</p></div>
 <div class="box v"><h4>검증 · 같은 계열 안에서도 라이선스가 다르다 <span class="tag ok">공식 자료로 확인</span></h4><p>Qwen2.5 공식 GitHub 저장소의 README(2025-01-12 판)는 라이선스를 이렇게 적고 있습니다.</p><div class="calc">"All our open-source models, except for the 3B and 72B variants,
- are licensed under Apache 2.0."</div><p>같은 Qwen2.5 계열이라도 0.5B·7B는 Apache 2.0이고 3B·72B는 별도 라이선스입니다. p.14의 “공개되었다고 모든 용도가 허용되지는 않는다”를 보여 주는 실제 사례이고, 06절의 0.5B 모델 카드(Apache 2.0)와도 일치합니다.</p></div>
-<div class="box p"><h4>보충 · 자료 밖 내용 <span class="tag add">용어</span></h4><p>“공개 가중치(open weights)”와 “오픈소스”는 같은 말이 아닙니다. 오픈소스 이니셔티브(OSI)가 2024년에 발표한 오픈소스 AI 정의는 가중치뿐 아니라 학습 코드와 학습 자료에 관한 충분한 정보까지 공개되어야 오픈소스 AI로 봅니다. 그래서 가중치만 공개한 모델은 흔히 “공개 가중치 모델”로 따로 부릅니다. 수업에서는 학습자가 “오픈소스니까 마음대로 써도 된다”고 말할 때 이 구분과 라이선스 확인을 함께 짚어 주세요.</p></div>
+ are licensed under Apache 2.0."</div><p>같은 Qwen2.5 계열이라도 0.5B·7B는 Apache 2.0이고 3B·72B는 별도 라이선스입니다. p.14의 “공개되었다고 모든 용도가 허용되지는 않는다”를 보여 주는 실제 사례이고, 07절의 0.5B 모델 카드(Apache 2.0)와도 일치합니다.</p></div>
+<div class="box p"><h4>보충 · 자료 밖 내용 <span class="tag add">용어</span></h4><p>“공개 가중치(open weights)”와 “오픈소스”는 같은 말이 아닙니다. 오픈소스 이니셔티브(OSI)가 2024년에 발표한 오픈소스 AI 정의는 가중치뿐 아니라 학습 코드와 학습 자료에 관한 충분한 정보까지 공개되어야 오픈소스 AI로 봅니다(작성자 지식, 원문 미확인). 그래서 가중치만 공개한 모델은 흔히 “공개 가중치 모델”로 따로 부릅니다. 수업에서는 학습자가 “오픈소스니까 마음대로 써도 된다”고 말할 때 이 구분과 라이선스 확인을 함께 짚어 주세요.</p></div>
+<div class="box l"><h4>강의에서 덧붙인 말 · 두 개의 서로 다른 기준 <span class="tag lec">강의</span></h4>
+<p>강사는 설명 도중 “공개 가중치와 API는 서로 다른 기준이다”라며 앞의 설명을 스스로 정정했습니다. 공개 가중치의 반대는 <strong>비공개(상용 모델)</strong>이고, API의 반대는 <strong>채팅 서비스</strong>입니다. 둘은 다른 축이므로 2×2로 놓으면 섞이지 않습니다.</p>
+<div class="tbl"><table><thead><tr><th></th><th>API (프로그램이 씀)</th><th>채팅 서비스 (사람이 씀)</th></tr></thead><tbody>
+<tr><td>비공개 가중치<br><span style="color:var(--ink-3)">Claude · GPT · Grok · Gemini 등</span></td><td>그 회사의 API</td><td>그 회사의 앱·웹</td></tr>
+<tr><td>공개 가중치<br><span style="color:var(--ink-3)">Qwen · DeepSeek 등</span></td><td>외부 제공자의 API, 또는 내 PC의 로컬 서버</td><td>외부 서비스 화면, 또는 LM Studio 같은 내 PC의 화면</td></tr></tbody></table></div>
+<p>이 표는 자료 p.16의 세 조합과 같은 내용입니다.</p>
+<p>상용 모델은 가중치를 볼 수 없어서 <strong>그 회사의 API(또는 앱)를 쓰는 것 외에 방법이 없다</strong>고 했습니다. 공개 모델도 GPU나 큰 메모리가 없으면 직접 돌릴 수 없으므로, 실행 환경을 대신 제공하는 서비스가 많고 그 서비스는 API로 씁니다. 강의에서는 DeepSeek의 API 플랫폼과 Qwen을 제공하는 클라우드 서비스를 예로 보여 주었습니다.</p></div>
+<div class="box w"><h4>검증 · “상용 모델은 튜닝할 방법이 없다” <span class="tag na">단순화 가능</span></h4><p>상용 모델의 가중치를 <strong>내가 내려받아 직접 바꾸는 것</strong>은 불가능합니다. 다만 작성자가 알기로는 일부 제공자가 일부 모델에 대해 <strong>제공자가 대신 돌려 주는 미세조정 기능</strong>을 따로 제공합니다(작성자 지식, 이 환경에서는 확인하지 못함). 그래서 “방법이 전혀 없다”보다 “가중치를 받아 직접 바꿀 수는 없고, 제공자가 허용하는 범위에서만 가능하다”가 정확합니다. 수업에서는 후자로 말하고, 쓰려는 모델의 공식 안내를 확인하게 하세요. 미세조정 자체는 p.94–96에서 다룹니다.</p></div>
+<div class="box l"><h4>강의에서 덧붙인 말 · OpenRouter 같은 중계 서비스 <span class="tag lec">강의</span></h4>
+<p>모델이 너무 많아 하나씩 가입해 쓰기 불편해서, 여러 회사의 모델을 한곳에서 API로 쓰게 해 주는 <strong>중계 서비스</strong>가 생겼다고 했습니다. 강의에서 보여 준 서비스가 OpenRouter입니다(음성 기록에는 ‘오픈라우터’로 적힘).</p>
+<ul><li>공개 모델은 누구나 내려받을 수 있어서, 같은 모델을 서비스하는 <strong>제공자(provider)</strong>가 세계 곳곳에 여러 곳 있습니다. 같은 모델이라도 제공자마다 가격이 다르므로 가장 싼 곳을 고를 수 있습니다.</li>
+<li>크레딧을 충전한 뒤 그 크레딧으로 API를 부르는 방식이고, 채팅 화면도 제공합니다.</li>
+<li>강사는 이를 이용해 <strong>전 세계 모델을 두루 시험해 보라</strong>고 권했습니다.</li></ul>
+<p><em>강의 안의 모순:</em> 어떤 대목에서는 “Claude·GPT 같은 상용 모델은 이런 서비스가 필요 없다”고 했고, 다른 대목에서는 “상용 모델도 목록에 다 있다”고 했습니다. 작성자가 아는 바로는 상용 모델도 중계 서비스에 올라 있으며, 이 경우 제공자는 원래 회사 하나입니다(작성자 지식, 미확인). 공개 모델은 제공자가 여럿, 상용 모델은 원래 회사 하나라고 정리하면 두 말이 모두 맞습니다.</p></div>
+<div class="box p"><h4>보충 · 자료가 지나가는 곳이 늘어난다</h4><p>중계 서비스를 쓰면 입력이 <strong>중계 서비스와 최종 제공자를 모두 거칩니다</strong>. p.15의 “입력할 자료와 실행 경로”, p.101–102의 학습 이용·보존 조항을 두 곳 모두에 대해 확인해야 합니다. 개인정보나 내부 자료는 공개용 예제로 바꿔서 시험하세요.</p></div>
 </section>
 
 <section id="s04" aria-labelledby="s04-h"><h2 id="s04-h"><span class="num">04</span>모델마다 능력과 부담이 다른 이유<span class="pg">p.17 · p.22–23</span></h2>
@@ -218,6 +253,14 @@ footer p{max-width:80ch}
 <div class="pair"><div><h4>형식이 분명한 짧은 변환 (p.23)</h4><p>제목 다섯 개를 지정 형식으로 정리. 작은 모델도 요구를 충족한다면 응답 시간과 비용이 낮은 후보를 선택.</p></div><div><h4>여러 조건을 함께 푸는 계획</h4><p>가능 시간·선후 조건을 맞춰 일정 제안. 조건을 함께 다루는 능력이 중요하고, 추가 계산을 쓰는 후보도 비교.</p></div></div>
 <div class="src"><span class="pl">자료 p.17 · p.23</span><p>“한 조건만으로 품질을 정할 수 없다.” “크기만으로 결정하지 않고, 필요한 결과를 내는지와 이용 부담을 함께 본다.”</p></div>
 <p>1일차 p.104(“매개변수 수가 같아도 같은 모델은 아니다”)와 p.144–146(모델 선택의 출발점, 입력 길이와 난이도)의 기준이 그대로 이어집니다.</p>
+<div class="box l"><h4>강의에서 덧붙인 말 · IQ 비유 <span class="tag lec">강의</span></h4>
+<p>강사는 모델 크기를 IQ에 비유했습니다. “IQ가 높은 사람도 공부를 안 하면 모르고, IQ가 낮다고 시험을 못 보는 것도 아니다.” 그래서 <strong>무엇을 공부했는가</strong>와 <strong>IQ가 높은가</strong>를 따로 봅니다. 모델이 크면 토큰 사이의 관계를 더 다양하게 이해해서 성능이 잘 나오지만, 무조건은 아니라고도 했습니다.</p>
+<div class="tbl"><table><thead><tr><th>강사의 비유</th><th>이 페이지의 표 (p.17)</th></tr></thead><tbody>
+<tr><td>모델 크기 = IQ</td><td>모델 구조·규모</td></tr>
+<tr><td>무엇을 공부했는가</td><td>학습 자료·학습 방식</td></tr>
+<tr><td>복잡한 문제를 어떻게 푸는가</td><td>추론에 쓰는 계산</td></tr>
+<tr><td>실행 환경이 어떠한가</td><td>서비스 실행 환경</td></tr></tbody></table></div></div>
+<div class="box p"><h4>보충 · 비유의 한계</h4><p>IQ는 사람 한 명에게 붙는 하나의 수치지만, 모델은 과제마다 강점과 약점이 다릅니다(p.23). 매개변수 수가 같아도 같은 모델이 아니라는 1일차 p.104의 말도 함께 짚어 주세요. 이 비유는 입문용으로만 쓰는 것이 좋습니다.</p></div>
 </section>
 
 <section id="s05" aria-labelledby="s05-h"><h2 id="s05-h"><span class="num">05</span>규모 · 비트 · 메모리 · 양자화<span class="pg">p.18–21</span></h2>
@@ -237,13 +280,59 @@ footer p{max-width:80ch}
 <tr><td>30,720토큰</td><td class="r">2.34GB</td><td class="r">2.01GB</td><td class="r">1.85GB</td></tr></tbody></table></div>
 <ul>
 <li><strong>계산과 부합:</strong> 0.49B × 2바이트 = 약 0.98GB. 입력이 거의 없을 때 측정된 0.97GB와 거의 같습니다. p.20의 계산 방식이 실제와 맞습니다.</li>
-<li><strong>양자화가 정확히 절반이 되지는 않음:</strong> 8비트로 바꿔도 0.98GB의 절반(0.49GB)이 아니라 0.64GB입니다. 일부 값은 원래 정밀도로 남기고, 실행에 필요한 메모리가 따로 들기 때문입니다.</li>
+<li><strong>양자화가 정확히 절반이 되지는 않음:</strong> 8비트로 바꿔도 0.98GB의 절반(0.49GB)이 아니라 0.64GB입니다. 문서는 그 이유를 설명하지 않습니다. 일반적으로 임베딩 같은 일부 값이 원래 정밀도로 남고 실행 환경이 쓰는 메모리가 따로 들기 때문으로 알려져 있으나, 이 측정에서 확인한 것은 아닙니다(추정).</li>
 <li><strong>입력이 길수록 메모리가 늘어남:</strong> 같은 모델도 입력 30,720토큰에서는 2.34GB가 필요했습니다. 문맥을 계산하는 동안 쌓이는 중간 값 때문입니다. p.8의 “계산 중인 데이터”가 이것입니다.</li>
+<li><strong>같은 모델·같은 GPU에서도 실행 프로그램에 따라 속도가 크게 다름:</strong> 같은 문서에는 같은 Qwen2.5-0.5B-Instruct(BF16, 입력 1토큰)를 vLLM으로 돌린 측정도 있고 <strong>초당 311.55토큰</strong>입니다. Transformers의 47.40토큰과 같은 A100 80GB에서 약 <strong>6.6배</strong> 차이입니다(311.55 ÷ 47.40 = 6.57). 01절의 “같은 가중치라도 실행 프로그램에 따라 속도가 달라진다”가 실제 숫자로 확인됩니다.</li>
 <li><strong>적게 쓴다고 항상 빨라지지는 않음:</strong> 같은 표에서 생성 속도는 BF16이 초당 47.40토큰, GPTQ-Int8이 35.17토큰으로 8비트가 더 느렸습니다. 양자화는 메모리를 줄이지만, 속도는 실행 프로그램과 장치에 따라 달라집니다.</li></ul></div>
 <div class="box w"><h4>주의 · GB의 두 가지 뜻</h4><p>자료는 1GB를 10억 바이트로 둡니다. 운영체제나 일부 도구는 1GB를 2³⁰ = 1,073,741,824바이트(정확히는 GiB)로 표시해서, 같은 파일이 약 7% 작은 숫자로 보일 수 있습니다. 학습자가 “계산과 다르다”고 하면 단위부터 확인하세요.</p></div>
+<div class="box l"><h4>강의에서 덧붙인 말 · 자릿수 비유 <span class="tag lec">강의</span></h4>
+<p>강사는 양자화를 <strong>유효 자릿수</strong>에 비유했습니다. 숫자를 한 자릿수로만 쓸 수 있으면 1, 2, 3, 10, 20, 30, 100, 200, 300 같은 값밖에 못 쓰고, 두 자릿수를 쓰면 13, 21, 37, 1.6, 2.4, 150까지 표현됩니다. 자릿수가 많을수록 섬세하게 저장할 수 있고, 그만큼 메모리가 듭니다.</p>
+<div class="tbl"><table><thead><tr><th>원래 수</th><th class="r">1자리</th><th class="r">2자리</th><th class="r">3자리</th></tr></thead><tbody>
+<tr><td>137</td><td class="r">100 · 오차 27.0%</td><td class="r">140 · 오차 2.2%</td><td class="r">137 · 오차 0%</td></tr>
+<tr><td>2.37</td><td class="r">2 · 오차 15.6%</td><td class="r">2.4 · 오차 1.3%</td><td class="r">2.37 · 오차 0%</td></tr></tbody></table></div>
+<p>모델 이름의 ‘27B’는 매개변수 270억 개이고, 요즘은 1조 개 규모까지 올라간다고 했습니다. 강사의 “1B는 약 1GB”는 값 하나를 1바이트(8비트)로 저장할 때의 어림이며, 16비트라면 2GB입니다(p.20).</p></div>
+<div class="box v"><h4>검증 · 가중치 파일 크기 어림 (가중치만, 1GB = 10억 바이트) <span class="tag ok">강의 수치와 부합</span></h4>
+<div class="tbl"><table><thead><tr><th>매개변수</th><th class="r">16비트</th><th class="r">8비트</th><th class="r">4비트</th></tr></thead><tbody>
+<tr><td>0.49B</td><td class="r">0.98GB</td><td class="r">0.49GB</td><td class="r">0.25GB</td></tr>
+<tr><td>12B</td><td class="r">24GB</td><td class="r">12GB</td><td class="r"><strong>6GB</strong></td></tr>
+<tr><td>27B</td><td class="r">54GB</td><td class="r">27GB</td><td class="r">13.5GB</td></tr></tbody></table></div>
+<p>강사는 12B급 모델이 6GB쯤 든다고 했는데, 4비트로 저장한 파일의 크기와 정확히 맞습니다. 그리고 48GB 메모리의 맥에서 27B급 모델이 돌아간 시연은 8비트(27GB)나 4비트(13.5GB) 파일이었다고 보면 앞뒤가 맞습니다. 16비트(54GB)는 48GB에 올라가지 않습니다. 모델이 어떤 비트 수로 저장됐는지는 모델 이름이나 파일 설명에서 확인해야 합니다.</p></div>
 </section>
 
-<section id="s06" aria-labelledby="s06-h"><h2 id="s06-h"><span class="num">06</span>모델 카드 읽기<span class="pg">p.24–27</span></h2>
+<section id="s06" aria-labelledby="s06-h"><h2 id="s06-h"><span class="num">06</span>내 컴퓨터에서 모델 돌려 보기 (강의 시연)<span class="pg">강의 · p.6–12 관련</span></h2>
+<p class="lead">강사는 LM Studio로 공개 모델을 내려받아 자기 컴퓨터에서 직접 돌려 보였습니다. 01절의 “가중치 + 프로그램 + 램 + GPU”를 실제로 해 보는 과정입니다.</p>
+<div class="flow"><div><b>모델 검색</b><span>크기가 함께 표시됨</span></div><i>→</i><div><b>내 PC에 맞는지 확인</b><span>‘최적’ 표시 활용</span></div><i>→</i><div><b>내려받기</b><span>가중치 파일</span></div><i>→</i><div><b>불러오기</b><span>메모리에 올림</span></div><i>→</i><div><b>대화</b><span>생각 과정 표시</span></div><i>→</i><div><b>로컬 서버</b><span>다른 프로그램이 호출</span></div></div>
+<div class="box l"><h4>강의에서 보여 준 것 <span class="tag lec">강의</span></h4><ul>
+<li><strong>모델 크기가 화면에 표시됩니다.</strong> 수백 GB짜리 대형 공개 모델은 파일을 내려받을 수는 있어도 “그만큼의 메모리가 있어야 돌아가므로” 쓰기 어렵고, 쓰려면 1TB급 메모리의 PC나 그래픽 카드가 필요하다고 했습니다(음성 기록의 숫자: 약 554GB).</li>
+<li><strong>‘최적’ 표시</strong>는 내 PC 사양을 읽어 돌아가는 모델 중 가장 좋은 것을 알려 준다고 했습니다.</li>
+<li>메모리가 작은 사람도 <strong>12B급 모델(6GB 안팎)</strong>이면 시험해 볼 수 있다고 했습니다(05절 검증과 부합).</li>
+<li>시연: 48GB 메모리의 맥에서 27B급 모델이 생각 과정을 보여 주며 한국어로 응답했습니다. 사고를 얼마나 깊게 할지도 설정할 수 있었습니다.</li>
+<li>도구: NVIDIA RTX 노트북은 LM Studio나 Ollama, 맥은 MLX 기반 도구, 윈도우는 GGUF 형식(음성 기록에는 ‘거프’로 적힘, 작성자의 추정) 모델을 많이 쓴다고 했습니다.</li></ul></div>
+<div class="tbl"><table><thead><tr><th>목적 (강사의 조언)</th><th>내용</th><th>이 문서의 판정</th></tr></thead><tbody>
+<tr><td>수업 데모용</td><td>맥북 48GB로 충분 (강사 본인 사례)</td><td><span class="tag ok">05절 계산과 부합</span></td></tr>
+<tr><td>실제로 쓸 수준</td><td>64GB 이상. 32GB급 모델을 48GB 맥에서 돌리면 다른 작업이 버벅였음</td><td><span class="tag ok">부합</span> 아래 ‘여유 메모리’ 참고</td></tr>
+<tr><td>집에서 PC로</td><td>GPU 자체의 속도보다 <strong>메모리 용량</strong>이 중요. AMD 7900 XT 64GB를 추천</td><td><span class="tag ng">용량 불일치 가능</span> 아래 참고</td></tr>
+<tr><td>32GB 이상 GPU 가격</td><td>값이 크게 올라 최소 100만 원대 시작</td><td><span class="tag na">미확인</span></td></tr>
+<tr><td>통합 메모리 PC</td><td>AMD Ryzen AI Max는 메모리가 통합되어 있으나 대역폭이 느림</td><td><span class="tag na">방향은 부합, 수치 미확인</span></td></tr></tbody></table></div>
+<div class="box w"><h4>검증 · 제품 사양은 구매 전에 사양표로 <span class="tag ng">확인 필요</span></h4><p>작성자가 아는 AMD Radeon RX 7900 XT의 그래픽 메모리(VRAM)는 <strong>20GB</strong>로, 강의의 “64GB”와 다릅니다. 음성 기록의 오류이거나 다른 제품(예: 더 큰 용량의 전문가용 카드)을 말한 것일 수 있습니다(작성자 지식, 이 환경에서는 확인하지 못함). 구매 전에는 반드시 제조사의 사양표에서 VRAM 용량과 가격을 확인하고, 수업에서 제품명을 그대로 옮기지 마세요.</p></div>
+<div class="box w"><h4>검증 · “PCI 슬롯이 제일 빠르다”는 설명 보완 <span class="tag na">보완 필요</span></h4><p>강사는 윈도우 PC의 그래픽 카드가 가장 빠르다고 했습니다. 방향은 맞지만, 생성 속도를 좌우하는 것은 보통 PCI 슬롯이 아니라 <strong>가중치가 올라가 있는 메모리의 대역폭</strong>입니다(작성자 지식). 일반적으로 그래픽 카드의 전용 메모리가 가장 빠르고, 통합 메모리 기기는 그보다 느리다고 알려져 있습니다. 대략적인 상한은 이렇게 어림할 수 있습니다.</p>
+<div class="calc">초당 생성 토큰 수의 상한 ≈ 메모리 대역폭 ÷ 모델 파일 크기   (밀집 모델 기준)
+예) 13.5GB(27B·4비트)에서
+    대역폭 256GB/s  → 약 19토큰/초
+    대역폭 546GB/s  → 약 40토큰/초
+    대역폭 1,000GB/s → 약 74토큰/초</div>
+<p>세 대역폭은 설명용 가정값입니다. 이 어림은 <strong>상한</strong>이고 실제는 더 낮습니다. 작은 모델에서는 아예 맞지 않습니다. 예를 들어 05절에서 본 Qwen2.5-0.5B 공식 측정은 대역폭이 매우 큰 A100에서도 Transformers로는 초당 47토큰에 그쳤고, 같은 모델을 vLLM으로 돌린 측정은 초당 311.55토큰이었습니다. 모델이 작으면 모델 파일을 읽는 시간이 아니라 실행 프로그램의 처리 지연 같은 다른 요인이 속도를 정하기 때문입니다. 전문가 혼합(MoE) 모델은 한 번에 일부 매개변수만 읽어서 다시 다릅니다.</p></div>
+<div class="box w"><h4>검증 · 필요한 메모리는 파일 크기보다 크다</h4><p>05절의 공식 측정에서 0.5B 모델은 입력이 거의 없을 때 0.97GB였지만 입력이 30,720토큰이면 2.34GB로 늘었습니다(+1.37GB). 모델 파일이 메모리에 들어간다고 끝이 아니라, 문맥 길이만큼 더 필요하고 운영체제와 다른 프로그램의 몫도 남겨야 합니다. 강사가 “32GB급 모델을 48GB 맥에서 돌리면 다른 게 버벅거렸다”고 한 경험과 맞는 설명입니다. 또 맥은 통합 메모리 중 GPU가 쓸 수 있는 비율에 기본 상한이 있는 것으로 알려져 있습니다(작성자 지식, 대략 3분의 2~4분의 3으로 기억하며 미확인). 정확한 값은 사용할 기기와 도구의 안내를 확인하세요.</p></div>
+<div class="box t"><h4>강의 포인트 · 내 PC로 돌릴 수 있는지 확인하는 순서</h4><ol>
+<li>모델 파일 크기를 확인한다 (또는 매개변수 수 × 비트 수 ÷ 8로 어림한다).</li>
+<li>내 메모리(그래픽 메모리 또는 통합 메모리)가 파일 크기 + 문맥·운영체제 몫의 여유를 감당하는지 본다.</li>
+<li>돌아가더라도 속도는 메모리 대역폭에 달려 있음을 안내한다.</li>
+<li>모델 카드에서 라이선스와 허용 용도를 확인한다 (03절).</li>
+<li>시험에는 공개용 예제만 쓴다. 내 PC에서 돌려도 외부 검색 같은 도구를 연결하면 자료가 밖으로 나갈 수 있다(p.99).</li></ol></div>
+<div class="box w"><h4>주의 · 정렬을 줄인 파생 모델</h4><p>강사는 모델 이름 뒤에 ‘uncensored’가 붙은 파생 모델을 소개하며, 모델이 불법적인 일을 중간에 막지 못하도록 풀어 놓은 버전이라고 설명했습니다. 1일차의 정렬(p.100)을 약하게 만든 모델이라는 뜻입니다. 쓰는 사람이 책임져야 하는 영역이 커지므로, 라이선스·기관 규정·법적 책임을 먼저 확인해야 하고 수업 시연용으로는 권하지 않습니다. 강사는 또 중국 모델의 API가 한국사 문제에서 중단되는 경험을 했다고 했는데, 이는 모델이 아니라 제공자 쪽 필터일 수 있으며 원인은 확인할 수 없었습니다.</p></div>
+</section>
+
+<section id="s07" aria-labelledby="s07-h"><h2 id="s07-h"><span class="num">07</span>모델 카드 읽기<span class="pg">p.24–27</span></h2>
 <div class="src"><span class="pl">자료 p.24</span><p>모델 카드: 용도와 특성을 설명하는 문서. 모델의 이름과 판본 / 학습·지원 기능·용도·제약 / 문맥 길이·평가 결과·라이선스</p></div>
 <div class="tbl"><table><thead><tr><th>항목 (p.25–26)</th><th>Qwen2.5-0.5B-Instruct 카드의 표기</th><th>읽는 법</th></tr></thead><tbody>
 <tr><td>매개변수 수</td><td class="mono">Number of Parameters: 0.49B</td><td>약 4억 9천만 개</td></tr>
@@ -254,9 +343,27 @@ footer p{max-width:80ch}
 <div class="pair"><div><h4>문맥 길이 (p.27)</h4><p>입력과 이어지는 생성을 처리하는 범위. 입력이 길수록 남는 생성 여유가 줄어드는 제한 방식이 있다.</p></div><div><h4>생성 길이</h4><p>한 번에 생성할 수 있는 출력의 상한. 문맥에 여유가 있어도 생성 상한을 넘겨 출력할 수는 없다.</p></div></div>
 <p>1일차 p.120(문맥 한도와 출력 한도)의 가상 모델 설명을 실제 모델 카드에서 확인하는 페이지입니다.</p>
 <div class="box w"><h4>주의 · 카드도 판본이 있다</h4><p>자료는 “2026-11-03 확인”, “최신 추천 순위가 아님”이라고 밝혔습니다. 모델 카드는 수정될 수 있으므로, 수업 자료에 옮길 때는 확인한 날짜와 판본 이름(예: -Instruct, 기본 모델)을 함께 적습니다.</p></div>
+<div class="box l"><h4>강의에서 덧붙인 말 · 모델 카드로 입력·출력 능력 찾기 <span class="tag lec">강의</span></h4>
+<p>강사는 모델 카드 화면을 열어 보이며 “여기 다 나와 있다”고 했습니다. 핵심 문장은 <strong>“지원 안 하면 못 쓴다”</strong>입니다. 화면 캡처를 올려 이미지를 읽게 할 수 있는 것도 그 모델이 이미지 입력을 지원하기 때문이고, 지원하지 않는 입력은 아예 넣을 수 없습니다.</p>
+<div class="tbl"><table><thead><tr><th>모델 카드에서 볼 항목</th><th>왜 보는가</th></tr></thead><tbody>
+<tr><td>입력 형식 (텍스트·이미지·비디오·오디오·PDF)</td><td>지원하지 않는 형식은 쓸 수 없다</td></tr>
+<tr><td>출력 형식</td><td>음성을 만들려면 오디오를 출력하는 모델이 필요하다</td></tr>
+<tr><td>추론(thinking) 모드 지원</td><td>p.28의 추가 계산을 쓸 수 있는가</td></tr>
+<tr><td>검색 기능 지원</td><td>최신 정보를 가져올 수 있는가 (1일차 p.133)</td></tr>
+<tr><td>실시간(Live) API 지원</td><td>10절의 실시간 대화·번역에 필요</td></tr>
+<tr><td>문맥 길이 · 생성 길이</td><td>p.27</td></tr>
+<tr><td>라이선스 · 판본 · 확인 날짜</td><td>p.14, 위 경고</td></tr></tbody></table></div>
+<div class="tbl"><table><thead><tr><th>강의 시연 예</th><th>입력</th><th>출력</th></tr></thead><tbody>
+<tr><td>Gemini 계열 일반 모델</td><td>텍스트·이미지·비디오·오디오·PDF</td><td>텍스트만</td></tr>
+<tr><td>Claude 모델 카드</td><td>텍스트·이미지</td><td>텍스트만</td></tr></tbody></table></div>
+<p>강사는 Claude를 “영상 생성이나 영상 분석이 안 되는, 언어에 집중한 모델”이라고 설명했고, 이미지는 별도로 만들어 둔 이미지 모델을 연결해 처리하는 경우가 많다고 했습니다. 같은 모델 카드에서 <strong>모델이 직접 하는 일</strong>과 <strong>서비스가 연결해 주는 일</strong>을 구분해야 합니다(p.40).</p></div>
+<div class="box w"><h4>확인 불가 · 카드 원문 <span class="tag na">미확인</span></h4><p>위 표는 강의에서 화면으로 설명한 내용을 옮긴 것입니다. 이 환경에서는 모델 카드 페이지에 접속할 수 없어 원문과 대조하지 못했고, 모델 이름과 판본은 음성 기록이 부정확해 적지 않았습니다. 모델 카드는 판본마다 바뀌므로 수업 직전에 해당 카드를 열어 확인하세요.</p></div>
+<div class="box l"><h4>강의에서 덧붙인 말 · “조사해서”로 최신 정보 가져오기 <span class="tag lec">강의</span></h4>
+<p>강사는 질문에 “조사해서”라는 말을 넣는 습관을 소개했습니다. 모델이 학습한 정보의 날짜 한계(지식 컷오프, 1일차 p.133)를 넘어 최신 정보를 쓰려는 것이고, 이렇게 요청하면 모델이 검색을 합니다. 검색 결과가 이번 입력에 들어오므로 1일차 p.133의 “이번 입력으로 받은 정보”에 해당합니다.</p>
+<p>이는 <strong>그 서비스에 검색 기능이 켜져 있을 때</strong>의 이야기입니다. 검색 기능은 모델 카드의 지원 여부와 서비스의 연결 구성을 모두 확인해야 합니다(p.40).</p></div>
 </section>
 
-<section id="s07" aria-labelledby="s07-h"><h2 id="s07-h"><span class="num">07</span>추론형 모델과 일정 문제<span class="pg">p.28–33</span></h2>
+<section id="s08" aria-labelledby="s08-h"><h2 id="s08-h"><span class="num">08</span>추론형 모델과 일정 문제<span class="pg">p.28–33</span></h2>
 <div class="flow"><div><b>입력</b><span>문제와 자료, 함께 지켜야 할 조건</span></div><i>→</i><div><b>답변 준비</b><span>조건 관계를 다루는 추가 계산</span></div><i>→</i><div><b>최종 답변</b><span>풀이·계획·설명</span></div></div>
 <p>‘추론’의 두 뜻은 1일차 p.123에서 처음 나왔습니다. 여기서는 “문제 풀이를 위한 추가 계산”의 뜻입니다.</p>
 <div class="tbl"><table><thead><tr><th>발표 (p.29 · 교육용 상황)</th><th>가능한 시작</th><th>추가 조건</th></tr></thead><tbody>
@@ -278,9 +385,11 @@ footer p{max-width:80ch}
    10:00만 허용하고 선후 조건 유지 → 가가 나(09:30)보다 앞서야 함 → 해 없음
    선후 조건만 해제               → 가의 자리(09:00·09:30)가 모두 참 → 해 없음</div><p>대안 2가 “가의 두 조건”을 함께 바꿔야 하는 이유까지 확인됩니다.</p></div>
 <div class="src"><span class="pl">자료 p.33</span><p>“AI와 대안을 찾고, 실제로 바꿀 수 있는 조건인지 담당자가 판단한다.”</p></div>
+<div class="box l"><h4>강의에서 덧붙인 말 · 생각 설정을 바꿔 가며 비교 <span class="tag lec">강의</span></h4>
+<p>강사는 채팅 앱에서 모델과 생각(thinking) 설정을 바꿔 같은 질문을 던지며, 설정에 따라 사고를 길게 쓰기도 하고 짧게 쓰기도 한다고 보여 주었습니다. 답변 전에 문제를 푸는 생각 토큰을 먼저 만들면 결과가 더 잘 나오는 경우가 있고, 모델마다 그 생각을 짧게 하느냐 길게 하느냐에 따라 결과가 달라진다는 설명입니다. 이 페이지의 일정 문제를 두 설정으로 풀려 보는 실습으로 쓸 수 있습니다.</p></div>
 </section>
 
-<section id="s08" aria-labelledby="s08-h"><h2 id="s08-h"><span class="num">08</span>설명 · 추론 요약 · 사용량 · 도구 기록<span class="pg">p.34–35</span></h2>
+<section id="s09" aria-labelledby="s09-h"><h2 id="s09-h"><span class="num">09</span>설명 · 추론 요약 · 사용량 · 도구 기록<span class="pg">p.34–35</span></h2>
 <div class="tbl"><table><thead><tr><th>보이는 내용 (p.34 · 교육용 예)</th><th>무엇을 알 수 있는가</th></tr></thead><tbody>
 <tr><td>최종 답변: 다 → 가 → 나</td><td>모델이 제안한 순서</td></tr>
 <tr><td>설명: 다의 가능 시간이 하나뿐</td><td>결과를 설명하기 위해 제시한 근거</td></tr>
@@ -290,7 +399,7 @@ footer p{max-width:80ch}
 <div class="box w"><h4>주의</h4><p>1일차 p.45의 원칙과 같습니다. “모델의 답변만으로 검색이나 게시가 실제 수행됐다고 판단할 수는 없다.” 예약이 됐는지는 도구가 돌려준 기록으로 확인합니다. 덧붙여 예약 시간 09:00–10:30은 발표 셋 × 30분 = 90분과 일치합니다.</p></div>
 </section>
 
-<section id="s09" aria-labelledby="s09-h"><h2 id="s09-h"><span class="num">09</span>멀티모달 · 그림 · 음성 · 문서<span class="pg">p.36–43</span></h2>
+<section id="s10" aria-labelledby="s10-h"><h2 id="s10-h"><span class="num">10</span>멀티모달 · 그림 · 음성 · 문서<span class="pg">p.36–43</span></h2>
 <div class="src"><span class="pl">자료 p.36</span><p>이미지 → 글 설명, 음성 → 글 기록, 글 → 음성 생성. 원하는 입력과 출력을 각각 지원하는지 확인한다. “이미지 입력 지원만으로 이미지 생성도 가능하다고 볼 수는 없다.”</p></div>
 <h3>그림에는 연결 정보가 있다 (p.37–39)</h3>
 <svg viewBox="0 0 520 230" role="img" aria-labelledby="mapT" style="width:100%;max-width:520px;display:block;margin:12px 0"><title id="mapT">교육용 행사장 배치도: 휴게실–입구–접수대가 세로로 이어지고, 접수대에서 강의실로 가로 길이 있다</title>
@@ -312,16 +421,33 @@ footer p{max-width:80ch}
 <tr><td>관련 부분 검색</td><td>질문에 맞춰 찾은 문서 일부</td></tr></tbody></table></div>
 <div class="pair"><div><h4>원래 문서의 표 (p.43 · 교육용)</h4><div class="tbl"><table style="min-width:0"><thead><tr><th>구분</th><th>오전</th><th>오후</th></tr></thead><tbody><tr><td>입문반</td><td>8명</td><td>12명</td></tr><tr><td>심화반</td><td>15명</td><td>5명</td></tr></tbody></table></div></div><div><h4>표 구조가 사라진 글자 목록</h4><p class="mono">구분 오전 오후 입문반 심화반 8 12 15 5</p><p>숫자만으로는 어느 행·열의 값인지 확실하게 연결하기 어렵다.</p></div></div>
 <div class="box v"><h4>검증 <span class="tag ok">일치</span></h4><p>질문 “오후 입문반은 몇 명인가?”의 답은 표에서 12명입니다. 글자 목록에서는 8·12·15·5가 행 순서인지 열 순서인지 알 수 없어, 같은 질문에 8이나 15를 답할 근거도 생깁니다. 이 자료집을 만들 때 원본 PDF에서도 같은 일이 있었습니다. 글자만 뽑으면 여러 칸으로 된 슬라이드의 줄 순서가 섞여, 일부 페이지는 그림을 직접 보고 구조를 확인했습니다.</p></div>
+<div class="box l"><h4>강의에서 덧붙인 말 · 모델과 기능의 종류 <span class="tag lec">강의</span></h4>
+<p>강사는 “음성 인식, 문장 생성, 음성 합성은 <strong>모두 별개의 기능</strong>이고, API마다 되는 것이 있고 안 되는 것이 있다”고 했습니다. 입력과 출력이 다른 모델은 별도로 만들어져 있으므로, 하려는 일에 맞는 종류를 골라야 합니다.</p>
+<div class="tbl"><table><thead><tr><th>종류</th><th>입력 → 출력</th><th>강의에서 든 예</th></tr></thead><tbody>
+<tr><td>일반 언어 모델</td><td>텍스트(+이미지 등) → 텍스트</td><td>채팅, 요약, 캡처 이미지를 읽고 설명</td></tr>
+<tr><td>Live 모델 · Live API</td><td>실시간 입력 → 실시간 출력</td><td>강사가 직접 운영한 행사에서 쓴 실시간 번역 소프트웨어</td></tr>
+<tr><td>TTS 모델</td><td>텍스트 → 오디오</td><td>공지문을 소리로 전달 (p.41의 음성 합성)</td></tr>
+<tr><td>음성 인식 전용 모델</td><td>오디오 → 텍스트</td><td>NVIDIA가 최근 공개한 무료 모델. 음성 입력, 텍스트 출력만 가능</td></tr>
+<tr><td>이미지 생성 모델</td><td>텍스트 → 이미지</td><td>p.39의 “이미지 출력 또는 별도 제작 기능”</td></tr></tbody></table></div>
+<p>그래서 <strong>텍스트만 출력하는 모델로는 TTS를 만들 수 없습니다.</strong> “입력은 많이 지원해도 출력은 텍스트뿐”이라는 차이를 모델 카드에서 확인해야 한다는 것이 강사의 요점입니다. p.36의 “이미지 입력 지원만으로 이미지 생성도 가능하다고 볼 수는 없다”와 같은 말입니다.</p></div>
+<div class="box l"><h4>강의에서 덧붙인 말 · 라이브 API는 무엇이 다른가 <span class="tag lec">강의</span></h4>
+<p>일반 API는 입력을 넣으면 계산하고 기다렸다가 출력이 나옵니다. 라이브 API는 <strong>연결을 열어 둔 채 입력을 계속 넣으면 출력이 실시간으로 계속 나옵니다.</strong></p>
+<div class="tbl"><table><thead><tr><th></th><th>일반 요청</th><th>스트리밍 (p.62)</th><th>Live</th></tr></thead><tbody>
+<tr><td>연결</td><td>요청마다</td><td>요청마다</td><td>한 번 열어 두고 유지</td></tr>
+<tr><td>입력</td><td>한 번에</td><td>한 번에</td><td>계속 들어옴</td></tr>
+<tr><td>출력</td><td>완료 후 한꺼번에</td><td>조각으로 이어서</td><td>계속 나옴</td></tr></tbody></table></div>
+<p>스트리밍은 <strong>출력</strong>만 나눠 받고, 라이브는 <strong>입력과 출력이 모두</strong> 이어집니다. 스트리밍은 다음 시간(2일차 오후 첫 구간)에서 다룹니다.</p></div>
+<div class="box p"><h4>보충 · 자료 밖 내용 <span class="tag na">미확인</span></h4><p>실시간 API는 보통 웹소켓처럼 연결을 유지하는 방식으로 만들어진 것으로 알고 있습니다(작성자 지식, 이 환경에서는 확인하지 못함). 연결이 길게 유지되는 만큼 요금과 한도의 계산 방식도 일반 요청과 다를 수 있으니, 쓰려는 서비스의 요금 안내를 따로 확인하세요.</p></div>
 </section>
 
-<section id="s10" aria-labelledby="s10-h"><h2 id="s10-h"><span class="num">10</span>벤치마크와 리더보드 읽기<span class="pg">p.44–48</span></h2>
+<section id="s11" aria-labelledby="s11-h"><h2 id="s11-h"><span class="num">11</span>벤치마크와 리더보드 읽기<span class="pg">p.44–48</span></h2>
 <div class="src"><span class="pl">자료 p.44</span><p>벤치마크: 정해진 과제와 채점 방법으로 성능을 측정하는 시험. 리더보드: 여러 모델의 평가 결과를 모아 비교한 표. 점수를 읽으려면 시험 과제·설정·모델 판본을 함께 봐야 한다.</p></div>
 <div class="flow"><div><b>문제와 채점</b><span>정답 B와 모델의 선택을 대조</span></div><i>→</i><div><b>점수로 묶기</b><span>맞힌 문항 수 ÷ 전체 문항 수 → 정답률</span></div><i>→</i><div><b>집계</b><span>여러 분야 점수를 정해진 방식으로</span></div></div>
 <div class="box v"><h4>검증 · 설명용 문항 (p.46) <span class="tag ok">일치</span></h4><p>물 100g이 20℃에서 30℃가 됐을 때 온도 변화는 30 − 20 = 10℃, 정답 B. 질량 100g은 답에 필요 없는 정보입니다. 시험 문항에 이런 군더더기가 있으면, 모델이 관련 정보를 골라내는지도 함께 측정하게 됩니다.</p></div>
 <div class="tbl"><table><thead><tr><th>같은 평가 조건 (p.47)</th><th class="r">Qwen2-7B</th><th class="r">Qwen2.5-7B</th></tr></thead><tbody>
 <tr><td>발표 시기</td><td class="r" colspan="2">2024년 · 기본 모델 판본</td></tr>
 <tr><td>MMLU · 5-shot · 정답률(%)</td><td class="r">70.3</td><td class="r">74.2</td></tr></tbody></table></div>
-<div class="box v"><h4>검증 <span class="tag ok">계산 일치</span> <span class="tag na">수치 출처는 미확인</span></h4><p>74.2 − 70.3 = 3.9점으로 계산은 맞습니다. 두 점수는 작성자가 알고 있는 Qwen2.5 발표 자료의 값과 같지만, 이 환경에서는 원문 페이지에 접속할 수 없어 출처는 확인하지 못했습니다.</p></div>
+<div class="box v"><h4>검증 <span class="tag ok">계산 일치</span> <span class="tag ok">출처 확인</span></h4><p>74.2 − 70.3 = 3.9점으로 계산이 맞습니다. 두 점수는 Qwen 공식 블로그 저장소(QwenLM/qwenlm.github.io)의 Qwen2.5 소개글에서 확인했습니다. “On MMLU benchmarks, Qwen2.5-7/72B are improved from 70.3 to 74.2 and 84.2 to 86.1 compared to Qwen2-7/72B”이고, 평가 설정도 “MMLU (5-shot)”로 적혀 있어 위 표와 같습니다.</p></div>
 <div class="tbl"><table><thead><tr><th>공개 평가로 아는 것 (p.48)</th><th>내 과제에서 더 볼 것</th></tr></thead><tbody>
 <tr><td>어떤 시험에서 어떤 결과를 냈는가</td><td>내 자료와 요청에 유용한가</td></tr>
 <tr><td>후보를 찾고 능력의 일부를 비교</td><td>시간·비용·접속·자료 조건이 맞는가</td></tr></tbody></table></div>
@@ -330,33 +456,64 @@ footer p{max-width:80ch}
 <li><strong>5-shot</strong>은 문제 앞에 풀이 예시 다섯 개를 입력으로 넣는 설정입니다. 1일차 p.99의 “입력에 예시 제공하기”와 같은 방식이라, 설정이 다르면(0-shot 등) 같은 모델도 점수가 달라집니다.</li>
 <li><strong>점수를 읽을 때 주의할 점:</strong> 시험 문제가 학습 자료에 섞여 들어가면 점수가 실제 능력보다 높게 나올 수 있습니다(오염, contamination). 상위 모델들의 점수가 모여 차이가 잘 드러나지 않는 포화 문제도 있습니다. MMLU 문항 일부에 정답 오류가 있다는 분석(예: MMLU-Redux)과, 더 어려운 변형(예: MMLU-Pro)도 나와 있습니다.</li></ul>
 <p>그래서 p.48의 결론처럼, 공개 점수는 <strong>후보를 좁히는 데</strong> 쓰고, 최종 선택은 내 자료로 직접 시험한 결과로 합니다.</p></div>
+<div class="box l"><h4>강의에서 덧붙인 말 · 종합 지수와 가격–지능 그래프 읽기 <span class="tag lec">강의</span></h4>
+<ul>
+<li><strong>종합 지능 지수.</strong> 강사는 AI의 지능을 수치로 측정해 보여 주는 지표(음성 기록에는 ‘AI 인텔리전스 인덱스’)를 소개하고 “IQ를 측정한 것”에 비유했습니다. 모델마다 점수가 있고, 이 지수는 <strong>최근 기준이 바뀌어</strong> 수치가 달라졌다고 했습니다. 판본이 다른 점수는 직접 비교할 수 없다는 p.44·p.47의 원칙과 같습니다.</li>
+<li><strong>가격–지능 그래프.</strong> 가로는 가격, 세로는 지능입니다. 가격이 낮고 지능이 높은 쪽이 좋습니다. 그래프의 점선은 “<strong>같은 가격에서 가장 높은 지능의 모델을 이은 선</strong>”이고, 이 선 위의 모델은 “그 가격대에서는 지능 기준으로 가장 좋다”는 뜻입니다.</li>
+<li><strong>그 밖의 순위.</strong> 문제 해결에 쓴 토큰량(적을수록 좋음), 비용, 출력 속도가 따로 있고, 공개 가중치·멀티모달·국가별로 거를 수 있습니다. 세부 지표로는 지식 노동 종합, 에이전트, 코딩 등이 있다고 했습니다.</li>
+<li><strong>숫자 하나의 한계.</strong> 지능을 숫자 하나로 표현하면 너무 거칠므로 세부 지표를 하나씩 공부하라고 했습니다. 기업은 자기 모델이 잘 나온 지표를 골라 자랑하므로, <strong>어디에 약한가</strong>도 함께 봐야 합니다. 모델 발표 자료의 지표 표를 캡처해 두고 무엇을 측정하는지 공부하라고도 했습니다.</li></ul></div>
+<h3>그래프로 보는 ‘점선’ (설명용 가상 값)</h3>
+<svg viewBox="0 0 560 300" role="img" aria-labelledby="frT" style="width:100%;max-width:560px;display:block;margin:12px 0"><title id="frT">가격 대비 지능 그래프의 설명용 예: 가상의 일곱 모델 중 A, B, D, F가 같은 가격대에서 가장 높은 지능을 이은 선(프런티어) 위에 있다</title><g stroke="var(--line)" stroke-width="1"><line x1="60" y1="20" x2="60" y2="250"/><line x1="60" y1="250" x2="540" y2="250"/></g><line x1="60.0" y1="250" x2="60.0" y2="255" stroke="var(--ink-3)"/><text x="60.0" y="270" font-size="12" text-anchor="middle" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace">$0.01</text><line x1="237.8" y1="250" x2="237.8" y2="255" stroke="var(--ink-3)"/><text x="237.8" y="270" font-size="12" text-anchor="middle" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace">$0.1</text><line x1="415.7" y1="250" x2="415.7" y2="255" stroke="var(--ink-3)"/><text x="415.7" y="270" font-size="12" text-anchor="middle" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace">$1</text><line x1="55" y1="250.0" x2="60" y2="250.0" stroke="var(--ink-3)"/><text x="51" y="254.0" font-size="12" text-anchor="end" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace">20</text><line x1="55" y1="158.0" x2="60" y2="158.0" stroke="var(--ink-3)"/><text x="51" y="162.0" font-size="12" text-anchor="end" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace">40</text><line x1="55" y1="66.0" x2="60" y2="66.0" stroke="var(--ink-3)"/><text x="51" y="70.0" font-size="12" text-anchor="end" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace">60</text><polyline points="60.0,204.0 184.3,135.0 322.7,112.0 469.2,43.0" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 4"/><circle cx="60.0" cy="204.0" r="6" fill="var(--accent)"/><text x="70.0" y="196.0" font-size="13" fill="var(--ink)" font-family="IBM Plex Sans KR, sans-serif">A</text><circle cx="184.3" cy="135.0" r="6" fill="var(--accent)"/><text x="194.3" y="127.0" font-size="13" fill="var(--ink)" font-family="IBM Plex Sans KR, sans-serif">B</text><circle cx="184.3" cy="167.2" r="6" fill="var(--card)" stroke="var(--ink-3)" stroke-width="2"/><text x="194.3" y="159.2" font-size="13" fill="var(--ink)" font-family="IBM Plex Sans KR, sans-serif">C</text><circle cx="322.7" cy="112.0" r="6" fill="var(--accent)"/><text x="332.7" y="104.0" font-size="13" fill="var(--ink)" font-family="IBM Plex Sans KR, sans-serif">D</text><circle cx="415.7" cy="116.6" r="6" fill="var(--card)" stroke="var(--ink-3)" stroke-width="2"/><text x="425.7" y="108.6" font-size="13" fill="var(--ink)" font-family="IBM Plex Sans KR, sans-serif">E</text><circle cx="469.2" cy="43.0" r="6" fill="var(--accent)"/><text x="479.2" y="35.0" font-size="13" fill="var(--ink)" font-family="IBM Plex Sans KR, sans-serif">F</text><circle cx="540.0" cy="66.0" r="6" fill="var(--card)" stroke="var(--ink-3)" stroke-width="2"/><text x="550.0" y="58.0" font-size="13" fill="var(--ink)" font-family="IBM Plex Sans KR, sans-serif">G</text><text x="300" y="292" font-size="13" text-anchor="middle" fill="var(--ink-2)" font-family="IBM Plex Sans KR, sans-serif">가격(로그 눈금, 설명용 가상 값) →</text><text x="14" y="135" font-size="13" text-anchor="middle" fill="var(--ink-2)" font-family="IBM Plex Sans KR, sans-serif" transform="rotate(-90 14 135)">지능 지수(설명용) →</text></svg>
+<div class="box v"><h4>검증 · 점선 위 모델 가려내기 <span class="tag ok">계산 확인</span> <span class="tag na">가상 값</span></h4>
+<div class="tbl"><table><thead><tr><th>모델</th><th class="r">가격(가상)</th><th class="r">지능(가상)</th><th>점선 위인가</th></tr></thead><tbody>
+<tr><td>A</td><td class="r">$0.01</td><td class="r">30</td><td>예 · 가장 싼 점</td></tr>
+<tr><td>B</td><td class="r">$0.05</td><td class="r">45</td><td>예 · A보다 높음</td></tr>
+<tr><td>C</td><td class="r">$0.05</td><td class="r">38</td><td>아니요 · 같은 가격의 B가 더 높음</td></tr>
+<tr><td>D</td><td class="r">$0.30</td><td class="r">50</td><td>예 · B보다 높음</td></tr>
+<tr><td>E</td><td class="r">$1.00</td><td class="r">49</td><td>아니요 · 더 싼 D가 더 높음</td></tr>
+<tr><td>F</td><td class="r">$2.00</td><td class="r">65</td><td>예 · D보다 높음</td></tr>
+<tr><td>G</td><td class="r">$5.00</td><td class="r">60</td><td>아니요 · 더 싼 F가 더 높음</td></tr></tbody></table></div>
+<p>방법은 “가격이 싼 순으로 보면서, 지금까지의 최고 지능을 넘는 모델만 남긴다”입니다. 결과는 A, B, D, F이고 그림의 점선과 같습니다. 점선 밖의 C, E, G는 <strong>더 싸면서 더 똑똑한 모델이 이미 있어서</strong> 고를 이유가 없습니다. 이 개념은 경제학·공학에서 ‘파레토 최적선’이라고 부르는 것과 같습니다(작성자 지식).</p></div>
+<div class="box l"><h4>강의에서 덧붙인 말 · 공개 점수와 실제 사용은 다르다 <span class="tag lec">강의</span></h4>
+<p>강사의 결론은 분명했습니다. 이 지표들은 벤치마크를 만든 곳이 “이런 것을 측정하겠다”고 정한 <strong>공개 평가</strong>이고, <strong>실사용과 다릅니다.</strong> “지표가 좋으니 좋다”는 것은 순진한 판단이고, 지표만 보고 AI를 고르는 것은 요즘 아무도 하지 않으며 강사 본인도 그렇게 하지 않는다고 했습니다. 모델은 인간의 사고를 모사한 것이라 <strong>어떤 명령에는 일을 잘하고 어떤 명령에는 못 하는지</strong>의 감각이 더 중요하고, 이는 직접 써 보고 내 과제에 적용해 보아야 얻습니다. 다양한 API를 써 보는 방법으로 앞의 OpenRouter를 권했습니다(03절).</p>
+<p>이는 p.48의 “공개 평가로 아는 것 / 내 과제에서 더 볼 것” 표와 같은 결론입니다. 점수는 후보를 좁히는 데 쓰고, 최종 선택은 내 자료로 시험한 결과로 합니다.</p></div>
+<div class="box w"><h4>확인 불가 · 강의 화면의 구체적 순위 <span class="tag na">미확인</span></h4><p>강사는 당시 화면에서 가격대마다 최상위 모델이 달랐고(저가 구간은 GPT 계열, 최상위 구간은 Gemini·Claude 계열 등), 출력 속도는 Gemini 계열이 빠른 편이라고 말했습니다. 이는 <strong>그 시점 화면의 모습</strong>이고, 음성 기록의 모델명과 숫자가 크게 부정확해 옮기지 않았습니다. 지수를 내는 사이트 이름도 기록이 불분명합니다. 작성자는 Artificial Analysis의 Intelligence Index가 대표적이라고 알고 있지만 강의 화면과 같은 곳인지는 확인할 수 없었습니다. 이런 순위는 자주 바뀌므로 수업 직전에 해당 사이트를 직접 열어 보세요.</p></div>
 </section>
 
-<section id="s11" aria-labelledby="s11-h"><h2 id="s11-h"><span class="num">11</span>개념 탐구 질문의 짧은 답<span class="pg">p.49–50</span></h2>
+<section id="s12" aria-labelledby="s12-h"><h2 id="s12-h"><span class="num">12</span>개념 탐구 질문의 짧은 답<span class="pg">p.49–50</span></h2>
 <details><summary>p.49–50 질문 열 묶음의 짧은 답</summary>
 <div class="tbl"><table><thead><tr><th>개념</th><th>짧은 답</th><th>위치</th></tr></thead><tbody>
 <tr><td>공개 가중치·라이선스</td><td>공개는 받을 수 있다는 뜻, 라이선스는 무엇을 해도 되는지. 실행에는 별도로 자원이 든다</td><td>01 · 03</td></tr>
 <tr><td>모델·서비스·API</td><td>화면은 사람이, API는 프로그램이 쓰는 통로. 공개 모델도 외부 API로 쓸 수 있다</td><td>02 · 03</td></tr>
 <tr><td>규모·비트·바이트</td><td>저장량 = 수치 개수 × 값 하나의 바이트 수</td><td>05</td></tr>
 <tr><td>양자화·계산 자원</td><td>양자화는 저장량을, 메모리는 담을 수 있는 양을, 계산 장치는 속도를 좌우. 서로 독립적으로 바뀐다</td><td>05</td></tr>
-<tr><td>모델 카드·판본</td><td>규모·문맥·라이선스 등. 같은 계열도 판본마다 값이 다르다</td><td>06</td></tr>
-<tr><td>추론형·추론 요약·도구 기록</td><td>추가 계산은 조건이 얽힌 문제에 도움. 설명·요약은 모델의 글, 실행 여부는 도구 기록으로 확인</td><td>07 · 08</td></tr>
-<tr><td>멀티모달·음성 인식·합성</td><td>인식은 소리→글, 합성은 글→소리. 입력·출력 지원을 따로 확인</td><td>09</td></tr>
-<tr><td>그림·문서 구조 전달</td><td>글자 추출, 시각 정보 처리, 관련 부분 검색 중 무엇인지에 따라 구조가 남거나 사라진다</td><td>09</td></tr>
-<tr><td>벤치마크·예시 제공 평가</td><td>과제·채점·설정·판본을 함께 읽고, 내 과제와 비슷한 평가를 찾는다</td><td>10</td></tr></tbody></table></div></details>
+<tr><td>모델 카드·판본</td><td>규모·문맥·라이선스 등. 같은 계열도 판본마다 값이 다르다</td><td>07</td></tr>
+<tr><td>추론형·추론 요약·도구 기록</td><td>추가 계산은 조건이 얽힌 문제에 도움. 설명·요약은 모델의 글, 실행 여부는 도구 기록으로 확인</td><td>08 · 09</td></tr>
+<tr><td>멀티모달·음성 인식·합성</td><td>인식은 소리→글, 합성은 글→소리. 입력·출력 지원을 따로 확인</td><td>10</td></tr>
+<tr><td>그림·문서 구조 전달</td><td>글자 추출, 시각 정보 처리, 관련 부분 검색 중 무엇인지에 따라 구조가 남거나 사라진다</td><td>10</td></tr>
+<tr><td>벤치마크·예시 제공 평가</td><td>과제·채점·설정·판본을 함께 읽고, 내 과제와 비슷한 평가를 찾는다</td><td>11</td></tr></tbody></table></div></details>
+<details><summary>강의에서 나온 추가 질문의 짧은 답</summary>
+<div class="tbl"><table><thead><tr><th>질문</th><th>짧은 답</th><th>위치</th></tr></thead><tbody>
+<tr><td>내 PC로 이 모델을 돌릴 수 있는가?</td><td>파일 크기 + 문맥·운영체제 몫이 내 메모리에 들어가는지 본다. 속도는 메모리 대역폭에 달렸다</td><td>05 · 06</td></tr>
+<tr><td>공개 가중치와 API는 같은 기준인가?</td><td>아니다. 공개/비공개와 API/채팅 서비스는 서로 다른 축이다</td><td>03</td></tr>
+<tr><td>OpenRouter 같은 중계 서비스는 무엇인가?</td><td>여러 회사의 모델을 한곳에서 API로 쓰게 해 준다. 자료가 중계 서비스와 최종 제공자를 모두 거친다</td><td>03</td></tr>
+<tr><td>Live 모델은 일반 모델과 무엇이 다른가?</td><td>연결을 유지하며 입력과 출력이 모두 실시간으로 이어진다</td><td>10</td></tr>
+<tr><td>TTS를 만들려면 어떤 모델이 필요한가?</td><td>오디오를 출력하는 모델. 텍스트만 출력하는 모델로는 만들 수 없다</td><td>07 · 10</td></tr>
+<tr><td>가격–지능 그래프의 점선은 무엇인가?</td><td>같은 가격에서 가장 높은 지능을 이은 선. 점선 밖 모델은 더 싸고 더 똑똑한 모델이 이미 있다</td><td>11</td></tr></tbody></table></div></details>
 </section>
 
-<section id="s12" class="summary" aria-labelledby="s12-h"><h2 id="s12-h"><span class="num">12</span>핵심 정리</h2>
+<section id="s13" class="summary" aria-labelledby="s13-h"><h2 id="s13-h"><span class="num">13</span>핵심 정리</h2>
 <ul>
 <li>모델을 쓰려면 <strong>가중치 + 실행 프로그램 + 컴퓨터</strong>가 필요하고, 내려받기와 실행은 다른 일입니다.</li>
 <li><strong>공개 여부, 실행 주체, 이용 통로, 허용 용도</strong>는 서로 다른 질문입니다. 같은 계열 모델도 라이선스가 다를 수 있습니다.</li>
 <li>저장량은 <strong>수치 개수 × 값 하나의 바이트 수</strong>로 어림할 수 있고, 실제 메모리는 입력 길이에 따라 더 늘어납니다.</li>
 <li>모델 카드는 <strong>개별 판본</strong>의 값을 읽고, 벤치마크 점수는 <strong>과제·설정·판본</strong>과 함께 읽습니다.</li>
 <li>모델의 <strong>제안과 설명</strong>은 실행의 증거가 아닙니다. 실행은 <strong>도구 기록</strong>으로 확인합니다.</li>
-</ul>
+<li>내 PC에서 돌릴 때는 <strong>모델 파일 크기 + 여유 메모리</strong>부터 확인하고, 속도는 <strong>메모리 대역폭</strong>이 좌우합니다.</li>
+<li>공개 점수와 점선(가격–지능)은 <strong>후보를 좁히는 용도</strong>이고, 최종 선택은 <strong>내 과제에서 직접 써 본 결과</strong>로 합니다.</li></ul>
 </section>
 
-<section id="s13" aria-labelledby="s13-h"><h2 id="s13-h"><span class="num">13</span>검증 기록</h2>
+<section id="s14" aria-labelledby="s14-h"><h2 id="s14-h"><span class="num">14</span>검증 기록</h2>
 <div class="tbl"><table><thead><tr><th>쪽</th><th>항목</th><th>방법</th><th>결과</th></tr></thead><tbody>
 <tr><td>p.20</td><td>16비트 2GB · 8비트 1GB</td><td>재계산</td><td><span class="tag ok">일치</span></td></tr>
 <tr><td>p.20</td><td>계산이 실제 메모리와 맞는가</td><td>Qwen2.5 공식 속도 벤치마크 문서와 대조</td><td><span class="tag ok">0.98GB 계산 ≈ 0.97GB 측정</span></td></tr>
@@ -367,9 +524,18 @@ footer p{max-width:80ch}
 <tr><td>p.35</td><td>예약 시간 90분</td><td>3 × 30분</td><td><span class="tag ok">일치</span></td></tr>
 <tr><td>p.43</td><td>오후 입문반 12명</td><td>표 대조</td><td><span class="tag ok">일치</span></td></tr>
 <tr><td>p.45</td><td>MMLU 57개 과제</td><td>원 논문 내용(작성자 지식)</td><td><span class="tag ok">일치</span></td></tr>
-<tr><td>p.47</td><td>70.3 → 74.2, 차이 3.9</td><td>재계산 · 출처 접속 불가</td><td><span class="tag ok">계산 일치</span> <span class="tag na">출처 미확인</span></td></tr></tbody></table></div>
+<tr><td>p.47</td><td>70.3 → 74.2, 차이 3.9</td><td>재계산 · Qwen 공식 블로그 저장소 대조</td><td><span class="tag ok">일치 · 5-shot 설정까지 확인</span></td></tr><tr><td>강의</td><td>12B 모델 ≈ 6GB</td><td>12×10⁹×0.5바이트 계산</td><td><span class="tag ok">4비트와 일치</span></td></tr>
+<tr><td>강의</td><td>자릿수 비유와 양자화</td><td>137·2.37로 오차 계산</td><td><span class="tag ok">비유로 타당</span></td></tr>
+<tr><td>강의</td><td>가격–지능 점선(프런티어)</td><td>가상 일곱 점으로 전수 확인</td><td><span class="tag ok">A·B·D·F</span></td></tr>
+<tr><td>강의</td><td>공개 가중치 ≠ API (강사의 정정)</td><td>자료 p.13·p.16과 대조</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>강의</td><td>AMD 7900 XT 64GB</td><td>작성자 지식</td><td><span class="tag ng">20GB로 알고 있음 · 사양표 확인</span></td></tr>
+<tr><td>강의</td><td>PCI 슬롯이 가장 빠름</td><td>작성자 지식</td><td><span class="tag na">메모리 대역폭으로 보완</span></td></tr>
+<tr><td>강의</td><td>상용 모델은 튜닝 불가</td><td>작성자 지식</td><td><span class="tag na">제공자 호스팅 미세조정 가능성</span></td></tr>
+<tr><td>강의</td><td>OpenRouter에서 상용 모델 설명</td><td>강의 안의 두 발언 대조</td><td><span class="tag na">모순 · 제공자 수로 정리</span></td></tr>
+<tr><td>강의</td><td>구독 시 API 크레딧</td><td>—</td><td><span class="tag na">확인 불가</span></td></tr>
+<tr><td>강의</td><td>모델 카드의 입출력 · 지수 사이트 이름</td><td>접속 불가 · 음성 기록 불명확</td><td><span class="tag na">미확인</span></td></tr></tbody></table></div>
 </section>
 
 </main></div>
-<footer><p>이 문서는 「AI 강사양성과정」 2일차 교육자료를 다시 쓴 학습 참고자료입니다. 자료 원문은 회색 인용 상자, 직접 다시 계산한 결과는 초록 ‘검증’ 상자, 자료에 없는 설명은 파란 ‘보충’ 상자로 구분했습니다. 보충 내용은 작성자의 지식에 기반하며 웹 검색으로 확인하지 않았습니다. 인용한 논문·문서의 제목과 연도는 원문을 직접 확인하세요. ‘설명용’, ‘가상’, ‘교육용 예’로 표시된 수치는 실제 측정값이 아닙니다.</p></footer>
+<footer><p>이 문서는 「AI 강사양성과정」 2일차 교육자료를 다시 쓴 학습 참고자료입니다. 회색 상자는 자료 원문을 인용하거나 요약한 것(표의 칸이나 여러 칸으로 된 슬라이드를 문장으로 풀어 쓴 곳 포함), 직접 다시 계산한 결과는 초록 ‘검증’ 상자, 자료에 없는 설명은 파란 ‘보충’ 상자로 구분했습니다. 보충 내용은 작성자의 지식에 기반하며 웹 검색으로 확인하지 않았습니다. 인용한 논문·문서의 제목과 연도는 원문을 직접 확인하세요. ‘설명용’, ‘가상’, ‘교육용 예’로 표시된 수치는 실제 측정값이 아닙니다. 보라색 ‘강의’ 상자는 강의 음성 기록(AI 자동 인식문)에서 가져온 내용입니다. 인식 오류가 많아 모델명과 수치는 단정하지 않았고, 확인하지 못한 내용은 ‘미확인’으로 표시했습니다.</p></footer>
 </body></html>

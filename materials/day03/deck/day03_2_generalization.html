@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>3일차 오후 첫 구간 · 새 자료에서도 잘하는가</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F1F2EE;--card:#FFFFFF;--ink:#15171C;--ink-2:#454A55;--ink-3:#6E7480;
+  --line:#DDDFD8;--accent:#4635B1;--accent-soft:#EDEAFA;
+  --ok:#1D6B45;--ok-soft:#E3F2E9;--warn:#7E5200;--warn-soft:#FBF0D9;--ng:#A8261D;--ng-soft:#FBE7E4;
+  --plus:#0F5E73;--plus-soft:#E2F1F5;--src:#F6F6F2;
+  --hero:#15171C;--hero-ink:#F1F2EE;--hero-2:#B9BDC4;--hero-3:#8D9299;--hl:#FFD24A;
+  --maxw:1180px;color-scheme:light;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#111216;--card:#1A1C22;--ink:#E7E8EB;--ink-2:#B8BDC7;--ink-3:#8E94A0;
+  --line:#2C2F37;--accent:#AEA2FF;--accent-soft:#2A2550;
+  --ok:#7FD9A8;--ok-soft:#16301F;--warn:#F3C86F;--warn-soft:#352911;--ng:#FF9A90;--ng-soft:#3A1916;
+  --plus:#7FD0E6;--plus-soft:#142C33;--src:#15171C;
+  --hero:#0B0C0F;color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --paper:#111216;--card:#1A1C22;--ink:#E7E8EB;--ink-2:#B8BDC7;--ink-3:#8E94A0;
+  --line:#2C2F37;--accent:#AEA2FF;--accent-soft:#2A2550;
+  --ok:#7FD9A8;--ok-soft:#16301F;--warn:#F3C86F;--warn-soft:#352911;--ng:#FF9A90;--ng-soft:#3A1916;
+  --plus:#7FD0E6;--plus-soft:#142C33;--src:#15171C;--hero:#0B0C0F;color-scheme:dark;}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans KR",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.75;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+code,.mono{font-family:"IBM Plex Mono","IBM Plex Sans KR",ui-monospace,monospace;font-size:.92em}
+a{color:var(--accent)}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.hero{position:relative;background:var(--hero);color:var(--hero-ink);overflow:hidden}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(to right,rgba(255,255,255,.055) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.055) 1px,transparent 1px);background-size:28px 28px;pointer-events:none}
+.hero-inner{position:relative;max-width:var(--maxw);margin:0 auto;padding:80px 32px 68px}
+.hero-kicker{margin:0 0 18px;font-size:clamp(1rem,2.2vw,1.18rem);font-weight:500;color:var(--hl);display:inline-block;padding-bottom:7px;border-bottom:2px solid var(--hl)}
+.hero h1{margin:0;font-size:clamp(2rem,5vw,3.3rem);font-weight:700;letter-spacing:-.035em;line-height:1.2;max-width:18ch}
+.hero .sub{margin:24px 0 0;max-width:52ch;color:var(--hero-2);font-size:1.03rem;font-weight:300}
+.hero-meta{margin-top:36px;display:flex;flex-wrap:wrap;gap:10px}
+.chip{font-family:"IBM Plex Mono",monospace;font-size:.78rem;color:#E4E6EA;border:1px solid rgba(255,255,255,.22);border-radius:2px;padding:5px 11px}
+.chip b{color:var(--hl);font-weight:600}
+.hero-terms{margin-top:48px;padding-top:32px;border-top:1px solid rgba(255,255,255,.15);display:grid;grid-template-columns:1fr 1fr;gap:30px 46px}
+.term h2{margin:0 0 8px;font-size:1.06rem;font-weight:600;color:#fff}
+.term h2 span{display:block;margin-top:3px;font-family:"IBM Plex Mono",monospace;font-size:.74rem;font-weight:400;color:var(--hero-3)}
+.term p{margin:0;font-size:.93rem;font-weight:300;color:var(--hero-2);max-width:46ch}
+.term-sum{grid-column:1/-1;margin:0;padding:15px 18px;background:rgba(255,210,74,.10);border-left:2px solid var(--hl);font-size:.95rem;font-weight:300;color:#D6D9DE}
+.hero strong,.hero b{color:var(--hl);font-weight:600}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px 96px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:52px;align-items:start}
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);padding:44px 0;max-height:100vh;overflow-y:auto}
+nav.toc h2{font-size:.8rem;color:var(--ink-3);margin:0 0 12px;font-weight:500}
+nav.toc ol{list-style:none;margin:0;padding:0}
+nav.toc a{display:flex;gap:10px;padding:4px 0 4px 10px;color:var(--ink-2);text-decoration:none;font-size:.85rem;line-height:1.5;border-left:2px solid transparent}
+nav.toc a:hover,nav.toc a:focus-visible{color:var(--accent);border-left-color:var(--accent)}
+nav.toc .n{font-family:"IBM Plex Mono",monospace;color:var(--ink-3);font-size:.78rem;min-width:18px}
+main{padding:44px 0 0;min-width:0}
+
+section{background:var(--card);border:1px solid var(--line);padding:34px 38px 36px;margin-bottom:18px;scroll-margin-top:20px}
+section>h2{margin:0 0 4px;font-size:1.42rem;font-weight:600;letter-spacing:-.02em;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+section>h2 .num{font-family:"IBM Plex Mono",monospace;font-size:.9rem;font-weight:500;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:2px}
+section>h2 .pg{font-family:"IBM Plex Mono",monospace;font-size:.78rem;font-weight:400;color:var(--ink-3);margin-left:auto}
+section h3{font-size:1.06rem;font-weight:600;margin:28px 0 8px}
+section p{margin:12px 0;max-width:72ch}
+.lead{color:var(--ink-2);margin-top:10px}
+section ul,section ol{padding-left:1.25em;max-width:72ch}
+section li{margin:4px 0}
+strong{font-weight:600}
+
+.src{margin:18px 0;padding:14px 18px;background:var(--src);border-left:3px solid var(--ink-3);font-size:.96rem}
+.src .pl{display:block;font-family:"IBM Plex Mono",monospace;font-size:.74rem;color:var(--ink-3);margin-bottom:4px}
+.src p{margin:4px 0}
+
+.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin:18px 0}
+.flow>div{flex:1 1 140px;border:1px solid var(--line);background:var(--card);padding:10px 12px;font-size:.9rem;position:relative}
+.flow>div b{display:block;font-weight:600;font-size:.93rem}
+.flow>div span{color:var(--ink-2);font-size:.86rem}
+.flow>i{align-self:center;font-style:normal;color:var(--ink-3);font-family:"IBM Plex Mono",monospace}
+
+.tbl{overflow-x:auto;margin:16px 0}
+table{border-collapse:collapse;width:100%;font-size:.92rem;min-width:420px}
+th,td{border-bottom:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+th{font-weight:600;color:var(--ink-2);background:var(--src);font-size:.86rem}
+td.c,th.c{text-align:center}
+td.r,th.r{text-align:right;font-family:"IBM Plex Mono",monospace}
+
+dl.ex{margin:16px 0;border-top:1px solid var(--line)}
+dl.ex dt{font-weight:600;padding-top:14px;font-size:.95rem}
+dl.ex dt code{background:var(--accent-soft);color:var(--accent);padding:1px 6px}
+dl.ex dd{margin:4px 0 0;padding-bottom:14px;border-bottom:1px solid var(--line);color:var(--ink-2);max-width:72ch}
+
+.box{margin:20px 0;padding:16px 20px;border:1px solid var(--line)}
+.box>h4{margin:0 0 6px;font-size:.88rem;font-weight:600;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.box p,.box li{font-size:.94rem}
+.box p:first-of-type{margin-top:4px}
+.box.v{background:var(--ok-soft);border-color:transparent}
+.box.v>h4{color:var(--ok)}
+.box.p{background:var(--plus-soft);border-color:transparent}
+.box.p>h4{color:var(--plus)}
+.box.w{background:var(--warn-soft);border-color:transparent}
+.box.w>h4{color:var(--warn)}
+.box.l{background:var(--accent-soft);border-color:transparent}
+.box.l>h4{color:var(--accent)}
+.box.t{border-style:dashed}
+.box.t>h4{color:var(--accent)}
+.tag{font-family:"IBM Plex Mono",monospace;font-size:.72rem;font-weight:500;padding:1px 7px;border:1px solid currentColor;border-radius:2px}
+.tag.lec{color:var(--accent)}.tag.ok{color:var(--ok)}.tag.ng{color:var(--ng)}.tag.na{color:var(--ink-3)}.tag.add{color:var(--plus)}
+.calc{font-family:"IBM Plex Mono",monospace;font-size:.88rem;background:var(--card);padding:10px 12px;margin:8px 0;overflow-x:auto;white-space:pre;line-height:1.6}
+
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+.pair>div{border:1px solid var(--line);padding:14px 16px}
+.pair>div h4{margin:0 0 6px;font-size:.98rem;font-weight:600}
+.pair>div p,.pair>div li{font-size:.92rem;color:var(--ink-2)}
+.nest{border:1px solid var(--ink-3);padding:12px 14px;margin:14px 0}
+.nest .nest{margin:10px 0 0;border-color:var(--accent)}
+.nest .nest .nest{border-style:dashed}
+.nest b{font-weight:600}.nest span{color:var(--ink-2);font-size:.9rem}
+
+details{margin:16px 0;border:1px solid var(--line);padding:0 16px}
+details summary{cursor:pointer;padding:12px 0;font-weight:600;font-size:.94rem;color:var(--accent)}
+details[open] summary{border-bottom:1px solid var(--line);margin-bottom:8px}
+details>*:last-child{margin-bottom:14px}
+
+section.summary{background:var(--hero);color:var(--hero-ink);border-color:var(--hero)}
+section.summary>h2 .num{background:rgba(255,210,74,.15);color:var(--hl)}
+section.summary li{color:#D6D9DE}
+section.summary strong{color:var(--hl)}
+footer{max-width:var(--maxw);margin:0 auto;padding:0 32px 60px;color:var(--ink-3);font-size:.84rem}
+footer p{max-width:80ch}
+
+@media (max-width:900px){
+  .wrap{grid-template-columns:1fr;gap:0;padding:0 16px 64px}
+  nav.toc{position:static;max-height:none;padding:28px 0 8px}
+  nav.toc ol{columns:2;column-gap:16px}
+  .hero-inner{padding:56px 20px 48px}
+  .hero-terms{grid-template-columns:1fr}
+  section{padding:24px 18px 26px}
+  .pair{grid-template-columns:1fr}
+  section>h2 .pg{margin-left:0;width:100%}
+  footer{padding:0 16px 48px}
+}
+</style></head>
+<body>
+<header class="hero"><div class="hero-grid"></div><div class="hero-inner">
+<p class="hero-kicker">3일차 오후 첫 구간 · 13:00–15:00</p>
+<h1>새 자료에서도 잘하는가</h1>
+<p class="sub">일반화, 학습·검증·테스트 자료의 역할, 과적합과 학습 곡선, 분포 변화, 데이터 누수를 문의 처리시간 예측 사례로 정리합니다. 검증과 테스트를 나누는 이유는 시뮬레이션으로 직접 확인했습니다.</p>
+<div class="hero-meta"><span class="chip">쪽 <b>p.54–80</b></span><span class="chip">시뮬레이션 <b>검증 59.2% ↔ 테스트 50.1%</b></span><span class="chip">학습 곡선 <b>그림 대조</b></span><span class="chip">누수 사례 <b>계산 일치</b></span></div>
+<div class="hero-terms"><div class="term"><h2>일반화<span>Generalization</span></h2><p>학습하지 않은 새 자료에서도 성능이 유지되는 정도입니다. 학습 자료의 점수는 이를 대신하지 못하므로 학습에 쓰지 않은 자료로 평가합니다(p.55–56).</p></div><div class="term"><h2>데이터 누수<span>Data leakage</span></h2><p>실제 예측 때는 없는 정보가 입력에 들어가거나, 평가할 자료가 학습에 미리 섞이는 문제입니다. 점수가 낮아서가 아니라 너무 좋아서 드러납니다(p.70).</p></div><p class="term-sum">학습은 <strong>조정</strong>, 검증은 <strong>선택</strong>, 테스트는 <strong>최종 평가</strong>입니다. 선택이 검증 점수를 부풀리므로 테스트 자료를 따로 남기고, 점수가 낮은 이유가 과적합·누수·분포 변화 중 무엇인지는 결과만으로 정할 수 없습니다.</p></div>
+</div></header>
+<div class="wrap">
+<nav class="toc" aria-label="목차"><h2>목차</h2><ol><li><a href="#s00"><span class="n">00</span>일반화 · 학습하지 않은 자료에 적용한다</a></li><li><a href="#s01"><span class="n">01</span>학습 · 검증 · 테스트 자료의 역할</a></li><li><a href="#s02"><span class="n">02</span>분할 비율보다 중요한 분리 조건</a></li><li><a href="#s03"><span class="n">03</span>과적합과 학습 곡선</a></li><li><a href="#s04"><span class="n">04</span>과적합을 줄이는 방법 · 조기 종료와 정규화</a></li><li><a href="#s05"><span class="n">05</span>자료 분포가 바뀌면 성능도 달라진다</a></li><li><a href="#s06"><span class="n">06</span>데이터 누수 · 학습에 섞인 미래·평가 정보</a></li><li><a href="#s07"><span class="n">07</span>과적합 · 데이터 누수 · 분포 변화를 구별하기</a></li><li><a href="#s08"><span class="n">08</span>개념 탐구 질문의 짧은 답</a></li><li><a href="#s09"><span class="n">09</span>핵심 정리</a></li><li><a href="#s10"><span class="n">10</span>검증 기록</a></li></ol></nav>
+<main>
+<section id="s00" aria-labelledby="s00-h"><h2 id="s00-h"><span class="num">00</span>일반화 · 학습하지 않은 자료에 적용한다<span class="pg">p.54–56</span></h2>
+<p class="lead">이 구간의 질문은 하나입니다. <strong>“배운 모델이 새 자료에서도 잘하는가?”</strong> 오전에 배운 학습은 학습 자료에서의 오차를 줄이는 일이었고, 여기서는 그 결과가 학습하지 않은 자료에서도 유지되는지 확인합니다.</p>
+<div class="tbl"><table><thead><tr><th>학습 때 본 문의 (p.55 · 교육용)</th><th>새로 들어온 문의</th></tr></thead><tbody><tr><td>영수증이 오지 않았어요. → 결제</td><td>결제 내역 증빙이 필요해요. → 어떤 부서로 보낼까?</td></tr></tbody></table></div>
+<div class="tbl"><table><thead><tr><th></th><th>학습 기록을 다시 평가</th><th>새 문의에서 평가 (p.56)</th></tr></thead><tbody>
+<tr><td>쓰는 자료</td><td>값을 조정하는 데 쓴 문의</td><td>학습에 넣지 않은 문의</td></tr>
+<tr><td>한계·방법</td><td>이미 맞추려고 학습한 자료라 새 문의의 성능을 대신하지 못함</td><td>정답을 주지 않고 예측한 뒤 담당 부서와 비교</td></tr></tbody></table></div>
+<div class="box v"><h4>오전과의 연결 · 이 구분은 이미 한 번 나왔다 <span class="tag ok">연결 확인</span></h4><p>1일차 p.26과 p.27은 “한 자료에서 맞았다고 학습이 끝나는 것은 아니다. 여러 자료로 조정하고 <strong>새 자료로 확인</strong>한다”고 말했습니다. 오늘 오후는 그 한 문장을 한 구간 전체로 풀어 쓴 것입니다.</p></div>
+</section>
+
+<section id="s01" aria-labelledby="s01-h"><h2 id="s01-h"><span class="num">01</span>학습 · 검증 · 테스트 자료의 역할<span class="pg">p.57–59</span></h2>
+<div class="tbl"><table><thead><tr><th>자료 (p.57)</th><th>무엇에 사용하는가</th></tr></thead><tbody>
+<tr><td>학습</td><td>모델의 매개변수를 조정</td></tr>
+<tr><td>검증</td><td>모델·설정·학습 종료 시점을 선택</td></tr>
+<tr><td>테스트</td><td>선택을 마친 모델의 성능을 최종 평가</td></tr></tbody></table></div>
+<svg viewBox="0 0 560 90" role="img" aria-labelledby="spT" style="width:100%;max-width:560px;display:block;margin:12px 0"><title id="spT">교육용 예: 문의 1,000건을 학습 700건, 검증 150건, 테스트 150건으로 나눔</title><rect x="10.0" y="14" width="378.0" height="36" fill="var(--plus)" opacity="0.9"/><text x="199.0" y="37" font-size="13" text-anchor="middle" fill="var(--card)" font-weight="600" font-family="IBM Plex Sans KR, sans-serif">학습 700건</text><rect x="388.0" y="14" width="81.0" height="36" fill="var(--warn)" opacity="0.9"/><text x="428.5" y="37" font-size="13" text-anchor="middle" fill="var(--card)" font-weight="600" font-family="IBM Plex Sans KR, sans-serif">검증 150건</text><rect x="469.0" y="14" width="81.0" height="36" fill="var(--accent)" opacity="0.9"/><text x="509.5" y="37" font-size="13" text-anchor="middle" fill="var(--card)" font-weight="600" font-family="IBM Plex Sans KR, sans-serif">테스트 150건</text><text x="10" y="76" font-size="12" fill="var(--ink-3)" font-family="IBM Plex Sans KR, sans-serif">교육용 예: 총 1,000건. 70:15:15가 정답 비율이라는 뜻은 아님</text></svg>
+<div class="box v"><h4>검증 · 분할의 합 <span class="tag ok">일치</span></h4><div class="calc">700 + 150 + 150 = 1,000건     비율 70% : 15% : 15%</div><p>자료는 “70:15:15가 정답 비율이라는 뜻은 아님”이라고 밝힙니다. 이 비율은 자료 양과 목적에 따라 달라집니다.</p></div>
+<div class="flow"><div><b>학습</b><span>학습 자료로 매개변수 조정</span></div><i>→</i><div><b>선택</b><span>검증 결과를 보고 설정·종료 시점 결정</span></div><i>→</i><div><b>최종 평가</b><span>선택에 쓰지 않은 테스트 자료로 평가</span></div></div>
+<div class="src"><span class="pl">자료 p.59</span><p>“검증 결과는 선택에 영향을 준다. 테스트 자료는 그 선택으로부터 따로 남겨 둔다.”</p></div>
+<div class="box v"><h4>검증 · 왜 검증으로 골랐는데 테스트가 또 필요한가 (시뮬레이션) <span class="tag ok">자료의 주장 확인</span> <span class="tag add">추가 계산</span></h4>
+<p>p.59의 이유를 숫자로 확인하기 위해 작성자가 시뮬레이션을 했습니다. <strong>실제 정확도가 모두 50%인 모델 50개</strong>(즉 모두 동전 던지기 수준)를 검증 자료 150건으로 평가하고, 검증 점수가 가장 높은 모델을 고른 뒤 따로 둔 테스트 자료 150건으로 다시 평가했습니다. 이를 2,000번 반복한 평균입니다. 같은 설정의 해석 해(이항분포로 구한 “50개 최댓값의 기댓값”)는 59.16%이고, 2만 번으로 다시 돌린 결과는 검증 59.2% · 테스트 50.0%로 일치했습니다.</p>
+<div class="tbl"><table><thead><tr><th>측정</th><th class="r">평균 정확도</th></tr></thead><tbody>
+<tr><td>모델이 1개일 때의 검증 점수</td><td class="r">50.0% (기댓값)</td></tr>
+<tr><td>50개 중 검증 점수가 가장 높은 모델의 <strong>검증 점수</strong></td><td class="r"><strong>59.2%</strong></td></tr>
+<tr><td>그 모델의 <strong>테스트 점수</strong></td><td class="r"><strong>50.1%</strong></td></tr></tbody></table></div>
+<p>모두 50%짜리 모델인데도 “가장 잘 나온 것”을 고르면 검증 점수는 약 9%p 부풀려집니다. 부풀려진 점수를 최종 성능으로 보고하면 틀리고, <strong>선택에 쓰지 않은 테스트 자료</strong>에서는 원래 수준(약 50%)이 드러납니다. 시뮬레이션은 작성자가 직접 돌린 것이며 난수 시드를 고정했습니다. 모델을 많이 비교할수록, 설정을 많이 바꿔 볼수록 이 부풀림이 커집니다.</p></div>
+<div class="box t"><h4>강의 포인트</h4><p>학습자에게 “시험 문제를 보고 공부 방법을 고른 뒤, 같은 시험으로 실력을 말하면?”을 물어보세요. 검증과 테스트를 나누는 이유가 “선택 과정이 이미 그 자료를 본 것”이라는 한 문장으로 정리됩니다.</p></div>
+</section>
+
+<section id="s02" aria-labelledby="s02-h"><h2 id="s02-h"><span class="num">02</span>분할 비율보다 중요한 분리 조건<span class="pg">p.60</span></h2>
+<div class="tbl"><table><thead><tr><th>조건 (p.60)</th><th>확인할 이유</th></tr></thead><tbody>
+<tr><td>같은 자료·매우 비슷한 자료</td><td>양쪽에 겹치면 새 자료 평가가 약해진다</td></tr>
+<tr><td>같은 사람·제품의 반복 기록</td><td>실제 새 대상에 적용할 조건과 맞춰야 한다</td></tr>
+<tr><td>시간 순서</td><td>미래 예측에 미래 정보를 먼저 쓰지 않는다</td></tr></tbody></table></div>
+<div class="box p"><h4>보충 · 자료 밖 내용 · 세 조건에 대응하는 분할 방법</h4>
+<div class="tbl"><table><thead><tr><th>조건</th><th>나누는 방법</th><th>어긋난 분할의 예</th></tr></thead><tbody>
+<tr><td>중복·유사 자료</td><td>중복을 먼저 제거하고 나눔</td><td>같은 문의가 복사되어 학습과 테스트에 모두 들어감</td></tr>
+<tr><td>같은 사람·제품의 반복 기록</td><td>사람(또는 제품) 단위로 묶어서 한쪽에만 배정(그룹 분할)</td><td>한 고객의 문의 20건 중 일부는 학습, 일부는 테스트에 들어감 → 모델이 고객의 말투를 외워 점수가 높아짐</td></tr>
+<tr><td>시간 순서</td><td>과거로 학습하고 이후 기간으로 테스트(시간 분할)</td><td>1~10월 문의를 무작위로 섞어 나눠서, 11월 문의를 예측하는 데 12월 기록이 학습에 들어감</td></tr></tbody></table></div>
+<p>새 대상(새 고객, 다음 달)에 쓸 모델이라면 <strong>평가도 새 고객, 다음 달처럼 나눠서</strong> 해야 실제 성능을 가늠할 수 있습니다. “무작위로 섞어 7:1.5:1.5”가 항상 맞는 답은 아닙니다.</p></div>
+</section>
+
+<section id="s03" aria-labelledby="s03-h"><h2 id="s03-h"><span class="num">03</span>과적합과 학습 곡선<span class="pg">p.61–65</span></h2>
+<div class="src"><span class="pl">자료 p.61 · 과적합의 가능성을 설명하는 구성 예</span><p>과적합: 학습 자료의 우연한 특징까지 맞춤. 예) 결제 문의는 밤에, 계정 문의는 낮에 수집되어 문의 내용보다 접수 시각에 의존해도 맞힌다. 새 문의에서는 밤에 온 “비밀번호를 잊었어요.”를 결제로 잘못 예측할 수 있다. (실제 모델이 사용한 특징을 측정한 결과는 아님)</p></div>
+<div class="box p"><h4>보충 · 자료 밖 내용</h4><p>이 예는 엄밀히는 <strong>우연한 단서(지름길)에 기대는 학습</strong>에 가깝고, 학습 곡선의 과적합(자료 암기)과 겹치는 개념입니다. 수업에서는 “학습 자료에서만 통하는 단서를 배웠다”로 통합해서 설명하면 충분합니다. 이 예의 처방은 접수 시각처럼 <strong>실제 사용 때는 의미가 달라지는 정보를 입력에서 빼는 것</strong>이고, 06절의 누수와 이어집니다.</p></div>
+<h3>학습 곡선 읽기 (p.62–64)</h3>
+<svg viewBox="0 0 560 300" role="img" aria-labelledby="lcT" style="width:100%;max-width:560px;display:block;margin:12px 0"><title id="lcT">학습 곡선의 설명용 예: 학습 손실은 반복 5까지 계속 줄고, 검증 손실은 반복 3에서 가장 작은 뒤 다시 커진다</title><line x1="56" y1="252.0" x2="536" y2="252.0" stroke="var(--line)"/><text x="48" y="256.0" font-size="12" text-anchor="end" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace">0</text><line x1="56" y1="206.4" x2="536" y2="206.4" stroke="var(--line)"/><text x="48" y="210.4" font-size="12" text-anchor="end" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace">0.2</text><line x1="56" y1="160.8" x2="536" y2="160.8" stroke="var(--line)"/><text x="48" y="164.8" font-size="12" text-anchor="end" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace">0.4</text><line x1="56" y1="115.2" x2="536" y2="115.2" stroke="var(--line)"/><text x="48" y="119.2" font-size="12" text-anchor="end" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace">0.6</text><line x1="56" y1="69.6" x2="536" y2="69.6" stroke="var(--line)"/><text x="48" y="73.6" font-size="12" text-anchor="end" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace">0.8</text><line x1="56" y1="24.0" x2="536" y2="24.0" stroke="var(--line)"/><text x="48" y="28.0" font-size="12" text-anchor="end" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace">1</text><text x="56.0" y="272" font-size="12" text-anchor="middle" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace">1</text><text x="176.0" y="272" font-size="12" text-anchor="middle" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace">2</text><text x="296.0" y="272" font-size="12" text-anchor="middle" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace">3</text><text x="416.0" y="272" font-size="12" text-anchor="middle" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace">4</text><text x="536.0" y="272" font-size="12" text-anchor="middle" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace">5</text><line x1="296.0" y1="24" x2="296.0" y2="252" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="5 4"/><text x="302.0" y="36" font-size="12" fill="var(--accent)" font-family="IBM Plex Sans KR, sans-serif">조기 종료로 고를 시점(반복 3)</text><polyline points="56.0,46.8 176.0,126.6 296.0,179.0 416.0,211.0 536.0,229.2" fill="none" stroke="var(--plus)" stroke-width="2.5"/><polyline points="56.0,42.2 176.0,115.2 296.0,151.7 416.0,138.0 536.0,108.4" fill="none" stroke="var(--ng)" stroke-width="2.5"/><circle cx="56.0" cy="46.8" r="4" fill="var(--plus)"/><circle cx="176.0" cy="126.6" r="4" fill="var(--plus)"/><circle cx="296.0" cy="179.0" r="4" fill="var(--plus)"/><circle cx="416.0" cy="211.0" r="4" fill="var(--plus)"/><circle cx="536.0" cy="229.2" r="4" fill="var(--plus)"/><circle cx="56.0" cy="42.2" r="4" fill="var(--ng)"/><circle cx="176.0" cy="115.2" r="4" fill="var(--ng)"/><circle cx="296.0" cy="151.7" r="4" fill="var(--ng)"/><circle cx="416.0" cy="138.0" r="4" fill="var(--ng)"/><circle cx="536.0" cy="108.4" r="4" fill="var(--ng)"/><text x="304.0" y="201.0" font-size="12" text-anchor="start" fill="var(--plus)" font-family="IBM Plex Mono, monospace">0.32</text><text x="528.0" y="219.2" font-size="12" text-anchor="end" fill="var(--plus)" font-family="IBM Plex Mono, monospace">0.10</text><text x="304.0" y="141.7" font-size="12" text-anchor="start" fill="var(--ng)" font-family="IBM Plex Mono, monospace">0.44</text><text x="528.0" y="98.4" font-size="12" text-anchor="end" fill="var(--ng)" font-family="IBM Plex Mono, monospace">0.63</text><text x="536" y="251.2" font-size="13" text-anchor="end" fill="var(--plus)" font-family="IBM Plex Sans KR, sans-serif">학습 손실</text><text x="536" y="84.4" font-size="13" text-anchor="end" fill="var(--ng)" font-family="IBM Plex Sans KR, sans-serif">검증 손실</text><text x="296" y="294" font-size="13" text-anchor="middle" fill="var(--ink-2)" font-family="IBM Plex Sans KR, sans-serif">학습 반복 횟수 →</text><text x="14" y="138" font-size="13" text-anchor="middle" fill="var(--ink-2)" font-family="IBM Plex Sans KR, sans-serif" transform="rotate(-90 14 138)">손실(작을수록 좋음) →</text></svg>
+<div class="src"><span class="pl">자료 p.63</span><p>반복 3 이후 두 손실의 방향이 달라진다. 학습 손실 0.32 → 0.10(학습 자료에서는 개선), 검증 손실 0.44 → 0.63(검증 자료에서는 악화).</p></div>
+<div class="box v"><h4>검증 · 그림에서 읽은 값과 자료의 숫자 <span class="tag ok">일치</span></h4>
+<div class="tbl"><table><thead><tr><th>반복</th><th class="r">학습 손실</th><th class="r">검증 손실</th><th class="r">격차(검증 − 학습)</th></tr></thead><tbody>
+<tr><td>1</td><td class="r">≈ 0.90</td><td class="r">≈ 0.92</td><td class="r">≈ 0.02</td></tr><tr><td>2</td><td class="r">≈ 0.55</td><td class="r">≈ 0.60</td><td class="r">≈ 0.05</td></tr>
+<tr><td><strong>3</strong></td><td class="r"><strong>0.32</strong></td><td class="r"><strong>0.44</strong></td><td class="r">0.12</td></tr>
+<tr><td>4</td><td class="r">≈ 0.18</td><td class="r">≈ 0.50</td><td class="r">≈ 0.32</td></tr>
+<tr><td><strong>5</strong></td><td class="r"><strong>0.10</strong></td><td class="r"><strong>0.63</strong></td><td class="r">0.53</td></tr></tbody></table></div>
+<p>굵게 표시한 네 값(0.32, 0.10, 0.44, 0.63)은 자료 p.63에 글로 적혀 있고, 나머지는 p.62의 그림에서 읽은 <strong>근삿값</strong>입니다(자료는 이 곡선을 “설명용 수치”라고 밝힘). 읽은 값으로 보면 <strong>검증 손실이 가장 작은 반복은 3</strong>이고, 이후 학습 손실은 계속 줄지만 격차는 0.12 → 0.53으로 커집니다. p.66의 “앞 곡선: 반복 3 이후 악화”와 일치합니다.</p></div>
+<div class="tbl"><table><thead><tr><th>관찰한 사실 (p.64)</th><th>가능한 해석</th><th>추가로 볼 조건</th></tr></thead><tbody><tr><td>학습 손실은 줄고 검증 손실은 커졌다</td><td>학습 자료에 지나치게 맞추었을 수 있다</td><td>자료 수·자료의 성격·측정 조건</td></tr></tbody></table></div>
+<div class="tbl"><table><thead><tr><th>상태 (p.65)</th><th>어떻게 보이는가</th></tr></thead><tbody>
+<tr><td>과소적합을 의심</td><td>학습 자료와 검증 자료 모두에서 예측이 충분하지 않음</td></tr>
+<tr><td>과적합을 의심</td><td>학습 자료에서는 좋아지지만 검증 자료에서는 나빠짐</td></tr>
+<tr><td>함께 읽을 것</td><td>두 손실의 차이 + 각 손실의 수준 + 자료와 학습 조건</td></tr></tbody></table></div>
+<div class="box w"><h4>주의 · 곡선 하나로 원인을 단정하지 않는다</h4><p>자료는 “관찰한 사실”과 “가능한 해석”을 따로 적었습니다. 학습 손실과 검증 손실의 격차가 커졌다는 것은 <strong>사실</strong>이고, 과적합이라는 것은 <strong>해석</strong>입니다. 검증 자료가 학습 자료와 성격이 다르거나(분포 변화, 05절), 검증 자료에 문제가 있어도 같은 곡선이 나올 수 있습니다. 수업에서 “곡선이 벌어졌으니 과적합”이라고 한 줄로 가르치지 말고 이 세 칸을 그대로 쓰세요.</p></div>
+</section>
+
+<section id="s04" aria-labelledby="s04-h"><h2 id="s04-h"><span class="num">04</span>과적합을 줄이는 방법 · 조기 종료와 정규화<span class="pg">p.66–67</span></h2>
+<div class="tbl"><table><thead><tr><th>방법 (p.66)</th><th>하는 일</th></tr></thead><tbody>
+<tr><td>조기 종료</td><td>검증 손실이 가장 작았던 시점의 모델을 선택 (앞 곡선에서는 반복 3)</td></tr>
+<tr><td>정규화</td><td>예측 오차만 줄이는 대신 과도한 맞춤에 제약을 추가 (예: 큰 가중치에 벌점)</td></tr></tbody></table></div>
+<div class="src"><span class="pl">자료 p.67</span><p>L2 정규화: 학습 목표 = 예측 손실 + λ × 가중치 제곱합. 오차 감소와 가중치 증가를 함께 고려한다. λ는 벌점의 강도를 정하는 값이다. 너무 크면 필요한 관계도 못 배울 수 있다. “벌점의 강도는 검증 자료로 선택합니다. 작은 가중치가 항상 좋은 것은 아닙니다.”</p></div>
+<div class="box v"><h4>검증 · 벌점이 목표를 어떻게 바꾸는가 (추가 계산 · 설명용) <span class="tag ok">계산 확인</span></h4>
+<div class="calc">가중치 w = [3, −4], 예측 손실 0.5, λ = 0.1
+가중치 제곱합 = 3² + (−4)² = 9 + 16 = 25
+벌점 = λ × 25 = 2.5
+학습 목표 = 0.5 + 2.5 = 3.0
+
+같은 예측 손실이라도 가중치가 w = [1, −1]이면 제곱합 2 → 벌점 0.2 → 목표 0.7</div><p>같은 손실이어도 큰 가중치를 쓰면 목표 값이 커져서, 오차를 조금 더 줄이려고 가중치를 키우는 선택이 불리해집니다. λ를 0으로 하면 벌점이 사라져 오차만 보게 되고, λ를 너무 키우면 가중치를 거의 0으로 눌러 필요한 관계도 못 배웁니다(과소적합). 그래서 λ는 <strong>검증 자료로 고른다</strong>고 자료가 말합니다.</p></div>
+<div class="box p"><h4>보충 · 자료 밖 내용</h4><p>L2 정규화는 가중치를 매번 조금씩 줄이는 ‘가중치 감쇠’와 단순한 최적화 방법에서는 같은 효과를 냅니다. 다만 최근 쓰이는 일부 최적화 알고리즘에서는 둘이 다르게 동작해서 가중치 감쇠를 분리해 쓰는 방식이 따로 나왔습니다(AdamW). PyTorch 소스에서 Adam의 weight_decay는 “L2 penalty”로 설명되고, AdamW는 분리된(decoupled) 가중치 감쇠를 쓰는 것을 확인했습니다. 수업에서는 “큰 가중치에 벌점”까지만 가르치고, 이 구분은 질문이 나올 때 답하면 충분합니다.</p></div>
+</section>
+
+<section id="s05" aria-labelledby="s05-h"><h2 id="s05-h"><span class="num">05</span>자료 분포가 바뀌면 성능도 달라진다<span class="pg">p.68–69</span></h2>
+<div class="tbl"><table><thead><tr><th></th><th>학습 때</th><th>사용할 때 (p.68)</th></tr></thead><tbody>
+<tr><td>상황</td><td>평소의 문의</td><td>서비스 장애가 발생한 날</td></tr>
+<tr><td>자료의 성격</td><td>결제·계정 질문이 대부분</td><td>접속 실패 문의가 급증</td></tr></tbody></table></div>
+<p>분포 변화는 “자료의 성격이나 비율이 달라지는 것”입니다. 모델이 변한 것이 아니라 <strong>입력 쪽이 변한</strong> 경우이고, 학습 때 보지 못한 종류의 문의는 맞히기 어렵습니다.</p>
+<div class="tbl"><table><thead><tr><th>확인한 조건 (p.69)</th><th>검토할 개선</th></tr></thead><tbody>
+<tr><td>사용 환경의 자료가 부족</td><td>그 환경의 대표 자료와 평가를 보강</td></tr>
+<tr><td>학습 자료에 지나친 맞춤</td><td>정규화·학습 종료 시점 검토</td></tr>
+<tr><td>학습 자료에서도 부족</td><td>입력 정보·표현력·학습 조건 검토</td></tr></tbody></table></div>
+<div class="box w"><h4>주의 · “개선은 원인에 맞춰 선택”의 의미</h4><p>표의 세 줄은 <strong>원인이 다르면 처방이 다르다</strong>는 한 문장입니다. 점수가 낮다는 결과만 보고 “자료를 더 모으자” 또는 “모델을 키우자”고 하면 원인과 처방이 어긋날 수 있습니다. 다음 07절의 진단표가 원인을 가르는 질문을 정리합니다.</p></div>
+</section>
+
+<section id="s06" aria-labelledby="s06-h"><h2 id="s06-h"><span class="num">06</span>데이터 누수 · 학습에 섞인 미래·평가 정보<span class="pg">p.70–77</span></h2>
+<div class="src"><span class="pl">자료 p.70</span><p>테스트 자료를 따로 두었는데도 실제 사용 성능을 잘못 판단할 수 있다. <strong>실제 예측 때는 없는 정보가 입력에 들어가거나, 평가할 자료가 학습에 미리 섞이는 문제</strong>가 데이터 누수다. 무엇이 섞였고, 답을 얻는 데 어떻게 쓰이는지 살펴본다.</p></div>
+<h3>사례 · 문의 접수 순간에 예상 처리시간을 안내한다 (p.71–75)</h3>
+<div class="flow"><div><b>학습할 때</b><span>과거 문의의 내용·접수 시각과 실제 처리시간의 관계를 학습</span></div><i>→</i><div><b>새 문의가 들어왔을 때</b><span>“영수증이 오지 않았어요.” 오늘 10:00 접수</span></div><i>→</i><div><b>예측</b><span>예상 처리시간 안내</span></div></div>
+<div class="tbl"><table><thead><tr><th>번호 (p.72 · 교육용)</th><th>문의 내용</th><th>접수</th><th>완료</th><th class="r">실제 처리시간</th></tr></thead><tbody>
+<tr><td>101</td><td>로그인 오류</td><td>08:00</td><td>09:00</td><td class="r">1시간</td></tr>
+<tr><td>102</td><td>환불 요청</td><td>09:00</td><td>12:00</td><td class="r">3시간</td></tr>
+<tr><td>125</td><td>영수증 미수신</td><td>10:00</td><td>12:00</td><td class="r">2시간</td></tr></tbody></table></div>
+<div class="box v"><h4>검증 · 완료 시각에서 정답이 계산되는가 <span class="tag ok">일치</span></h4><div class="calc">101: 09:00 − 08:00 = 1시간  ✓
+102: 12:00 − 09:00 = 3시간  ✓
+125: 12:00 − 10:00 = 2시간  ✓   (자료 p.73의 계산과 같음)</div><p>세 줄 모두 “완료 − 접수 = 처리시간”이 정확히 성립합니다. 즉 입력에 완료 시각이 들어가면 모델은 학습으로 배운 관계 없이 <strong>뺄셈만으로</strong> 정답을 구할 수 있습니다.</p></div>
+<div class="tbl"><table><thead><tr><th></th><th>잘못 구성한 테스트 입력 (p.74)</th><th>실제 문의가 들어온 순간</th></tr></thead><tbody>
+<tr><td>문의 내용 · 접수 시각</td><td>영수증 미수신 · 10:00</td><td>영수증 미수신 · 10:00</td></tr>
+<tr><td>완료 시각</td><td>12:00</td><td><strong>아직 모름</strong></td></tr>
+<tr><td>가능한 일</td><td>입력만으로 정답 계산(2시간)</td><td>접수 당시 정보로 예측해야 함</td></tr></tbody></table></div>
+<p>“완료 시각을 이용한 평가로는 접수 순간에 처리시간을 예측하는 능력을 알 수 없다”(p.74). 테스트 점수는 높게 나오지만 서비스에서는 쓸 수 없는 모델이 됩니다.</p>
+<div class="tbl"><table><thead><tr><th>125번 원자료 · 영수증 미수신 · 접수 10:00 · 완료 12:00 (p.75)</th><th>입력</th><th>정답</th></tr></thead><tbody>
+<tr><td>잘못된 구성</td><td>내용 · 접수 · <strong>완료 시각</strong></td><td>2시간</td></tr>
+<tr><td>실제 예측 조건에 맞춘 구성</td><td>내용 · 접수 시각</td><td>2시간</td></tr></tbody></table></div>
+<div class="src"><span class="pl">자료 p.75</span><p>전처리: 원자료를 학습·평가에 사용할 형태로 정리·변환. <strong>정답은 버리지 않는다.</strong> 학습할 때 오차를 구하고, 평가할 때 예측과 비교하는 데 쓴다.</p></div>
+<p>완료 시각은 <strong>입력에서는 빼고, 정답을 계산하는 데만</strong> 씁니다. 한 정보가 입력으로는 누수지만 정답을 만드는 재료로는 필요하다는 점이 이 사례의 핵심입니다.</p>
+<h3>같은 기록이 겹치는 누수와 평가 오염 (p.76–77)</h3>
+<div class="tbl"><table><thead><tr><th>학습 파일</th><th>테스트 파일 (p.76)</th></tr></thead><tbody><tr><td>문의 125번 · 영수증 미수신 · 접수 10:00 · 정답 2시간</td><td>문의 125번 · 영수증 미수신 · 접수 10:00 · 정답 2시간</td></tr></tbody></table></div>
+<p>“입력에서 완료 시각을 뺐어도, 이미 학습한 같은 기록을 맞히면 새 문의의 성능인지 알기 어렵다.” 이는 앞 02절의 “같은 자료·매우 비슷한 자료가 양쪽에 겹치는” 경우입니다.</p>
+<div class="src"><span class="pl">자료 p.77</span><p>언어 모델의 평가 오염도 같은 중복 문제다. 웹 자료를 수집해 모델 학습에 포함했는데, 공개된 평가 자료(문제와 정답)가 그 안에 들어 있어 같은 문제를 평가에 다시 사용하게 된다. “새 문제를 푸는 능력과 이미 본 자료의 영향을 구별하기 어려워진다.”</p></div>
+<div class="box p"><h4>보충 · 자료 밖 내용 · 전처리에서 새는 정보</h4><p>누수는 정답이나 완료 시각처럼 눈에 보이는 것만이 아닙니다. 예를 들어 <strong>평균과 표준편차로 값을 맞추는 전처리를 전체 자료로 계산한 뒤 학습·테스트로 나누면</strong> 테스트 자료의 정보가 학습 단계에 섞입니다. 전처리 기준(평균 등)도 <strong>학습 자료로만 계산하고</strong> 그 값을 테스트에 적용해야 합니다(작성자 지식). “분할을 가장 먼저” 하라는 규칙의 이유입니다.</p><p>언어 모델 평가 오염은 2일차 오전 벤치마크 절의 “시험 문제가 학습 자료에 섞이면 점수가 능력보다 높게 나온다”와 같은 이야기입니다.</p></div>
+</section>
+
+<section id="s07" aria-labelledby="s07-h"><h2 id="s07-h"><span class="num">07</span>과적합 · 데이터 누수 · 분포 변화를 구별하기<span class="pg">p.78</span></h2>
+<div class="tbl"><table><thead><tr><th>구분</th><th>보이는 모습</th><th>무슨 일인가</th></tr></thead><tbody>
+<tr><td>과적합</td><td>학습 손실은 줄지만 검증 손실은 증가</td><td>학습 자료에 맞춘 관계가 새 자료에 잘 안 맞음</td></tr>
+<tr><td>데이터 누수</td><td>완료 시각을 예측 입력에 넣거나 학습한 기록을 다시 평가</td><td>실제 사용·새 자료 평가에 없어야 할 정보가 들어옴</td></tr>
+<tr><td>자료 분포 변화</td><td>서비스 장애 후 문의의 종류·내용이 달라짐</td><td>학습 때와 사용할 때의 자료 조건이 달라짐</td></tr></tbody></table></div>
+<div class="src"><span class="pl">자료 p.78</span><p>“새 자료의 점수가 낮다는 결과만으로 이 셋 중 원인을 결정할 수는 없습니다.”</p></div>
+<div class="box p"><h4>보충 · 원인을 가르는 진단 질문 (작성자 구성)</h4>
+<div class="tbl"><table><thead><tr><th>확인할 것</th><th>이렇게 나오면</th><th>의심</th></tr></thead><tbody>
+<tr><td>학습 손실과 검증 손실을 함께 그렸는가</td><td>학습은 계속 개선, 검증은 악화</td><td>과적합</td></tr>
+<tr><td>학습·검증 둘 다 점수가 낮은가</td><td>둘 다 낮음</td><td>과소적합 (입력 정보·표현력·학습 조건)</td></tr>
+<tr><td>테스트 점수가 “너무 좋은가”</td><td>실제 사용 조건에서는 알 수 없는 정보로도 답을 계산할 수 있음 / 같은 기록이 양쪽에 있음</td><td>데이터 누수</td></tr>
+<tr><td>학습 때와 사용할 때 자료의 구성을 비교했는가</td><td>종류·비율·기간이 다름</td><td>분포 변화</td></tr></tbody></table></div>
+<p>누수는 다른 둘과 <strong>방향이 반대</strong>입니다. 과적합과 분포 변화는 새 자료에서 점수가 <strong>낮아서</strong> 문제가 드러나지만, 누수는 평가 점수가 <strong>높아서</strong> 문제를 놓칩니다. “점수가 너무 좋을 때 의심한다”는 습관이 누수를 잡는 첫 단계입니다.</p></div>
+</section>
+
+<section id="s08" aria-labelledby="s08-h"><h2 id="s08-h"><span class="num">08</span>개념 탐구 질문의 짧은 답<span class="pg">p.79–80</span></h2>
+<details><summary>p.79–80 질문 아홉 묶음의 짧은 답</summary>
+<div class="tbl"><table><thead><tr><th>개념</th><th>짧은 답</th><th>위치</th></tr></thead><tbody>
+<tr><td>일반화·데이터 분할</td><td>학습 자료는 이미 맞추려고 조정한 자료라서 새 자료의 성능을 대신하지 못한다</td><td>00</td></tr>
+<tr><td>학습·검증·테스트</td><td>검증은 선택에 쓰고 테스트는 선택을 마친 뒤 최종 평가에만 쓴다. 선택이 검증 점수를 부풀리기 때문</td><td>01</td></tr>
+<tr><td>손실·학습 곡선</td><td>가로는 학습 반복 횟수, 세로는 손실. 학습·검증 두 곡선의 방향과 격차를 함께 읽는다</td><td>03</td></tr>
+<tr><td>과적합·과소적합</td><td>검증이 나빠지면 과적합, 둘 다 나쁘면 과소적합</td><td>03</td></tr>
+<tr><td>정규화(L2)·조기 종료</td><td>큰 가중치에 벌점을 주거나 검증 손실이 최소인 시점에서 멈춘다</td><td>04</td></tr>
+<tr><td>데이터 누수</td><td>실제 예측 때 없는 정보나 평가용 자료가 학습에 섞이면 점수가 실제 성능을 말해 주지 못한다</td><td>06</td></tr>
+<tr><td>전처리·평가 오염</td><td>전처리는 원자료를 학습·평가 형태로 바꾸는 과정. 평가 오염은 평가 자료가 모델 학습에 포함된 것</td><td>06</td></tr>
+<tr><td>자료 분포 변화</td><td>학습 때와 사용할 때 자료의 성격·비율이 다른 경우</td><td>05</td></tr>
+<tr><td>과적합·누수·분포 변화의 구별</td><td>점수가 낮은 이유가 다르고 처방도 다르다. 점수가 너무 좋을 때는 누수를 의심한다</td><td>07</td></tr></tbody></table></div></details>
+</section>
+
+<section id="s09" class="summary" aria-labelledby="s09-h"><h2 id="s09-h"><span class="num">09</span>핵심 정리</h2>
+<ul>
+<li>학습에 쓴 자료의 점수는 <strong>새 자료의 성능을 대신하지 못하므로</strong> 학습에 넣지 않은 자료로 평가합니다.</li>
+<li><strong>학습은 조정, 검증은 선택, 테스트는 최종 평가</strong>입니다. 선택이 검증 점수를 부풀리므로(시뮬레이션: 50% 모델 50개 중 최고가 59.2%) 테스트를 따로 남깁니다.</li>
+<li>분할은 비율보다 <strong>분리 조건</strong>(중복 제거, 사람 단위, 시간 순서)이 중요합니다.</li>
+<li>학습 곡선에서 <strong>사실(두 손실의 방향)</strong>과 <strong>해석(과적합)</strong>을 구분하고, 원인에 맞춰 조기 종료·정규화·자료 보강을 고릅니다.</li>
+<li>데이터 누수는 <strong>실제 예측 때 없는 정보</strong>나 <strong>평가 자료의 혼입</strong>이며, 점수가 낮아서가 아니라 <strong>너무 좋아서</strong> 드러납니다.</li>
+</ul>
+</section>
+
+<section id="s10" aria-labelledby="s10-h"><h2 id="s10-h"><span class="num">10</span>검증 기록</h2>
+<div class="tbl"><table><thead><tr><th>쪽</th><th>항목</th><th>방법</th><th>결과</th></tr></thead><tbody>
+<tr><td>p.58</td><td>700 + 150 + 150 = 1,000</td><td>재계산</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>p.59</td><td>검증 후 테스트를 또 해야 하는 이유</td><td>50% 모델 50개 · 2,000회 시뮬레이션 (검증 59.2%, 테스트 50.1%) · 해석 해 59.16% · 2만 회 재실행 59.2% / 50.0%</td><td><span class="tag ok">주장 확인</span></td></tr>
+<tr><td>p.62–63</td><td>학습·검증 손실 0.32→0.10, 0.44→0.63</td><td>p.62 그림의 값과 대조 (반복 3~5)</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>p.66</td><td>반복 3이 검증 손실 최소</td><td>그림에서 읽은 검증 손실 최소 지점</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>p.67</td><td>L2 벌점 계산</td><td>가중치 [3, −4], λ=0.1 → 2.5</td><td><span class="tag ok">일치(설명용)</span></td></tr>
+<tr><td>p.72–73</td><td>완료 − 접수 = 처리시간</td><td>101·102·125번 재계산</td><td><span class="tag ok">세 줄 일치</span></td></tr>
+<tr><td>p.61</td><td>접수 시각 예가 과적합의 예인가</td><td>개념 대조</td><td><span class="tag na">지름길 학습에 가까움 · 표시</span></td></tr>
+<tr><td>p.70–77</td><td>전처리 단계의 누수</td><td>작성자 지식</td><td><span class="tag add">보충</span></td></tr></tbody></table></div>
+</section>
+
+</main></div>
+<footer><p>이 문서는 「AI 강사양성과정」 3일차 교육자료를 다시 쓴 학습 참고자료입니다. 회색 상자는 자료 원문을 인용하거나 요약한 것(표의 칸이나 여러 칸으로 된 슬라이드를 문장으로 풀어 쓴 곳 포함), 직접 다시 계산한 결과는 초록 ‘검증’ 상자, 자료에 없는 설명은 파란 ‘보충’ 상자로 구분했습니다. 보충 내용은 작성자의 지식에 기반하며 웹 검색으로 확인하지 않았습니다. 인용한 논문·문서의 제목과 연도는 원문을 직접 확인하세요. ‘설명용’, ‘가상’, ‘교육용 예’로 표시된 수치는 실제 측정값이 아닙니다. 이 PDF에는 발표자 노트가 들어 있지 않아 노트에만 적힌 출처·세부 조건은 확인하지 못했습니다. 그림에서 읽은 값은 ‘근삿값’, 작성자가 만든 계산·반례·시뮬레이션은 ‘추가’, 원문을 확인하지 못한 외부 사실은 ‘미확인’으로 표시했습니다.</p></footer>
+</body></html>
