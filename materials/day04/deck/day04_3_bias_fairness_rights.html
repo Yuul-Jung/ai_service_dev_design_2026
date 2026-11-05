@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>4일차 오후 둘째 구간 · 편향·공정성·자료 이용 조건</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F1F2EE;--card:#FFFFFF;--ink:#15171C;--ink-2:#454A55;--ink-3:#6E7480;
+  --line:#DDDFD8;--accent:#4635B1;--accent-soft:#EDEAFA;
+  --ok:#1D6B45;--ok-soft:#E3F2E9;--warn:#7E5200;--warn-soft:#FBF0D9;--ng:#A8261D;--ng-soft:#FBE7E4;
+  --plus:#0F5E73;--plus-soft:#E2F1F5;--src:#F6F6F2;
+  --hero:#15171C;--hero-ink:#F1F2EE;--hero-2:#B9BDC4;--hero-3:#8D9299;--hl:#FFD24A;
+  --maxw:1180px;color-scheme:light;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#111216;--card:#1A1C22;--ink:#E7E8EB;--ink-2:#B8BDC7;--ink-3:#8E94A0;
+  --line:#2C2F37;--accent:#AEA2FF;--accent-soft:#2A2550;
+  --ok:#7FD9A8;--ok-soft:#16301F;--warn:#F3C86F;--warn-soft:#352911;--ng:#FF9A90;--ng-soft:#3A1916;
+  --plus:#7FD0E6;--plus-soft:#142C33;--src:#15171C;
+  --hero:#0B0C0F;color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --paper:#111216;--card:#1A1C22;--ink:#E7E8EB;--ink-2:#B8BDC7;--ink-3:#8E94A0;
+  --line:#2C2F37;--accent:#AEA2FF;--accent-soft:#2A2550;
+  --ok:#7FD9A8;--ok-soft:#16301F;--warn:#F3C86F;--warn-soft:#352911;--ng:#FF9A90;--ng-soft:#3A1916;
+  --plus:#7FD0E6;--plus-soft:#142C33;--src:#15171C;--hero:#0B0C0F;color-scheme:dark;}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans KR",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.75;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+code,.mono{font-family:"IBM Plex Mono","IBM Plex Sans KR",ui-monospace,monospace;font-size:.92em}
+a{color:var(--accent)}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.hero{position:relative;background:var(--hero);color:var(--hero-ink);overflow:hidden}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(to right,rgba(255,255,255,.055) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.055) 1px,transparent 1px);background-size:28px 28px;pointer-events:none}
+.hero-inner{position:relative;max-width:var(--maxw);margin:0 auto;padding:80px 32px 68px}
+.hero-kicker{margin:0 0 18px;font-size:clamp(1rem,2.2vw,1.18rem);font-weight:500;color:var(--hl);display:inline-block;padding-bottom:7px;border-bottom:2px solid var(--hl)}
+.hero h1{margin:0;font-size:clamp(2rem,5vw,3.3rem);font-weight:700;letter-spacing:-.035em;line-height:1.2;max-width:18ch}
+.hero .sub{margin:24px 0 0;max-width:52ch;color:var(--hero-2);font-size:1.03rem;font-weight:300}
+.hero-meta{margin-top:36px;display:flex;flex-wrap:wrap;gap:10px}
+.chip{font-family:"IBM Plex Mono",monospace;font-size:.78rem;color:#E4E6EA;border:1px solid rgba(255,255,255,.22);border-radius:2px;padding:5px 11px}
+.chip b{color:var(--hl);font-weight:600}
+.hero-terms{margin-top:48px;padding-top:32px;border-top:1px solid rgba(255,255,255,.15);display:grid;grid-template-columns:1fr 1fr;gap:30px 46px}
+.term h2{margin:0 0 8px;font-size:1.06rem;font-weight:600;color:#fff}
+.term h2 span{display:block;margin-top:3px;font-family:"IBM Plex Mono",monospace;font-size:.74rem;font-weight:400;color:var(--hero-3)}
+.term p{margin:0;font-size:.93rem;font-weight:300;color:var(--hero-2);max-width:46ch}
+.term-sum{grid-column:1/-1;margin:0;padding:15px 18px;background:rgba(255,210,74,.10);border-left:2px solid var(--hl);font-size:.95rem;font-weight:300;color:#D6D9DE}
+.hero strong,.hero b{color:var(--hl);font-weight:600}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px 96px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:52px;align-items:start}
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);padding:44px 0;max-height:100vh;overflow-y:auto}
+nav.toc h2{font-size:.8rem;color:var(--ink-3);margin:0 0 12px;font-weight:500}
+nav.toc ol{list-style:none;margin:0;padding:0}
+nav.toc a{display:flex;gap:10px;padding:4px 0 4px 10px;color:var(--ink-2);text-decoration:none;font-size:.85rem;line-height:1.5;border-left:2px solid transparent}
+nav.toc a:hover,nav.toc a:focus-visible{color:var(--accent);border-left-color:var(--accent)}
+nav.toc .n{font-family:"IBM Plex Mono",monospace;color:var(--ink-3);font-size:.78rem;min-width:18px}
+main{padding:44px 0 0;min-width:0}
+
+section{background:var(--card);border:1px solid var(--line);padding:34px 38px 36px;margin-bottom:18px;scroll-margin-top:20px}
+section>h2{margin:0 0 4px;font-size:1.42rem;font-weight:600;letter-spacing:-.02em;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+section>h2 .num{font-family:"IBM Plex Mono",monospace;font-size:.9rem;font-weight:500;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:2px}
+section>h2 .pg{font-family:"IBM Plex Mono",monospace;font-size:.78rem;font-weight:400;color:var(--ink-3);margin-left:auto}
+section h3{font-size:1.06rem;font-weight:600;margin:28px 0 8px}
+section p{margin:12px 0;max-width:72ch}
+.lead{color:var(--ink-2);margin-top:10px}
+section ul,section ol{padding-left:1.25em;max-width:72ch}
+section li{margin:4px 0}
+strong{font-weight:600}
+
+.src{margin:18px 0;padding:14px 18px;background:var(--src);border-left:3px solid var(--ink-3);font-size:.96rem}
+.src .pl{display:block;font-family:"IBM Plex Mono",monospace;font-size:.74rem;color:var(--ink-3);margin-bottom:4px}
+.src p{margin:4px 0}
+
+.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin:18px 0}
+.flow>div{flex:1 1 140px;border:1px solid var(--line);background:var(--card);padding:10px 12px;font-size:.9rem;position:relative}
+.flow>div b{display:block;font-weight:600;font-size:.93rem}
+.flow>div span{color:var(--ink-2);font-size:.86rem}
+.flow>i{align-self:center;font-style:normal;color:var(--ink-3);font-family:"IBM Plex Mono",monospace}
+
+.tbl{overflow-x:auto;margin:16px 0}
+table{border-collapse:collapse;width:100%;font-size:.92rem;min-width:420px}
+th,td{border-bottom:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+th{font-weight:600;color:var(--ink-2);background:var(--src);font-size:.86rem}
+td.c,th.c{text-align:center}
+td.r,th.r{text-align:right;font-family:"IBM Plex Mono",monospace}
+
+dl.ex{margin:16px 0;border-top:1px solid var(--line)}
+dl.ex dt{font-weight:600;padding-top:14px;font-size:.95rem}
+dl.ex dt code{background:var(--accent-soft);color:var(--accent);padding:1px 6px}
+dl.ex dd{margin:4px 0 0;padding-bottom:14px;border-bottom:1px solid var(--line);color:var(--ink-2);max-width:72ch}
+
+.box{margin:20px 0;padding:16px 20px;border:1px solid var(--line)}
+.box>h4{margin:0 0 6px;font-size:.88rem;font-weight:600;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.box p,.box li{font-size:.94rem}
+.box p:first-of-type{margin-top:4px}
+.box.v{background:var(--ok-soft);border-color:transparent}
+.box.v>h4{color:var(--ok)}
+.box.p{background:var(--plus-soft);border-color:transparent}
+.box.p>h4{color:var(--plus)}
+.box.w{background:var(--warn-soft);border-color:transparent}
+.box.w>h4{color:var(--warn)}
+.box.l{background:var(--accent-soft);border-color:transparent}
+.box.l>h4{color:var(--accent)}
+.box.t{border-style:dashed}
+.box.t>h4{color:var(--accent)}
+.tag{font-family:"IBM Plex Mono",monospace;font-size:.72rem;font-weight:500;padding:1px 7px;border:1px solid currentColor;border-radius:2px}
+.tag.lec{color:var(--accent)}.tag.ok{color:var(--ok)}.tag.ng{color:var(--ng)}.tag.na{color:var(--ink-3)}.tag.add{color:var(--plus)}
+.calc{font-family:"IBM Plex Mono",monospace;font-size:.88rem;background:var(--card);padding:10px 12px;margin:8px 0;overflow-x:auto;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6}
+
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+.pair>div{border:1px solid var(--line);padding:14px 16px}
+.pair>div h4{margin:0 0 6px;font-size:.98rem;font-weight:600}
+.pair>div p,.pair>div li{font-size:.92rem;color:var(--ink-2)}
+.nest{border:1px solid var(--ink-3);padding:12px 14px;margin:14px 0}
+.nest .nest{margin:10px 0 0;border-color:var(--accent)}
+.nest .nest .nest{border-style:dashed}
+.nest b{font-weight:600}.nest span{color:var(--ink-2);font-size:.9rem}
+
+details{margin:16px 0;border:1px solid var(--line);padding:0 16px}
+details summary{cursor:pointer;padding:12px 0;font-weight:600;font-size:.94rem;color:var(--accent)}
+details[open] summary{border-bottom:1px solid var(--line);margin-bottom:8px}
+details>*:last-child{margin-bottom:14px}
+
+section.summary{background:var(--hero);color:var(--hero-ink);border-color:var(--hero)}
+section.summary>h2 .num{background:rgba(255,210,74,.15);color:var(--hl)}
+section.summary li{color:#D6D9DE}
+section.summary strong{color:var(--hl)}
+footer{max-width:var(--maxw);margin:0 auto;padding:0 32px 60px;color:var(--ink-3);font-size:.84rem}
+footer p{max-width:80ch}
+
+@media (max-width:900px){
+  .wrap{grid-template-columns:1fr;gap:0;padding:0 16px 64px}
+  nav.toc{position:static;max-height:none;padding:28px 0 8px}
+  nav.toc ol{columns:2;column-gap:16px}
+  .hero-inner{padding:56px 20px 48px}
+  .hero-terms{grid-template-columns:1fr}
+  section{padding:24px 18px 26px}
+  .pair{grid-template-columns:1fr}
+  section>h2 .pg{margin-left:0;width:100%}
+  footer{padding:0 16px 48px}
+}
+</style></head>
+<body>
+<header class="hero"><div class="hero-grid"></div><div class="hero-inner">
+<p class="hero-kicker">4일차 오후 둘째 구간 · 15:00–17:00</p>
+<h1>적합한 자료와 사용할 수 있는 자료는 다르다</h1>
+<p class="sub">대리변수와 집단별 오류, 공정성 지표, 생성 표현의 편향을 Fairlearn으로 계산하고, 개인정보 보호법·저작권법·CC BY-SA 조문을 원문과 대조해 자료를 쓸 조건을 정리합니다.</p>
+<div class="hero-meta"><span class="chip">쪽 <b>p.44–74</b></span><span class="chip">Fairlearn <b>0.15.0 일치</b></span><span class="chip">법령 조문 <b>원문 대조</b></span><span class="chip">시뮬레이션 <b>28.3% ↔ 49.8%</b></span></div>
+<div class="hero-terms"><div class="term"><h2>대리변수<span>Proxy variable</span></h2><p>직접 알고 싶은 특성 대신 쓰는 값입니다. 의료비에 접근성이 섞이면 비용 예측이 정확해도 관리 대상 선정은 어긋납니다(p.46–48).</p></div><div class="term"><h2>등화된 오즈<span>Equalized odds</span></h2><p>참양성률과 거짓양성률이 각각 집단 간 같아야 한다는 기준입니다. 선발 비율이 같아도(인구통계적 동등성 충족) 이 기준은 충족하지 않을 수 있습니다(p.54).</p></div><p class="term-sum">집단별 결과의 차이는 <strong>사실</strong>이고 원인은 따로 확인할 가설입니다. 이름을 지워도 <strong>개인정보</strong>일 수 있고, 자료를 받은 것과 공개할 <strong>권한</strong>은 다르며, 출처 표시만으로 이용이 허용되지 않습니다.</p></div>
+</div></header>
+<div class="wrap">
+<nav class="toc" aria-label="목차"><h2>목차</h2><ol><li><a href="#s00"><span class="n">00</span>적합한 자료와 사용할 수 있는 자료는 다르다</a></li><li><a href="#s01"><span class="n">01</span>대리변수 · 알고 싶은 것을 대신 나타내는 값</a></li><li><a href="#s02"><span class="n">02</span>편향의 경로에 따라 보완할 대상이 다르다</a></li><li><a href="#s03"><span class="n">03</span>공정성 지표는 집단별 결과를 비교한다</a></li><li><a href="#s04"><span class="n">04</span>생성형 답변의 편향은 무엇에서 드러날까</a></li><li><a href="#s05"><span class="n">05</span>개인정보 · 개인을 알아볼 수 있는 정보</a></li><li><a href="#s06"><span class="n">06</span>저작권과 이용허락 · 공정이용</a></li><li><a href="#s07"><span class="n">07</span>입력·공개 전에 확인할 것과 데이터 준비도</a></li><li><a href="#s08"><span class="n">08</span>개념 탐구 질문의 짧은 답</a></li><li><a href="#s09"><span class="n">09</span>핵심 정리</a></li><li><a href="#s10"><span class="n">10</span>검증 기록</a></li></ol></nav>
+<main>
+<section id="s00" aria-labelledby="s00-h"><h2 id="s00-h"><span class="num">00</span>적합한 자료와 사용할 수 있는 자료는 다르다<span class="pg">p.44–45</span></h2>
+<p class="lead">이 구간은 두 질문을 구별합니다. <strong>이 자료와 이 측정값이 목적에 적합한가?</strong> 그리고 <strong>이 자료를 이 방식으로 써도 되는가?</strong> 앞의 질문은 편향과 공정성, 뒤의 질문은 개인정보와 저작권이 답합니다.</p>
+<div class="tbl"><table><thead><tr><th>자료와 결과의 편향 (적합성)</th><th>자료를 쓸 조건 (권한)</th></tr></thead><tbody><tr><td>대리변수 · 집단별 오류 · 공정성 지표 · 생성 표현의 편향</td><td>개인정보 · 저작물 · 이용허락 · 공정이용 · 데이터 준비도</td></tr></tbody></table></div>
+<div class="box w"><h4>안내 · 이 문서의 법률 설명은 법률 자문이 아닙니다</h4><p>05–06절의 법령 설명은 <strong>학습 참고용 요약</strong>입니다. 조문의 문구는 법령 저장소(legalize-kr)에서 확인했지만, 개별 사안(어떤 서비스에 어떤 자료를 넣어도 되는가, 어떤 이용이 공정이용인가)의 판단은 사실관계에 달려 있어 <strong>법률 전문가나 개인정보 보호위원회 등 공식 기관에 확인</strong>해야 합니다. 법령은 개정되므로 사용하는 날의 시행 조문을 확인하세요.</p></div>
+</section>
+
+<section id="s01" aria-labelledby="s01-h"><h2 id="s01-h"><span class="num">01</span>대리변수 · 알고 싶은 것을 대신 나타내는 값<span class="pg">p.46–48</span></h2>
+<div class="src"><span class="pl">자료 p.46</span><p>대리변수는 직접 알고 싶은 특성 대신 그 특성을 나타내기 위해 쓰는 값이다. 실제 연구: 추가 건강 관리가 필요한 환자 찾기. 알고 싶은 것은 건강 관리의 필요이고, 알고리즘이 예측한 것은 앞으로 지출할 의료비다. “의료비가 필요를 제대로 대신하는가?”</p></div>
+<div class="tbl"><table><thead><tr><th>원래 알고 싶은 관계 (p.47)</th><th>기록된 비용에 섞인 조건</th></tr></thead><tbody><tr><td>질병과 건강 상태 → 추가 관리의 필요</td><td>질병 + 의료 접근성·이용 → 실제로 지출한 의료비</td></tr></tbody></table></div>
+<div class="tbl"><table><thead><tr><th>같은 위험 점수인데 건강 상태는 달랐다 (p.48 · Obermeyer 외, 2019)</th><th>내용</th></tr></thead><tbody>
+<tr><td>알고리즘의 평가 축</td><td>예측한 비용에 따라 환자의 위험 점수를 정함. 비슷한 점수 → 비슷한 비용 예상</td></tr>
+<tr><td>연구자가 대조한 실제 상태</td><td>같은 점수에서도 흑인 환자의 질병 부담이 백인 환자보다 높았음</td></tr></tbody></table></div>
+<div class="src"><span class="pl">자료 p.48</span><p>“비용 예측의 정확성과, 건강 관리 대상 선정의 적합성은 다른 문제다.”</p></div>
+<div class="box v"><h4>검증 · 비용이 필요를 대신하지 못하는 구조를 직접 시뮬레이션 (가상 모델) <span class="tag ok">자료의 주장을 재현</span> <span class="tag na">가정값</span></h4>
+<div class="calc">가정: 두 집단 P, Q의 질병 부담 분포는 같다(각 2만 명). 그런데 Q는 같은 질병이어도
+      의료 이용이 적어 기록된 비용이 30% 낮다. 상위 20%를 추가 관리 대상으로 선정.
+
+                              집단 P    집단 Q
+평균 질병 부담                  1.13      1.13   ← 같음
+평균 기록 비용                  1.15      0.81   ← Q가 낮음
+상위 20% 선정 중 Q의 비율:  비용 기준 28.3%  /  질병 부담 기준 49.8%
+선정된 사람의 평균 질병 부담    1.81      2.25   ← 같은 선정 기준에서 Q가 더 아픔</div>
+<p>비용을 기준으로 삼으면 질병 부담이 같은 두 집단에서 <strong>Q가 절반 가까이 덜 선정</strong>되고, 선정된 Q 환자는 선정된 P 환자보다 더 아픕니다. 이는 자료가 말한 두 가지(“같은 필요가 같은 지출로 이어진다고 볼 수 없었다”, “같은 점수에서도 한쪽의 질병 부담이 더 높았다”)와 같은 방향의 결과입니다. 시뮬레이션은 작성자가 설명용으로 만든 것(난수 시드 고정)이며 실제 연구의 수치가 아닙니다.</p></div>
+<div class="box w"><h4>검증 · Obermeyer 연구 자체는 원문 미확인 <span class="tag na">미확인</span></h4><p>작성자가 알고 있는 이 연구(Science, 2019)는 건강 관리 프로그램 대상 선정에 쓰인 알고리즘이 의료비를 예측하도록 학습되어 있었고, 같은 위험 점수에서 흑인 환자가 더 많은 만성 질환을 가졌다고 보고한 것과 부합합니다(작성자 지식). 이 환경에서는 논문 원문에 접속할 수 없어 구체적인 수치와 표현은 대조하지 못했습니다. 위 시뮬레이션은 <strong>원인 구조의 설명</strong>이지 논문 결과의 재현이 아닙니다.</p></div>
+</section>
+
+<section id="s02" aria-labelledby="s02-h"><h2 id="s02-h"><span class="num">02</span>편향의 경로에 따라 보완할 대상이 다르다<span class="pg">p.49</span></h2>
+<div class="tbl"><table><thead><tr><th>편향의 경로 (p.49)</th><th>묻는 것</th><th>살필 것</th><th>오늘의 위치</th></tr></thead><tbody>
+<tr><td>표본 편향</td><td>누가 얼마나 자료에 포함되었는가?</td><td>빠진 대상·반영 비율·수집 경로</td><td>오전 07절</td></tr>
+<tr><td>판단자 편향</td><td>무엇을 좋은 답·맞는 범주로 보았는가?</td><td>판단 기준과 관점의 적절성</td><td>오후 첫 05절</td></tr>
+<tr><td>대리변수</td><td>측정한 값이 알고 싶은 특성을 나타내는가?</td><td>대상·상황에 따라 그 관계를 확인</td><td>01절</td></tr></tbody></table></div>
+<div class="src"><span class="pl">자료 p.49</span><p>“집단별 결과가 다르다는 사실만으로 어느 경로가 원인인지 정할 수는 없다.”</p></div>
+<p>3일차 p.78의 “점수가 낮다는 결과만으로 과적합·누수·분포 변화 중 원인을 결정할 수는 없다”와 같은 형식의 문장입니다. 결과의 차이는 <strong>사실</strong>이고 원인은 <strong>따로 확인할 가설</strong>이라는 구분이 반복됩니다.</p>
+</section>
+
+<section id="s03" aria-labelledby="s03-h"><h2 id="s03-h"><span class="num">03</span>공정성 지표는 집단별 결과를 비교한다<span class="pg">p.50–55 · p.80 · p.82</span></h2>
+<div class="src"><span class="pl">자료 p.50</span><p>3일차의 분류 오류표를 집단별로 나누어 보면, 전체 수치가 숨긴 차이를 읽을 수 있다. 자료가 생기는 경로(누가 포함되었는가? 어떤 기준을 붙였는가?)와 결과의 비교(누구에게 어떤 선택과 오류가 생겼는가?)를 함께 본다.</p></div>
+<div class="tbl"><table><thead><tr><th>집단 (p.52)</th><th>실제 상태</th><th class="r">예측 양성</th><th class="r">예측 음성</th></tr></thead><tbody>
+<tr><td rowspan="2">A</td><td>양성</td><td class="r">40</td><td class="r">10</td></tr><tr><td>음성</td><td class="r">10</td><td class="r">40</td></tr>
+<tr><td rowspan="2">B</td><td>양성</td><td class="r">20</td><td class="r">30</td></tr><tr><td>음성</td><td class="r">30</td><td class="r">20</td></tr></tbody></table></div>
+<div class="tbl"><table><thead><tr><th>지표 (p.53)</th><th>뜻</th><th class="r">집단 A</th><th class="r">집단 B</th></tr></thead><tbody>
+<tr><td>선발 비율</td><td>전체 중 양성으로 고른 비율</td><td class="r">50/100 = 50%</td><td class="r">50/100 = 50%</td></tr>
+<tr><td>참양성률</td><td>실제 양성 중 맞게 고른 비율</td><td class="r">40/50 = 80%</td><td class="r">20/50 = 40%</td></tr>
+<tr><td>거짓양성률</td><td>실제 음성 중 잘못 고른 비율</td><td class="r">10/50 = 20%</td><td class="r">30/50 = 60%</td></tr></tbody></table></div>
+<div class="tbl"><table><thead><tr><th>공정성 기준 (p.54)</th><th>같아야 하는 것</th><th>이 자료에서</th></tr></thead><tbody>
+<tr><td>인구통계적 동등성</td><td>집단별 선발 비율</td><td>A 50% · B 50% → <strong>충족</strong></td></tr>
+<tr><td>등화된 오즈</td><td>참양성률과 거짓양성률이 각각 집단 간 같음</td><td>참양성률 80%·40%, 거짓양성률 20%·60% → <strong>미충족</strong></td></tr></tbody></table></div>
+<div class="box v"><h4>검증 · Fairlearn 0.15.0으로 같은 표를 계산 <span class="tag ok">일치</span></h4>
+<div class="calc">                 선발비율  참양성률  거짓양성률  정확도
+집단 A             0.5       0.8       0.2        0.8
+집단 B             0.5       0.4       0.6        0.4
+demographic_parity_difference = 0.0   (선발 비율 차이)
+equalized_odds_difference     = 0.4   (참양성률·거짓양성률 차이 중 큰 값)</div><p>슬라이드의 모든 비율이 라이브러리 계산과 일치합니다. 슬라이드가 정의의 출처로 든 Fairlearn의 소스 문서도 “인구통계적 동등성 차이는 집단별 선발 비율의 가장 큰 값과 가장 작은 값의 차이이며, 0이면 모든 집단의 선발 비율이 같다”고 정의합니다(소스 확인). 선발 비율은 같아도(차이 0) 오류는 크게 다릅니다.</p></div>
+<div class="box w"><h4>주의 · 이 표는 설명용으로 구성한 극단적 예다 <span class="tag add">작성자 확인</span></h4><p>집단 B의 정확도는 (20+20)÷100 = <strong>40%</strong>로 무작위로 찍는 것(50%)보다 낮고, 참양성률(40%)이 거짓양성률(60%)보다 작아서 <strong>예측이 실제와 거꾸로</strong> 움직입니다. 실제로 배포되는 모델에서는 드문 구성이라서, 수업에서는 “두 비율이 서로 다른 뜻임을 보이려고 만든 표”라고 먼저 밝혀야 합니다. 이 표에서 B를 “약하게 어긋난 모델”처럼 읽으면 안 됩니다. 예측을 뒤집으면 참양성률 60%, 거짓양성률 40%가 되어 여전히 A와 다릅니다.</p></div>
+<div class="box v"><h4>보충 검증 · 기저율이 다르면 같은 오류율도 같은 정밀도가 아니다 (추가 계산) <span class="tag ok">계산 확인</span> <span class="tag na">가정값</span></h4>
+<div class="calc">두 집단 모두 참양성률 0.8 · 거짓양성률 0.2로 같게 맞췄을 때
+양성 비율(기저율) 50%인 집단:  정밀도 = 0.8×0.5 ÷ (0.8×0.5 + 0.2×0.5) = 0.800
+양성 비율(기저율) 10%인 집단:  정밀도 = 0.8×0.1 ÷ (0.8×0.1 + 0.2×0.9) = 0.308</div><p>자료의 예는 두 집단의 양성이 각각 50건으로 같아서 이 문제가 드러나지 않습니다. 양성의 비율이 다르면 <strong>오류율을 맞추면 정밀도가 달라지고, 정밀도를 맞추면 오류율이 달라지는</strong> 식으로 여러 공정성 기준을 한꺼번에 만족하기 어려워집니다. 이는 공정성 연구에서 알려진 결과로(Kleinberg 등 2016, Chouldechova 2017, 작성자 지식, 원문 미확인) 슬라이드의 “공정성 기준마다 같아야 하는 비율이 다르다”(p.54)와 같은 이야기입니다. 기준 선택은 계산이 아니라 <strong>어떤 오류가 누구에게 더 해로운가</strong>의 판단입니다.</p></div>
+<div class="tbl"><table><thead><tr><th>정밀도와 참양성률의 분모 (p.80 · 보조)</th><th>예측 양성</th><th>예측 음성</th><th>비교 조건</th></tr></thead><tbody>
+<tr><td>실제 양성</td><td class="r">40 → 40</td><td class="r">10 → 10</td><td>그대로</td></tr><tr><td>실제 음성</td><td class="r">10 → 20</td><td class="r">40 → 30</td><td>거짓양성 10건 증가</td></tr></tbody></table></div>
+<div class="box v"><h4>검증 · p.80의 분모 비교 <span class="tag ok">일치</span></h4><div class="calc">참양성률 = 40 ÷ (40 + 10) = 80%   (실제 양성이 분모 → 거짓양성이 늘어도 그대로)
+정밀도   = 40 ÷ (40 + 10) = 80%  →  40 ÷ (40 + 20) = 66.7%   (예측 양성이 분모 → 줄어듦)</div><p>Fairlearn·scikit-learn으로 계산한 값(참양성률 0.8, 정밀도 0.6667, 예측 양성 60건)과 일치합니다. 3일차 p.89–91의 “재현율은 실제 환불이 분모, 정밀도는 예측한 건이 분모”와 같은 구분입니다. p.82의 네 칸(참양성·거짓음성·거짓양성·참음성)도 3일차 혼동행렬과 같은 이름입니다.</p></div>
+<div class="src"><span class="pl">자료 p.55</span><p>같은 비율을 맞추는 것과 사람에게 적절한 판단을 하는 것은 별도 문제다. 기준 답은 실제 목적을 잘 나타내는가? 잘못 고르거나 놓쳤을 때 누가 어떤 영향을 받는가? 집단별 결과에서 문제를 찾은 뒤 수집 범위·라벨·판단 절차 중 원인을 확인한다.</p></div>
+</section>
+
+<section id="s04" aria-labelledby="s04-h"><h2 id="s04-h"><span class="num">04</span>생성형 답변의 편향은 무엇에서 드러날까<span class="pg">p.56–59</span></h2>
+<div class="tbl"><table><thead><tr><th></th><th>분류·선택의 결과 (p.56)</th><th>설명·이미지·조언</th></tr></thead><tbody>
+<tr><td>묻는 것</td><td>누가 선택되었는가? 누구를 더 놓쳤는가?</td><td>어떤 관점이 빠졌는가? 특정 집단을 고정된 특성으로 묘사하는가?</td></tr>
+<tr><td>비교 방법</td><td>집단별 선택·오류 비율로 비교</td><td>내용과 사용 맥락을 읽어야 함</td></tr></tbody></table></div>
+<div class="src"><span class="pl">자료 p.56</span><p>생성형 AI에서도 집단·언어별 성능 차이를 살피지만, 모든 편향을 선발 비율로 설명하지는 않는다. (근거: NIST AI 600-1 · 유해한 편향과 동질화)</p></div>
+<div class="box w"><h4>검증 · NIST AI 600-1은 원문 미확인 <span class="tag na">미확인</span></h4><p>작성자는 NIST의 생성형 AI 위험 프로파일(AI 600-1, 2024)이 ‘유해한 편향과 동질화(Harmful Bias and Homogenization)’를 생성형 AI의 위험 항목 중 하나로 다룬다고 알고 있습니다(작성자 지식). 이 환경에서는 NIST 문서에 접속할 수 없어 항목 이름과 문구를 대조하지 못했습니다.</p></div>
+<div class="src"><span class="pl">자료 p.57</span><p>2023년 연구는 성별을 지정하지 않은 직업 요청으로 당시 두 이미지 생성 모델의 결과를 비교했다. 비교한 것은 직업별로 <strong>여성으로 분류된 이미지의 비율</strong>이고, 함께 본 기준은 미국 노동 통계와 이미지 검색 결과다. (Naik·Nushi (2023), Figure 1 · 당시 DALLE-v2·Stable Diffusion v1)</p></div>
+<div class="tbl"><table><thead><tr><th>직업별 여성 비율 % (p.58 그림에서 측정한 근삿값, ±2)</th><th class="r">BLS 2022</th><th class="r">SD v1</th><th class="r">GIS 2020</th><th class="r">DALL-E</th></tr></thead><tbody>
+<tr><td>최고경영자</td><td class="r">29</td><td class="r">≈ 9</td><td class="r">12</td><td class="r">0</td></tr>
+<tr><td>의사</td><td class="r">42</td><td class="r">4</td><td class="r">35</td><td class="r">10</td></tr>
+<tr><td>프로그래머</td><td class="r">22</td><td class="r">≈ 3</td><td class="r">16</td><td class="r">0</td></tr>
+<tr><td>간호사</td><td class="r">88</td><td class="r">100</td><td class="r">94</td><td class="r">100</td></tr>
+<tr><td>가사도우미</td><td class="r">88</td><td class="r">100</td><td class="r">94</td><td class="r">99</td></tr></tbody></table></div>
+<div class="box v"><h4>검증 · 그림의 값을 직접 측정 <span class="tag ok">그림과 일치</span> <span class="tag na">근삿값</span></h4><p>PDF 안의 그림에서 점의 색을 찾아 눈금(0~100%)으로 환산했습니다. 미국 노동 통계(BLS 2022) 점은 29.2·41.6·22.2·87.9·88.1로 읽혀, 슬라이드의 “자료마다 달랐다”는 설명과 맞습니다. 생성 모델의 점은 0이나 100에 붙어 있고 다른 점에 가려져 오차가 있어(±2) 표에는 정수 근삿값만 적었습니다. 슬라이드가 말한 “같은 직업에서도 노동 통계·검색·생성의 비율이 달랐다”는 읽기는 이 값에서 확인됩니다. 예를 들어 최고경영자는 통계 29%, 생성 모델은 0~9%입니다.</p></div>
+<div class="tbl"><table><thead><tr><th>이 그림에서 읽는 것 (p.59)</th><th>이 그림만으로 모르는 것</th></tr></thead><tbody><tr><td>같은 직업에서도 노동 통계·검색·생성의 여성 표현 비율이 달랐다. 비교 기준을 함께 봐야 한다</td><td>어느 학습 자료가 얼마나 영향을 주었는지. 현재의 모든 모델에서도 같은 결과가 나오는지</td></tr></tbody></table></div>
+<div class="box w"><h4>주의 · 표현 비율이 노동 통계와 다르다는 것이 곧 ‘편향’의 정의는 아니다</h4><p>생성 모델의 비율이 통계와 다르다는 것은 <strong>관찰한 차이</strong>입니다. 어느 쪽을 기준(현실의 비율, 균등한 비율, 사용자가 원하는 다양성)으로 삼을지는 목적에 따라 달라서 기준 선택이 필요합니다. 슬라이드도 “관찰한 표현 차이와 원인 추정은 구별한다”고 제목을 달았습니다. 그림은 연구 당시(2023, DALLE-v2·Stable Diffusion v1)의 결과라서 지금의 모델에는 그대로 적용하지 않습니다.</p></div>
+</section>
+
+<section id="s05" aria-labelledby="s05-h"><h2 id="s05-h"><span class="num">05</span>개인정보 · 개인을 알아볼 수 있는 정보<span class="pg">p.60–62</span></h2>
+<div class="tbl"><table><thead><tr><th>유용한 자료와 사용할 수 있는 자료는 다르다 (p.60)</th><th>상황</th></tr></thead><tbody>
+<tr><td>가지고 있는 출석 명단</td><td>외부 AI에 넣어 강의 안내문을 만들려 한다. 명단을 가지고 있으면 외부 입력도 가능할까?</td></tr>
+<tr><td>제출받은 수강생 글</td><td>공개 강의 자료에 예시로 싣고 싶다. 과제로 제출받았으면 공개해도 될까?</td></tr></tbody></table></div>
+<div class="src"><span class="pl">자료 p.61 · 법률 근거: 개인정보 보호법 제2조</span><p>살아 있는 개인을 알아볼 수 있는 정보는 개인정보에 해당할 수 있다. 이름처럼 그 자체로 개인을 알아보는 정보와, 다른 정보와 쉽게 결합해 개인을 알아보는 정보가 있다. 이름을 지워도 소속·직책·구체적인 사례가 결합되면 누구인지 알아볼 수 있다.</p></div>
+<div class="box v"><h4>검증 · 제2조 제1호의 조문과 시행본 <span class="tag ok">조문 일치</span></h4>
+<p>법령 저장소(legalize-kr)의 조문은 이렇습니다. “개인정보란 살아 있는 개인에 관한 정보로서 다음 각 목의 어느 하나에 해당하는 정보를 말한다. <strong>가.</strong> 성명, 주민등록번호 및 영상 등을 통하여 개인을 알아볼 수 있는 정보 <strong>나.</strong> 해당 정보만으로는 특정 개인을 알아볼 수 없더라도 다른 정보와 쉽게 결합하여 알아볼 수 있는 정보(쉽게 결합할 수 있는지는 다른 정보의 입수 가능성, 시간·비용·기술 등을 합리적으로 고려) <strong>다.</strong> 가목 또는 나목을 가명처리한 정보(가명정보)”. 슬라이드의 두 갈래(그 자체로 / 결합해서)와 일치합니다.</p>
+<p><strong>슬라이드의 확인일(2026-11-05) 기준 시행본</strong>도 확인했습니다. 이 법은 2026-03-10 공포·2026-09-11 시행판과 2026-09-08 공포·2027-03-09 시행판(앞으로 시행)이 있는데, 제2조 제1호의 문구는 두 판 모두 같고 2025년판과도 같습니다.</p></div>
+<div class="box p"><h4>보충 · 조문에서 확인한 두 가지 · 슬라이드에 없는 내용</h4><ul>
+<li><strong>가명정보도 개인정보의 범주입니다(다목).</strong> 이름을 지우거나 번호로 바꾸는 가명처리를 했더라도 추가 정보와 결합하면 알아볼 수 있는 정보는 개인정보에 해당할 수 있습니다. “이름을 지웠으니 개인정보가 아니다”는 틀린 설명입니다.</li>
+<li><strong>‘결합 용이성’은 시간·비용·기술로 따집니다.</strong> 소속·직책·구체적 사례가 결합되는지는 이를 합리적으로 고려해서 정합니다.</li></ul></div>
+<div class="src"><span class="pl">자료 p.62 · 법률 근거: 개인정보 보호법 제15~18조</span><p>수집·보관(출석 관리를 위해 명단을 받았다) → 외부 입력(AI 서비스에 명단을 전송하려 한다) → 결과 공유(생성한 안내문에 개인정보가 남아 있는가?). 각 처리의 목적·법적 근거·서비스 조건을 확인한다. <strong>동의만이 유일한 근거는 아니다.</strong></p></div>
+<div class="box v"><h4>검증 · 제15조는 동의 외에 여섯 가지 근거를 둔다 <span class="tag ok">조문 일치</span></h4>
+<div class="calc">제15조 제1항: 개인정보를 수집·이용할 수 있는 경우
+ 1. 정보주체의 동의를 받은 경우
+ 2. 법률의 특별한 규정이 있거나 법령상 의무 준수에 불가피한 경우
+ 3. 공공기관의 법령상 소관 업무 수행에 불가피한 경우
+ 4. 정보주체와 체결한 계약 이행 등에 필요한 경우
+ 5. 정보주체 또는 제3자의 급박한 생명·신체·재산 이익을 위해 필요한 경우
+ 6. 개인정보처리자의 정당한 이익 달성에 필요하고 명백히 정보주체의 권리보다 우선하는 경우
+ 7. 공중위생 등 공공의 안전과 안녕을 위해 긴급히 필요한 경우</div><p>일곱 개 호 가운데 동의는 첫째일 뿐이라는 슬라이드의 문장이 조문과 맞습니다. 다만 각 호는 요건이 엄격하고, “출석 명단을 외부 AI에 넣는 것”이 어느 호에 해당하는지는 사안별 판단입니다. 제17조는 <strong>제3자 제공</strong>(동의 등), 제18조는 <strong>목적 외 이용·제공 제한</strong>을 정합니다.</p></div>
+<div class="box p"><h4>보충 · 외부 AI 서비스는 ‘제공’일 수도 ‘위탁’일 수도 있다 <span class="tag na">해석은 사안별</span></h4><p>슬라이드는 제15~18조를 근거로 듭니다. 같은 법 <strong>제26조(업무위탁에 따른 개인정보의 처리 제한)</strong>는 개인정보 처리를 제3자에게 <strong>위탁</strong>할 때 위탁 목적 외 처리 금지, 기술적·관리적 보호조치 등을 문서로 정하도록 합니다(조문 확인). 외부 AI 서비스가 내 지시에 따라서만 처리한다면 위탁에, 자기 목적으로도 쓴다면 제3자 제공에 가까울 수 있지만, 어느 쪽인지는 서비스의 약관과 계약에 달려 있어 이 자료만으로 정하지 않습니다(작성자 해석). 2일차 p.100–102의 “학습 이용·기록 보존 조항을 따로 읽는다”가 이 확인의 출발점입니다.</p></div>
+</section>
+
+<section id="s06" aria-labelledby="s06-h"><h2 id="s06-h"><span class="num">06</span>저작권과 이용허락 · 공정이용<span class="pg">p.63–67</span></h2>
+<div class="src"><span class="pl">자료 p.63 · 법률 근거: 저작권법 제2조</span><p>저작물은 사람의 생각이나 감정을 창작적으로 표현한 것이다. 수강생이 직접 쓴 글에는 창작적 표현이 담길 수 있다. 이름을 지우는 것과 그 글을 공개 자료에 이용할 수 있는지는 별개다. 사실·아이디어 자체와 구체적인 표현도 구별한다.</p></div>
+<div class="tbl"><table><thead><tr><th>이용허락 (p.64 · 저작권법 제46조)</th><th>과제로 제출받기</th><th>공개 자료에 싣기</th></tr></thead><tbody><tr><td>의미</td><td>학습 확인과 피드백을 위해 글을 받았다. 공개 이용 허락은 별개다</td><td>어떤 부분을 어떤 매체에 쓸지 허락 또는 적용 가능한 법적 근거를 확인한다</td></tr></tbody></table></div>
+<div class="box v"><h4>검증 · 제2조 제1호와 제46조의 조문 <span class="tag ok">일치</span></h4><p>저작권법 제2조 제1호는 “저작물은 인간의 사상 또는 감정을 표현한 창작물”이라고 정의합니다(슬라이드의 “창작적으로 표현한 것”과 같은 뜻). 제46조는 ① “저작재산권자는 다른 사람에게 그 저작물의 이용을 허락할 수 있다”, ② “허락을 받은 자는 허락받은 <strong>이용 방법 및 조건의 범위 안에서</strong> 그 저작물을 이용할 수 있다”고 정합니다. 슬라이드의 “받는 것”과 “공개할 권한을 받는 것은 다르다”가 ②의 범위 규정과 맞습니다.</p></div>
+<div class="tbl"><table><thead><tr><th>CC BY-SA 3.0 (p.65)</th><th>재사용할 때 지킬 조건</th></tr></thead><tbody>
+<tr><td>적절한 저작자·출처 표시</td><td>라이선스 연결</td></tr>
+<tr><td>번역·각색 등 변경 사실 표시</td><td>변경물을 공유하면 동일조건변경허락 적용</td></tr>
+<tr><td colspan="2">상업적 이용을 포함해 공유·변경이 허용되며, 조건을 함께 준수해야 한다. “공개되어 있다는 사실과, 이용 조건 없이 자유롭게 쓸 수 있다는 뜻은 다르다.”</td></tr></tbody></table></div>
+<div class="box v"><h4>검증 · CC BY-SA 3.0 법률 코드 원문 대조 <span class="tag ok">일치</span></h4><ul>
+<li><strong>4(a)</strong> 저작물을 배포할 때는 이 라이선스의 사본 또는 URI를 함께 넣고, 라이선스·보증 부인 고지를 그대로 둔다 → “라이선스 연결”.</li>
+<li><strong>4(b)</strong> 변경물(Adaptation)은 이 라이선스(또는 이후 버전, 동일한 라이선스 요소를 가진 호환 라이선스) 아래에서만 배포할 수 있다 → “동일조건변경허락”.</li>
+<li><strong>4(c)</strong> 저작자 표시와 함께 변경물에서는 “원저작자의 저작물을 프랑스어로 번역”처럼 <strong>변경 사실을 밝히는 표시</strong>를 한다 → “번역·각색 등 변경 사실 표시”.</li>
+<li>비영리 제한(NC) 조건이 없어 <strong>상업적 이용이 포함</strong>된다.</li></ul>
+<p>creativecommons/legalcode 저장소의 <span class="mono">by-sa_3.0.txt</span>에서 확인했습니다. 슬라이드의 세 조건과 동일조건변경허락이 모두 원문에 있습니다.</p></div>
+<div class="box w"><h4>주의 · 학습 자료의 라이선스와 학습된 모델의 관계 <span class="tag na">별도 검토</span></h4><p>CC BY-SA의 조건이 <strong>자료를 재배포하거나 변경해 공유할 때</strong> 적용된다는 것은 위와 같이 확인되지만, 그 자료로 학습한 <strong>모델의 가중치나 생성물에 같은 조건이 미치는지</strong>는 이 자료도, 이 문서도 다루지 않습니다. 이 부분은 법적으로 정리가 진행 중인 영역이므로(작성자 지식) 모델을 배포하려는 경우에는 별도로 검토하세요.</p></div>
+<div class="src"><span class="pl">자료 p.66–67 · 법률 근거: 저작권법 제35조의5</span><p>공정이용은 별도 허락 없이 이용할 수 있는지 판단하는 법적 근거 중 하나다. 저작물의 통상적인 이용과 충돌하지 않고 권리자의 정당한 이익을 부당하게 해치지 않는지 살핀다. <strong>교육 목적이거나 출처를 적었다는 이유만으로 모든 이용이 허용되는 것은 아니다.</strong> 네 요소: 이용 목적·성격 / 저작물 종류·용도 / 이용 분량·중요성 / 시장·가치에 영향. 네 요소 등을 함께 고려하며, 하나에 해당한다고 자동으로 허용되는 것은 아니다.</p></div>
+<div class="box v"><h4>검증 · 제35조의5와 ‘교육 목적’·‘출처’ 문장 <span class="tag ok">조문 일치</span></h4>
+<ul><li><strong>제35조의5 제1항</strong>: 다른 규정(제23~35조의4 등)에 해당하지 않아도 “저작물의 일반적인 이용 방법과 충돌하지 아니하고 저작자의 정당한 이익을 부당하게 해치지 아니하는 경우”에는 저작물을 이용할 수 있다. <strong>제2항</strong>: 이를 판단할 때 ① 이용의 목적 및 성격 ② 저작물의 종류 및 용도 ③ 이용된 부분이 저작물 전체에서 차지하는 비중과 그 중요성 ④ 저작물의 이용이 그 저작물의 현재 시장 또는 가치나 잠재적인 시장 또는 가치에 미치는 영향 <strong>등을 고려하여야 한다.</strong> 슬라이드의 네 요소와 “등을 함께 고려”가 조문과 같습니다. (슬라이드는 제1항의 “저작자”를 “권리자”로 풀어 썼습니다.)</li>
+<li><strong>출처 표시</strong>: 제37조는 이 관의 규정에 따라 저작물을 이용하는 자에게 <strong>출처를 명시할 의무</strong>를 부과합니다. 즉 출처 표시는 이용을 허용하는 근거가 아니라 <strong>허용된 이용에 붙는 의무</strong>라서, “출처를 적었다고 허용되지 않는다”는 슬라이드의 문장과 맞습니다. 제37조 제1항 단서의 예외 목록(제26조, 제29~32조, 제34조, 제35조의2~4)에는 제35조의5가 들어 있지 않아, 공정이용으로 이용할 때도 출처 명시 의무가 적용되는 것으로 읽힙니다(조문 문구 확인, 적용은 사안별).</li></ul></div>
+<div class="box p"><h4>보충 · 수업 목적 이용에는 별도 규정이 있다 · 슬라이드에 없는 내용</h4><p>저작권법 <strong>제25조 제3항</strong>은 법이 정한 학교·교육기관·교육훈련기관이 <strong>수업 목적</strong>으로 이용할 때 <strong>공표된 저작물의 일부분</strong>을 복제·배포·공연·전시·공중송신할 수 있게 하고(부득이한 경우에는 전부), 제6항은 제1~4항에 따른 이용에 <strong>보상금</strong> 지급을 정합니다. 다만 고등학교 및 이에 준하는 학교 이하의 학교에서 복제 등을 하는 경우에는 지급하지 않습니다(조문 확인). 대상 기관은 특별법에 따른 학교, 초·중등교육법·고등교육법에 따른 학교, 국가·지방자치단체가 운영하는 교육기관, 학점인정법에 따라 평가인정을 받은 학습과정을 운영하는 교육훈련기관(원격수업 한정)으로 열거되어 있습니다. 따라서 “교육 목적이면 된다”가 아니라 <strong>기관의 종류·이용 범위·보상금</strong>이라는 조건이 붙고, 수강생 글 전체를 공개 자료에 싣는 일이 여기에 해당하는지는 별도로 판단해야 합니다. 어느 경우에 해당하는지는 소속 기관과 상황에 따라 다릅니다.</p></div>
+</section>
+
+<section id="s07" aria-labelledby="s07-h"><h2 id="s07-h"><span class="num">07</span>입력·공개 전에 확인할 것과 데이터 준비도<span class="pg">p.68–72</span></h2>
+<div class="tbl"><table><thead><tr><th>외부 AI에 입력하거나 공개하기 전에 (p.68)</th><th>확인할 것</th></tr></thead><tbody>
+<tr><td>명단을 AI에 입력</td><td>개인정보가 필요한가? 처리 목적과 근거는? 외부 서비스는 입력 자료를 어떻게 처리하는가?</td></tr>
+<tr><td>글을 공개 자료에 이용</td><td>어떤 표현을 얼마나 쓰는가? 이용허락이나 적용 가능한 법적 근거가 있는가?</td></tr>
+<tr><td>생성 결과를 공유</td><td>개인정보나 타인의 표현이 남아 있는가? 공유 범위에 맞게 검토했는가?</td></tr></tbody></table></div>
+<div class="tbl"><table><thead><tr><th>목적에 불필요한 자료는 빼고도 일을 할 수 있다 (p.69)</th><th>필요한 자료</th><th>쓰지 않아도 되는 자료</th></tr></thead><tbody>
+<tr><td>강의 안내문 만들기</td><td>일정 · 준비물 · 대상 · 말투</td><td>개인별 출석 명단</td></tr>
+<tr><td>글의 구조 설명하기</td><td>직접 쓴 교육용 예문</td><td>실제 수강생 글</td></tr></tbody></table></div>
+<p>자료는 “개인별 피드백처럼 실제 자료가 필요한 목적은 그에 맞는 이용 조건을 따로 확인한다”고 덧붙입니다. 최소한으로 쓰는 것이 가장 쉬운 보완책입니다. 1일차 p.140과 2일차 p.15에서 “공개용 예제만 입력한다”고 한 것과 같은 원칙입니다.</p>
+<div class="tbl"><table><thead><tr><th>데이터 준비도 (p.70)</th><th>확인할 것</th></tr></thead><tbody>
+<tr><td>내용과 범위</td><td>필요한 사실·조건·대상이 담겼는가? 빠진 정보를 확보하거나 설명할 범위를 줄인다</td></tr>
+<tr><td>의미와 판단 기준</td><td>항목·단위·판본·출처가 분명한가? 범주나 평가를 붙인 이유를 지침에서 설명할 수 있는가?</td></tr>
+<tr><td>사용 조건</td><td>수집·외부 입력·공유의 근거와 범위가 확인되었는가? 허용되지 않은 이용은 자료나 방법을 바꾼다</td></tr></tbody></table></div>
+<p>세 줄은 오늘의 세 구간에 그대로 대응합니다. <strong>내용과 범위</strong>는 오전, <strong>의미와 판단 기준</strong>은 오후 첫 구간, <strong>사용 조건</strong>은 이 구간입니다. 한 가지라도 비면 준비된 자료가 아닙니다.</p>
+<div class="tbl"><table><thead><tr><th>질문만 있는 자료를 설명 자료로 보완 (p.71)</th><th>설명하려는 관계</th><th>함께 갖출 자료</th></tr></thead><tbody><tr><td>예</td><td>“주어진 글에서 운항 시작일을 찾아 답한다.” 질문만 있으면 근거와 답의 대응이 안 보인다</td><td>질문 + 시작일이 담긴 참고 글 + 작성된 답. 날짜가 대응하는 부분을 표시</td></tr></tbody></table></div>
+<div class="tbl"><table><thead><tr><th>자료를 보완해도 설명할 범위는 구별한다 (p.72)</th><th>이 기록으로 할 수 있는 설명</th><th>이 기록만으로 알 수 없는 것</th></tr></thead><tbody>
+<tr><td>내용</td><td>질문·근거·답의 관계. 참고 글이 필요한 이유. 번역·발췌 표시와 원문·이용 조건을 함께 제공</td><td>한국어 업무 전체의 대표성. 실제 모델의 업무 성능. 그 목적에는 해당 업무의 별도 자료와 확인이 필요</td></tr></tbody></table></div>
+<div class="box v"><h4>검증 · 자료 보완의 범위가 앞의 근거와 맞는가 <span class="tag ok">일치</span></h4><p>오른쪽 열의 두 항목은 오전 07절에서 확인한 Dolly README의 한계(“전 세계 인구를 대표하지 않는다”)와 오전 04절(근거 충실성과 정답은 다른 평가)에 근거합니다. p.65에서 확인한 CC BY-SA의 조건(출처·라이선스·변경 표시)이 “번역·발췌 표시와 원문·이용 조건을 함께 제공”의 근거입니다. 슬라이드 안에서 이 문장들은 서로 모순되지 않습니다.</p></div>
+</section>
+
+<section id="s08" aria-labelledby="s08-h"><h2 id="s08-h"><span class="num">08</span>개념 탐구 질문의 짧은 답<span class="pg">p.73–74</span></h2>
+<details><summary>p.73–74 질문 여덟 묶음의 짧은 답</summary>
+<div class="tbl"><table><thead><tr><th>개념</th><th>짧은 답</th><th>위치</th></tr></thead><tbody>
+<tr><td>표본·판단자 편향</td><td>수집 경로와 판단 집단이 특정 관점을 빠뜨릴 수 있다. 누가·어떤 기준으로 만들었는지 본다</td><td>02</td></tr>
+<tr><td>대리변수</td><td>측정하기 쉬운 값(비용)에 알고 싶은 것(필요) 외의 조건(접근성)이 섞이면 어긋난다</td><td>01</td></tr>
+<tr><td>공정성 지표</td><td>선발 비율이 같아도 상태별 오류(참양성률·거짓양성률)가 다를 수 있다</td><td>03</td></tr>
+<tr><td>생성형 답변의 편향</td><td>집단별 비율로 못 재는 표현(관점 누락·고정된 묘사)은 내용과 맥락을 읽어 비교한다</td><td>04</td></tr>
+<tr><td>개인정보</td><td>이름을 지워도 소속·직책·사례가 결합되면 알아볼 수 있고, 가명정보도 개인정보의 범주다</td><td>05</td></tr>
+<tr><td>저작물·이용허락</td><td>자료를 읽을 권한과 복제·변경·공유할 권한은 다르다. 허락받은 방법·조건의 범위 안에서만 이용한다</td><td>06</td></tr>
+<tr><td>공정이용</td><td>이용 목적 외에 저작물의 종류·분량·시장 영향을 함께 본다. 출처 표시는 의무일 뿐 면책이 아니다</td><td>06</td></tr>
+<tr><td>데이터 준비도</td><td>내용·범위, 의미·판단 기준, 사용 조건이 모두 갖춰졌는가. 불필요한 자료는 빼고 일할 수 있다</td><td>07</td></tr></tbody></table></div></details>
+</section>
+
+<section id="s09" class="summary" aria-labelledby="s09-h"><h2 id="s09-h"><span class="num">09</span>핵심 정리</h2>
+<ul>
+<li><strong>대리변수</strong>가 알고 싶은 것과 다른 조건을 섞으면(비용에 접근성이 섞임) 예측이 정확해도 선정은 어긋납니다.</li>
+<li>집단별 결과의 차이는 <strong>사실</strong>이고 원인(표본·판단자·대리변수)은 따로 확인할 가설이며, 공정성 기준마다 <strong>같아야 하는 비율</strong>이 다릅니다.</li>
+<li>선발 비율이 같아도(0.5 대 0.5) <strong>참양성률 80% 대 40%</strong>처럼 오류는 다를 수 있고, 기저율이 다르면 여러 기준을 함께 만족하기 어렵습니다.</li>
+<li>이름을 지워도 <strong>개인정보</strong>일 수 있고(가명정보 포함), 자료를 받은 것과 공개할 <strong>권한</strong>은 다르며, 출처 표시나 교육 목적만으로 이용이 허용되지는 않습니다.</li>
+<li>외부 입력·공개 전에는 <strong>필요성·처리 방식·근거·남은 정보</strong>를 확인하고, 목적에 불필요한 자료는 빼고 일합니다.</li>
+</ul>
+</section>
+
+<section id="s10" aria-labelledby="s10-h"><h2 id="s10-h"><span class="num">10</span>검증 기록</h2>
+<div class="tbl"><table><thead><tr><th>쪽</th><th>항목</th><th>방법</th><th>결과</th></tr></thead><tbody>
+<tr><td>p.52–54 · p.80</td><td>선발 비율·참양성률·거짓양성률, 동등성·오즈 판정, 정밀도 66.7%</td><td>Fairlearn 0.15.0 · scikit-learn 실행, Fairlearn 소스 정의 대조</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>p.52</td><td>집단 B가 무작위보다 못한 구성</td><td>정확도 40%, 참양성률이 거짓양성률보다 작음</td><td><span class="tag ng">설명용 극단 예 · 주의 추가</span></td></tr>
+<tr><td>p.46–48</td><td>비용 대리변수가 선정을 바꾼다</td><td>가상 모델 시뮬레이션 (Q 선정 28.3% 대 49.8%)</td><td><span class="tag ok">구조 재현</span> <span class="tag na">가정값</span></td></tr>
+<tr><td>p.48</td><td>Obermeyer 외, 2019의 결과</td><td>작성자 지식 · 논문 접속 불가</td><td><span class="tag na">원문 미확인</span></td></tr>
+<tr><td>p.56</td><td>NIST AI 600-1 ‘유해한 편향과 동질화’</td><td>작성자 지식 · 접속 불가</td><td><span class="tag na">미확인</span></td></tr>
+<tr><td>p.58</td><td>직업별 여성 비율 그림</td><td>PDF 내 그림의 픽셀 측정 (BLS 29.2·41.6·22.2·87.9·88.1)</td><td><span class="tag ok">그림과 일치</span> <span class="tag na">근삿값</span></td></tr>
+<tr><td>p.61</td><td>개인정보 정의 (제2조 제1호)</td><td>법령 저장소 조문과 시행본 이력 대조</td><td><span class="tag ok">일치 · 가명정보 보충</span></td></tr>
+<tr><td>p.62</td><td>동의만이 유일한 근거는 아니다</td><td>제15조 제1항 일곱 개 호, 제17·18·26조 조문</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>p.63–64</td><td>저작물 정의, 이용허락의 범위</td><td>저작권법 제2조 제1호, 제46조 조문</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>p.65</td><td>CC BY-SA 3.0의 조건</td><td>creativecommons/legalcode의 by-sa_3.0.txt 4(a)(b)(c)</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>p.66–67</td><td>공정이용 네 요소와 출처 표시</td><td>저작권법 제35조의5 제1·2항, 제37조 조문</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>p.66</td><td>교육 목적 예외</td><td>저작권법 제25조 제3항·제6항 조문 (슬라이드에 없던 내용 보충)</td><td><span class="tag add">보충</span></td></tr></tbody></table></div>
+</section>
+
+</main></div>
+<footer><p>이 문서는 「AI 강사양성과정」 4일차 교육자료를 다시 쓴 학습 참고자료입니다. 회색 상자는 자료 원문을 인용하거나 요약한 것(표의 칸이나 여러 칸으로 된 슬라이드를 문장으로 풀어 쓴 곳 포함), 직접 다시 계산한 결과는 초록 ‘검증’ 상자, 자료에 없는 설명은 파란 ‘보충’ 상자로 구분했습니다. 보충 내용은 작성자의 지식에 기반하며 웹 검색으로 확인하지 않았습니다. 인용한 논문·문서의 제목과 연도는 원문을 직접 확인하세요. ‘설명용’, ‘가상’, ‘교육용 예’로 표시된 수치는 실제 측정값이 아닙니다. 이 자료의 법령 설명은 법률 자문이 아니며, 조문은 법령 저장소(legalize-kr), 라이선스 원문은 creativecommons/legalcode, 공정성 지표는 Fairlearn 0.15.0·scikit-learn 실행으로 확인했습니다. 논문(InstructGPT, Obermeyer 외, Naik·Nushi)과 NIST 문서는 원문에 접속할 수 없어 ‘미확인’으로 표시했습니다. 그림에서 읽은 값은 ‘근삿값’, 작성자가 만든 계산·반례·시뮬레이션은 ‘추가’로 표시했습니다.</p></footer>
+</body></html>

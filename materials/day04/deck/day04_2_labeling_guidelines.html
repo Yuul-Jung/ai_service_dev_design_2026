@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>4일차 오후 첫 구간 · 라벨링 지침과 판단 기준</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F1F2EE;--card:#FFFFFF;--ink:#15171C;--ink-2:#454A55;--ink-3:#6E7480;
+  --line:#DDDFD8;--accent:#4635B1;--accent-soft:#EDEAFA;
+  --ok:#1D6B45;--ok-soft:#E3F2E9;--warn:#7E5200;--warn-soft:#FBF0D9;--ng:#A8261D;--ng-soft:#FBE7E4;
+  --plus:#0F5E73;--plus-soft:#E2F1F5;--src:#F6F6F2;
+  --hero:#15171C;--hero-ink:#F1F2EE;--hero-2:#B9BDC4;--hero-3:#8D9299;--hl:#FFD24A;
+  --maxw:1180px;color-scheme:light;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#111216;--card:#1A1C22;--ink:#E7E8EB;--ink-2:#B8BDC7;--ink-3:#8E94A0;
+  --line:#2C2F37;--accent:#AEA2FF;--accent-soft:#2A2550;
+  --ok:#7FD9A8;--ok-soft:#16301F;--warn:#F3C86F;--warn-soft:#352911;--ng:#FF9A90;--ng-soft:#3A1916;
+  --plus:#7FD0E6;--plus-soft:#142C33;--src:#15171C;
+  --hero:#0B0C0F;color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --paper:#111216;--card:#1A1C22;--ink:#E7E8EB;--ink-2:#B8BDC7;--ink-3:#8E94A0;
+  --line:#2C2F37;--accent:#AEA2FF;--accent-soft:#2A2550;
+  --ok:#7FD9A8;--ok-soft:#16301F;--warn:#F3C86F;--warn-soft:#352911;--ng:#FF9A90;--ng-soft:#3A1916;
+  --plus:#7FD0E6;--plus-soft:#142C33;--src:#15171C;--hero:#0B0C0F;color-scheme:dark;}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans KR",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.75;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+code,.mono{font-family:"IBM Plex Mono","IBM Plex Sans KR",ui-monospace,monospace;font-size:.92em}
+a{color:var(--accent)}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.hero{position:relative;background:var(--hero);color:var(--hero-ink);overflow:hidden}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(to right,rgba(255,255,255,.055) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.055) 1px,transparent 1px);background-size:28px 28px;pointer-events:none}
+.hero-inner{position:relative;max-width:var(--maxw);margin:0 auto;padding:80px 32px 68px}
+.hero-kicker{margin:0 0 18px;font-size:clamp(1rem,2.2vw,1.18rem);font-weight:500;color:var(--hl);display:inline-block;padding-bottom:7px;border-bottom:2px solid var(--hl)}
+.hero h1{margin:0;font-size:clamp(2rem,5vw,3.3rem);font-weight:700;letter-spacing:-.035em;line-height:1.2;max-width:18ch}
+.hero .sub{margin:24px 0 0;max-width:52ch;color:var(--hero-2);font-size:1.03rem;font-weight:300}
+.hero-meta{margin-top:36px;display:flex;flex-wrap:wrap;gap:10px}
+.chip{font-family:"IBM Plex Mono",monospace;font-size:.78rem;color:#E4E6EA;border:1px solid rgba(255,255,255,.22);border-radius:2px;padding:5px 11px}
+.chip b{color:var(--hl);font-weight:600}
+.hero-terms{margin-top:48px;padding-top:32px;border-top:1px solid rgba(255,255,255,.15);display:grid;grid-template-columns:1fr 1fr;gap:30px 46px}
+.term h2{margin:0 0 8px;font-size:1.06rem;font-weight:600;color:#fff}
+.term h2 span{display:block;margin-top:3px;font-family:"IBM Plex Mono",monospace;font-size:.74rem;font-weight:400;color:var(--hero-3)}
+.term p{margin:0;font-size:.93rem;font-weight:300;color:var(--hero-2);max-width:46ch}
+.term-sum{grid-column:1/-1;margin:0;padding:15px 18px;background:rgba(255,210,74,.10);border-left:2px solid var(--hl);font-size:.95rem;font-weight:300;color:#D6D9DE}
+.hero strong,.hero b{color:var(--hl);font-weight:600}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px 96px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:52px;align-items:start}
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);padding:44px 0;max-height:100vh;overflow-y:auto}
+nav.toc h2{font-size:.8rem;color:var(--ink-3);margin:0 0 12px;font-weight:500}
+nav.toc ol{list-style:none;margin:0;padding:0}
+nav.toc a{display:flex;gap:10px;padding:4px 0 4px 10px;color:var(--ink-2);text-decoration:none;font-size:.85rem;line-height:1.5;border-left:2px solid transparent}
+nav.toc a:hover,nav.toc a:focus-visible{color:var(--accent);border-left-color:var(--accent)}
+nav.toc .n{font-family:"IBM Plex Mono",monospace;color:var(--ink-3);font-size:.78rem;min-width:18px}
+main{padding:44px 0 0;min-width:0}
+
+section{background:var(--card);border:1px solid var(--line);padding:34px 38px 36px;margin-bottom:18px;scroll-margin-top:20px}
+section>h2{margin:0 0 4px;font-size:1.42rem;font-weight:600;letter-spacing:-.02em;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+section>h2 .num{font-family:"IBM Plex Mono",monospace;font-size:.9rem;font-weight:500;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:2px}
+section>h2 .pg{font-family:"IBM Plex Mono",monospace;font-size:.78rem;font-weight:400;color:var(--ink-3);margin-left:auto}
+section h3{font-size:1.06rem;font-weight:600;margin:28px 0 8px}
+section p{margin:12px 0;max-width:72ch}
+.lead{color:var(--ink-2);margin-top:10px}
+section ul,section ol{padding-left:1.25em;max-width:72ch}
+section li{margin:4px 0}
+strong{font-weight:600}
+
+.src{margin:18px 0;padding:14px 18px;background:var(--src);border-left:3px solid var(--ink-3);font-size:.96rem}
+.src .pl{display:block;font-family:"IBM Plex Mono",monospace;font-size:.74rem;color:var(--ink-3);margin-bottom:4px}
+.src p{margin:4px 0}
+
+.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin:18px 0}
+.flow>div{flex:1 1 140px;border:1px solid var(--line);background:var(--card);padding:10px 12px;font-size:.9rem;position:relative}
+.flow>div b{display:block;font-weight:600;font-size:.93rem}
+.flow>div span{color:var(--ink-2);font-size:.86rem}
+.flow>i{align-self:center;font-style:normal;color:var(--ink-3);font-family:"IBM Plex Mono",monospace}
+
+.tbl{overflow-x:auto;margin:16px 0}
+table{border-collapse:collapse;width:100%;font-size:.92rem;min-width:420px}
+th,td{border-bottom:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+th{font-weight:600;color:var(--ink-2);background:var(--src);font-size:.86rem}
+td.c,th.c{text-align:center}
+td.r,th.r{text-align:right;font-family:"IBM Plex Mono",monospace}
+
+dl.ex{margin:16px 0;border-top:1px solid var(--line)}
+dl.ex dt{font-weight:600;padding-top:14px;font-size:.95rem}
+dl.ex dt code{background:var(--accent-soft);color:var(--accent);padding:1px 6px}
+dl.ex dd{margin:4px 0 0;padding-bottom:14px;border-bottom:1px solid var(--line);color:var(--ink-2);max-width:72ch}
+
+.box{margin:20px 0;padding:16px 20px;border:1px solid var(--line)}
+.box>h4{margin:0 0 6px;font-size:.88rem;font-weight:600;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.box p,.box li{font-size:.94rem}
+.box p:first-of-type{margin-top:4px}
+.box.v{background:var(--ok-soft);border-color:transparent}
+.box.v>h4{color:var(--ok)}
+.box.p{background:var(--plus-soft);border-color:transparent}
+.box.p>h4{color:var(--plus)}
+.box.w{background:var(--warn-soft);border-color:transparent}
+.box.w>h4{color:var(--warn)}
+.box.l{background:var(--accent-soft);border-color:transparent}
+.box.l>h4{color:var(--accent)}
+.box.t{border-style:dashed}
+.box.t>h4{color:var(--accent)}
+.tag{font-family:"IBM Plex Mono",monospace;font-size:.72rem;font-weight:500;padding:1px 7px;border:1px solid currentColor;border-radius:2px}
+.tag.lec{color:var(--accent)}.tag.ok{color:var(--ok)}.tag.ng{color:var(--ng)}.tag.na{color:var(--ink-3)}.tag.add{color:var(--plus)}
+.calc{font-family:"IBM Plex Mono",monospace;font-size:.88rem;background:var(--card);padding:10px 12px;margin:8px 0;overflow-x:auto;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6}
+
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+.pair>div{border:1px solid var(--line);padding:14px 16px}
+.pair>div h4{margin:0 0 6px;font-size:.98rem;font-weight:600}
+.pair>div p,.pair>div li{font-size:.92rem;color:var(--ink-2)}
+.nest{border:1px solid var(--ink-3);padding:12px 14px;margin:14px 0}
+.nest .nest{margin:10px 0 0;border-color:var(--accent)}
+.nest .nest .nest{border-style:dashed}
+.nest b{font-weight:600}.nest span{color:var(--ink-2);font-size:.9rem}
+
+details{margin:16px 0;border:1px solid var(--line);padding:0 16px}
+details summary{cursor:pointer;padding:12px 0;font-weight:600;font-size:.94rem;color:var(--accent)}
+details[open] summary{border-bottom:1px solid var(--line);margin-bottom:8px}
+details>*:last-child{margin-bottom:14px}
+
+section.summary{background:var(--hero);color:var(--hero-ink);border-color:var(--hero)}
+section.summary>h2 .num{background:rgba(255,210,74,.15);color:var(--hl)}
+section.summary li{color:#D6D9DE}
+section.summary strong{color:var(--hl)}
+footer{max-width:var(--maxw);margin:0 auto;padding:0 32px 60px;color:var(--ink-3);font-size:.84rem}
+footer p{max-width:80ch}
+
+@media (max-width:900px){
+  .wrap{grid-template-columns:1fr;gap:0;padding:0 16px 64px}
+  nav.toc{position:static;max-height:none;padding:28px 0 8px}
+  nav.toc ol{columns:2;column-gap:16px}
+  .hero-inner{padding:56px 20px 48px}
+  .hero-terms{grid-template-columns:1fr}
+  section{padding:24px 18px 26px}
+  .pair{grid-template-columns:1fr}
+  section>h2 .pg{margin-left:0;width:100%}
+  footer{padding:0 16px 48px}
+}
+</style></head>
+<body>
+<header class="hero"><div class="hero-grid"></div><div class="hero-inner">
+<p class="hero-kicker">4일차 오후 첫 구간 · 13:00–15:00</p>
+<h1>같은 답변을 읽고도 판단이 갈리는 이유</h1>
+<p class="sub">주제 분류와 실행 의사 분류, LLM 답변 평가 지침, 정보 부족과 의견 차이, 라벨 일치도와 타당성, 판단자 편향을 정리하고 일치율의 함정을 카파로 직접 계산했습니다.</p>
+<div class="hero-meta"><span class="chip">쪽 <b>p.25–43</b></span><span class="chip">일치율 90% <b>카파 −0.053</b></span><span class="chip">키워드 규칙 <b>정밀도 0.25(가상)</b></span><span class="chip">논문 원문 <b>미확인 3건</b></span></div>
+<div class="hero-terms"><div class="term"><h2>라벨링 지침<span>Labeling guideline</span></h2><p>같은 자료에 다른 사람도 같은 기준을 적용하도록 판단 대상·포함 제외 조건·경계 사례·정보 부족 처리를 적은 문서입니다(p.27–29).</p></div><div class="term"><h2>일치도와 타당성<span>Agreement vs. validity</span></h2><p>일치도는 같은 판단을 하는가, 타당성은 그 기준이 목적을 나타내는가입니다. 모두 동의해도 잘못된 대상을 셀 수 있습니다(p.39).</p></div><p class="term-sum">라벨은 정답이 아니라 <strong>기준을 적용한 판단</strong>입니다. 단순 일치율은 우연 일치를 세므로 범주가 쏠리면 높아지고, 일치해도 <strong>타당한지</strong>는 따로 확인합니다.</p></div>
+</div></header>
+<div class="wrap">
+<nav class="toc" aria-label="목차"><h2>목차</h2><ol><li><a href="#s00"><span class="n">00</span>라벨링 · 같은 자료에 다른 라벨이 붙는 이유</a></li><li><a href="#s01"><span class="n">01</span>주제 분류와 실행 의사 분류는 다른 질문이다</a></li><li><a href="#s02"><span class="n">02</span>LLM의 답을 평가하는 지침</a></li><li><a href="#s03"><span class="n">03</span>정보 부족과 의견 차이는 다른 문제다</a></li><li><a href="#s04"><span class="n">04</span>라벨 일치도와 타당성</a></li><li><a href="#s05"><span class="n">05</span>판단자 편향 · 누구의 기준이 정답이 되는가</a></li><li><a href="#s06"><span class="n">06</span>개념 탐구 질문의 짧은 답</a></li><li><a href="#s07"><span class="n">07</span>핵심 정리</a></li><li><a href="#s08"><span class="n">08</span>검증 기록</a></li></ol></nav>
+<main>
+<section id="s00" aria-labelledby="s00-h"><h2 id="s00-h"><span class="num">00</span>라벨링 · 같은 자료에 다른 라벨이 붙는 이유<span class="pg">p.25–27</span></h2>
+<p class="lead">오전에는 자료에 <strong>무엇이 담겼는가</strong>를 봤습니다. 이 구간은 그 자료에 <strong>무엇을 붙이는가</strong>를 다룹니다. 같은 답변을 읽고도 “좋은 답”의 판단이 갈리는 이유가 무엇인지 알면, 라벨이 정답이 아니라 <strong>기준을 적용한 결과</strong>임이 보입니다.</p>
+<div class="src"><span class="pl">자료 p.27</span><p>라벨은 자료에 붙인 범주나 값, 라벨링은 그 값을 붙이는 작업이다. 예: 문의의 주제 분류 / 답변의 사실 오류 표시 / 두 답의 선호 비교. “판단 기준이 달라지면 같은 자료에도 다른 라벨이 붙는다. 지침은 그 기준을 다른 사람도 적용할 수 있게 설명한다.”</p></div>
+<div class="box p"><h4>보충 · 앞 일차의 라벨</h4><p>1일차 p.22는 라벨을 “학습 자료에 붙인 분류값”, 3일차 p.8은 “예측과 비교할 목표값”이라고 했습니다. 오늘은 그 값이 <strong>사람의 판단</strong>이라는 점을 파고듭니다. 3일차 오전 02절의 “인증 메일이 오지 않아 결제를 못 했어요”가 계정인지 결제인지 갈리던 예가 바로 이 문제였습니다.</p></div>
+</section>
+
+<section id="s01" aria-labelledby="s01-h"><h2 id="s01-h"><span class="num">01</span>주제 분류와 실행 의사 분류는 다른 질문이다<span class="pg">p.28–29</span></h2>
+<div class="tbl"><table><thead><tr><th>같은 문의 “환불은 며칠 안에 신청해야 하나요?” (p.28)</th><th>질문 1: 무엇에 관한 문의인가?</th><th>질문 2: 실행을 요청하는가?</th></tr></thead><tbody><tr><td>라벨</td><td>주제: 환불</td><td>환불 실행 요청: 없음</td></tr></tbody></table></div>
+<div class="tbl"><table><thead><tr><th>라벨링 지침의 구성 (p.29)</th><th>내용</th></tr></thead><tbody>
+<tr><td>판단 대상</td><td>문의의 주제인가, 새 환불 실행을 요청하는 의사인가?</td></tr>
+<tr><td>포함·제외 조건</td><td>새 환불 요청에는 포함. 기간 질문·신청 취소는 제외. 같은 단어가 있다는 이유만으로 같은 라벨을 붙이지 않는다</td></tr>
+<tr><td>정보가 부족할 때</td><td>“지난번대로 처리해 주세요”만으로는 의사를 모른다. 앞 대화를 확인하거나 판단을 보류한다</td></tr></tbody></table></div>
+<div class="box v"><h4>검증 · 키워드 규칙은 실행 의사를 가르지 못한다 (추가 실행 · 가상 5문장) <span class="tag ok">자료의 주장 확인</span> <span class="tag na">가정값</span></h4>
+<div class="tbl"><table><thead><tr><th>문의</th><th>실행 요청인가 (지침 기준)</th><th>“환불” 포함 규칙의 판정</th></tr></thead><tbody>
+<tr><td>환불은 며칠 안에 신청해야 하나요?</td><td>아니오 (기간 질문)</td><td>요청으로 표시 ✗</td></tr>
+<tr><td>환불해 주세요.</td><td><strong>예</strong></td><td>요청으로 표시 ✓</td></tr>
+<tr><td>환불 신청을 취소하고 싶어요.</td><td>아니오 (취소는 제외)</td><td>요청으로 표시 ✗</td></tr>
+<tr><td>환불 규정이 궁금해요.</td><td>아니오 (규정 질문)</td><td>요청으로 표시 ✗</td></tr>
+<tr><td>지난번대로 처리해 주세요.</td><td>판단 보류 (앞 대화 필요)</td><td>표시 안 함 (단어가 없음)</td></tr></tbody></table></div>
+<div class="calc">규칙이 “환불 요청”으로 표시한 문장 4개 중 실제 요청 1개 → 정밀도 0.25
+실제 요청 1건 중 규칙이 찾은 것 1건 → 재현율 1.0
+보류해야 할 문장 1개는 규칙이 아예 구별하지 못함 (scikit-learn으로 계산)</div><p>단어만 세는 규칙은 요청을 놓치지는 않지만 <strong>4개 중 3개를 잘못 표시</strong>했고, 보류해야 할 문장은 그냥 지나쳤습니다. 이것이 p.39의 “환불 단어만 세면 일치해도 목적에는 맞지 않는다”입니다. 5문장은 작성자가 구성한 가상 예입니다.</p></div>
+<div class="box t"><h4>강의 포인트 · 경계 사례를 먼저 모은다</h4><p>지침의 첫 단계는 정의를 쓰는 일이 아니라 <strong>헷갈리는 문장 몇 개를 모아 판단해 보는 일</strong>입니다. 위 표처럼 “기간 질문, 취소, 규정 질문, 앞 대화가 필요한 문장”이 곧 포함·제외 조건과 보류 규칙의 재료가 됩니다.</p></div>
+</section>
+
+<section id="s02" aria-labelledby="s02-h"><h2 id="s02-h"><span class="num">02</span>LLM의 답을 평가하는 지침<span class="pg">p.30–34</span></h2>
+<div class="src"><span class="pl">자료 p.30</span><p>“좋은 답”이라는 말만으로는 무엇을 비교해야 할지 정해지지 않는다. 사실이 맞는가? 요청한 일을 해결하는가? 불필요한 내용을 덧붙였는가? 어떤 해를 줄 수 있는가? 공개 연구의 평가 지침에서 이 기준을 어떻게 적었는지 읽는다.</p></div>
+<div class="tbl"><table><thead><tr><th>실제 평가 지침 (p.31 · InstructGPT 논문 최종 평가 지침 요약)</th><th>행동으로 풀어 쓴 기준</th></tr></thead><tbody>
+<tr><td>도움이 되는 답</td><td>사용자의 의도를 따르고 과제를 해결한다. 모호한 요청에는 필요한 내용을 되묻는다</td></tr>
+<tr><td>사실에 맞는 답</td><td>요약에서는 원문에 없는 내용을 지어내지 않는다. 잘못된 전제를 그대로 받아 답하지 않는다</td></tr>
+<tr><td>해를 끼치지 않는 답</td><td>사람에게 피해를 주는 조언이나 특정 집단을 비하하는 표현이 있는지 살핀다</td></tr></tbody></table></div>
+<div class="tbl"><table><thead><tr><th>같은 ‘내용 추가’도 요청에 따라 다르다 (p.32)</th><th>사실을 전하는 답장</th><th>가상의 편지 쓰기</th></tr></thead><tbody>
+<tr><td>내용을 더해도 되는가</td><td>사용자가 말하지 않은 다음 주 일정을 <strong>임의로 약속하면 안 됨</strong> (사실을 대신 전달하는 일)</td><td>창작을 요청했다면 인물의 말과 상황을 <strong>새로 만들 수 있음</strong> (내용을 창작하는 일)</td></tr></tbody></table></div>
+<div class="tbl"><table><thead><tr><th>모호한 지침 (p.33)</th><th>판단할 수 있는 지침</th></tr></thead><tbody><tr><td>“구체적으로 써 주세요.” — 어떤 내용까지 덧붙여도 되는가?</td><td>사실 전달: 확인된 내용만. 창작 요청: 창작 범위 안에서. 필요한 사실이 없으면 묻거나 빈칸으로 남긴다</td></tr></tbody></table></div>
+<div class="tbl"><table><thead><tr><th>기준끼리 충돌할 때 (p.34)</th><th>내용</th></tr></thead><tbody>
+<tr><td>실제 연구의 지침</td><td>대부분의 과제에서는 진실성과 해를 피하는 것을 도움이 되는 정도보다 우선</td></tr>
+<tr><td>내 과제에서 정할 것</td><td>사실 오류를 허용할 수 있는가? 무엇을 반드시 충족해야 하나? 길이·말투는 어떤 상황에서 선택 기준이 되는가?</td></tr></tbody></table></div>
+<div class="box w"><h4>검증 · InstructGPT 인용은 원문을 열 수 없어 미확인 <span class="tag na">미확인</span></h4><p>세 가지 기준(도움·사실·무해)과 “진실성과 해를 피하는 것을 우선”이라는 설명은 작성자가 알고 있는 InstructGPT 논문(Ouyang 등, 2022)의 내용과 부합합니다. 그러나 이 환경에서는 논문 원문에 접속할 수 없어 <strong>“Figure 10” 같은 그림 번호와 지침의 문구는 대조하지 못했습니다.</strong> 수업 자료에 그림 번호를 적을 때는 논문 부록에서 확인하세요(작성자 지식).</p></div>
+<div class="box t"><h4>강의 포인트 · 같은 요청, 두 지침으로 판정해 보기</h4><p>같은 답장 초안을 “사실 전달 지침”과 “창작 지침”으로 각각 판정하게 해 보세요. 임의의 다음 주 일정이 들어 있다면 앞 지침에서는 오류, 뒤 지침에서는 정상입니다. “기준은 ‘내용을 더했는가’뿐 아니라 ‘무엇을 요청받았는가’다”(p.32)가 한 번에 보입니다.</p></div>
+</section>
+
+<section id="s03" aria-labelledby="s03-h"><h2 id="s03-h"><span class="num">03</span>정보 부족과 의견 차이는 다른 문제다<span class="pg">p.35–36</span></h2>
+<div class="src"><span class="pl">자료 p.35</span><p>“지난번 말씀드린 대로 처리해 주세요.” 현재 자료에는 지난 대화가 없다. 무슨 처리를 원하는지 알기 위해서는 앞 대화나 추가 질문이 필요하다. <strong>여러 사람이 같은 답에 동의해도 빠진 사실이 새로 생기지는 않는다.</strong></p></div>
+<div class="tbl"><table><thead><tr><th>판정이 갈리는 원인 (p.36)</th><th>예</th><th>바꿀 것</th></tr></thead><tbody>
+<tr><td>목적이 다름</td><td>주제 분류와 실행 요청을 구별</td><td>판단 대상을 먼저 합의</td></tr>
+<tr><td>경계가 모호함</td><td>“간결한 답”의 뜻이 다름</td><td>필요한 내용과 생략할 내용을 명시</td></tr>
+<tr><td>근거가 부족함</td><td>앞 대화·참고 글이 없음</td><td>정보 확보 또는 보류</td></tr>
+<tr><td>선호가 다름</td><td>둘 다 정확하지만 길이·말투 선호가 다름</td><td>대상·사용 상황 확인</td></tr></tbody></table></div>
+<div class="box p"><h4>보충 · 오전 04절과의 연결</h4><p>“근거가 부족함” 줄은 오전 04절의 “글에 근거가 없음” 줄과 같은 이야기입니다. 근거가 없는 상태에서는 아무리 많은 평가자가 한 라벨에 동의해도 그 라벨이 <strong>사실이 되지는 않습니다.</strong> 이것이 다음 절의 일치도와 타당성의 구분으로 이어집니다.</p></div>
+</section>
+
+<section id="s04" aria-labelledby="s04-h"><h2 id="s04-h"><span class="num">04</span>라벨 일치도와 타당성<span class="pg">p.37–40</span></h2>
+<div class="src"><span class="pl">자료 p.37</span><p>단순 일치율 = 같은 판단 수 ÷ 비교한 항목 수. 같은 지침·같은 자료를 각자 판단한 기록을 비교한다. 10건 중 8건이 같다면 단순 일치율은 80%다. 이는 서로 같은지를 나타낼 뿐, 목적에 맞는 올바른 판단인지는 별도로 확인한다.</p></div>
+<div class="tbl"><table><thead><tr><th>일치도 (p.39)</th><th>타당성</th></tr></thead><tbody><tr><td>같은 자료에 비슷한 판단을 하는가? 불일치가 잦으면 지침과 정보부터 살핀다</td><td>판단 기준이 실제 목적을 나타내는가? 모두 동의해도 잘못된 대상을 셀 수 있다</td></tr></tbody></table></div>
+<div class="box v"><h4>검증 · 단순 일치율은 우연히 맞는 것도 센다 (직접 실행) <span class="tag ok">자료의 경고 확인</span> <span class="tag add">추가 계산</span></h4>
+<div class="calc">① 10건 중 8건 일치 (두 평가자의 “예” 5건씩, 각자 1건만 다름)
+   단순 일치율 = 8 ÷ 10 = 80%
+   우연 일치를 보정한 값(코헨의 카파) = 0.60            ← 자료의 80% 예를 scikit-learn으로 계산
+
+② 100건 중 90건은 둘 다 “아니오”, 두 평가자가 서로 다른 5건씩만 “예”
+   단순 일치율 = 90 ÷ 100 = 90%
+   카파 = −0.053   (우연보다도 못함)</div><p>②에서 두 평가자는 “예”에 <strong>한 건도 같은 답을 하지 않았는데</strong> 단순 일치율은 90%입니다. 범주 비율이 한쪽으로 쏠리면(예: 환불 요청 10%) 단순 일치율은 쉽게 높아집니다. 카파는 우연히 같아질 비율을 빼고 계산하는 지표입니다. 자료의 “단순 일치율은 서로 같은지를 나타낼 뿐”이라는 말이 숫자로 확인됩니다.</p></div>
+<div class="src"><span class="pl">자료 p.38 · InstructGPT 연구 보고</span><p>학습 자료를 만든 평가자들의 상호 일치율 <strong>약 73%</strong>. 이 수치로 알 수 없는 것: 나머지 판단이 모두 사실 오류였는지, 모든 사용자가 같은 선호를 가질 것인지. “답변 선호 판단의 일치율이며, 정답률이나 지침 수정의 효과를 뜻하지 않는다.” (출처: InstructGPT §3.4·§5.2 · 72.6±1.5%를 약 73%로 표시)</p></div>
+<div class="box v"><h4>검증 · 표시 방식과 환산 <span class="tag ok">반올림 일치</span> <span class="tag na">논문 원문 미확인</span></h4>
+<div class="calc">72.6% → 약 73%  (소수 첫째 자리에서 반올림)
+두 답 중 하나를 고르는 비교에서 우연 일치를 50%로 보면
+카파 ≈ (0.726 − 0.5) ÷ (1 − 0.5) = 0.452</div><p>반올림은 맞습니다. 환산한 카파 약 0.45는 <strong>두 선택지가 균형을 이룬다는 가정</strong>에서 작성자가 계산한 값으로, 논문이 보고한 수치가 아닙니다. 논문의 72.6±1.5%라는 수치와 §3.4·§5.2라는 위치는 원문에 접속할 수 없어 대조하지 못했습니다. 그래도 요점은 분명합니다. 사람이 선호를 비교할 때 평가자끼리도 약 4분의 1은 다르게 고릅니다. 라벨은 “정답”이 아니라 <strong>어느 정도 갈리는 판단</strong>입니다.</p></div>
+<div class="tbl"><table><thead><tr><th>바꾼 지침을 새 요청에 적용 (p.40)</th><th>새 요청: 회의 안내</th><th>새 요청: 동화 쓰기</th></tr></thead><tbody><tr><td>판단</td><td>일정이 빠져 있다면 일정을 확인하거나 빈칸으로 남긴다. 임의 날짜를 확정하지 않는다</td><td>이야기의 창작이 목적이면 가상의 날짜와 사건을 만들 수 있다. 창작 내용 자체는 오류가 아니다</td></tr></tbody></table></div>
+<p>같은 기준이 새 요청에도 적용되는지 보고, 부족한 조건을 보완합니다. 지침을 고친 뒤에는 <strong>고친 사례가 아닌 새 요청</strong>으로 확인해야 합니다. 3일차의 “새 사례의 답이 달라졌는가”와 같은 원칙입니다.</p>
+</section>
+
+<section id="s05" aria-labelledby="s05-h"><h2 id="s05-h"><span class="num">05</span>판단자 편향 · 누구의 기준이 정답이 되는가<span class="pg">p.41</span></h2>
+<div class="src"><span class="pl">자료 p.41</span><p>특정 관점이나 선호가 자료의 평가에 치우쳐 반영될 수 있다. 응답에 붙인 “좋다”는 판단을 읽을 때 <strong>누가, 어떤 과제에서, 어떤 지침으로</strong> 판단했는지 살핀다. 판단자 수가 많거나 서로 동의한다는 사실만으로 다른 사용자의 관점까지 대표하지는 않는다.</p></div>
+<div class="box p"><h4>보충 · 오전 07절의 표본 편향과 같은 구조</h4><p>판단자 집단도 하나의 <strong>표본</strong>입니다. 판단자가 특정 지역·직업·연령에 몰려 있으면 “좋은 답”의 기준도 그쪽으로 치우칩니다. 오전 07절의 계산(자주 쓰는 사용자만 응답하면 평균 3.3이 4.5로 보이는 것)에서 사용자를 판단자로 바꿔 읽으면 됩니다. 1일차 p.102의 “선호는 정확성이 아니다”와 3일차 p.31의 선호학습 자료에서 <strong>누구의 선호인가</strong>를 묻는 이유입니다.</p></div>
+</section>
+
+<section id="s06" aria-labelledby="s06-h"><h2 id="s06-h"><span class="num">06</span>개념 탐구 질문의 짧은 답<span class="pg">p.42–43</span></h2>
+<details><summary>p.42–43 질문 여덟 묶음의 짧은 답</summary>
+<div class="tbl"><table><thead><tr><th>개념</th><th>짧은 답</th><th>위치</th></tr></thead><tbody>
+<tr><td>라벨·라벨링</td><td>구분하려는 것이 다르면 같은 글에도 다른 라벨이 붙는다(주제 vs 실행 의사)</td><td>01</td></tr>
+<tr><td>포함·제외 조건</td><td>같은 단어 유무가 아니라 판단 대상으로 쓴다. 제외할 사례(기간 질문·취소·규정)를 명시한다</td><td>01</td></tr>
+<tr><td>경계 사례</td><td>가까운 범주를 구별하는 헷갈리는 문장을 모아 지침에 넣는다</td><td>01</td></tr>
+<tr><td>정보 부족</td><td>판정을 미룰 때는 정보가 없을 때, 지침을 고칠 때는 기준이 모호할 때</td><td>03</td></tr>
+<tr><td>사실과 선호</td><td>둘 다 정확해도 길이·말투 등 선호에 따라 더 나은 답이 있을 수 있다</td><td>03</td></tr>
+<tr><td>기준의 우선순위</td><td>유용성·정확성·안전성이 충돌할 때 과제의 목적과 위험에 따라 정하고 설명한다</td><td>02</td></tr>
+<tr><td>일치도와 타당성</td><td>같은 판단을 해도 기준이 목적에 맞지 않을 수 있다. 단순 일치율은 우연 일치도 센다</td><td>04</td></tr>
+<tr><td>판단자 편향</td><td>누가 어떤 지침으로 판단했는지에 따라 “좋은 답”의 기준이 달라진다</td><td>05</td></tr></tbody></table></div></details>
+</section>
+
+<section id="s07" class="summary" aria-labelledby="s07-h"><h2 id="s07-h"><span class="num">07</span>핵심 정리</h2>
+<ul>
+<li>라벨은 정답이 아니라 <strong>기준을 적용한 판단</strong>이고, 같은 자료도 구분하려는 것에 따라 다른 라벨이 붙습니다.</li>
+<li>좋은 지침은 <strong>판단 대상 · 포함·제외 조건 · 경계 사례 · 정보가 부족할 때의 처리</strong>를 갖추고, 기준이 충돌하면 우선순위를 정합니다.</li>
+<li>판정이 갈리면 <strong>목적·경계·근거·선호</strong> 중 무엇이 다른지부터 구분하고, 여러 사람이 동의해도 없는 정보는 생기지 않습니다.</li>
+<li>단순 일치율은 <strong>우연 일치</strong>를 세므로 범주가 쏠리면 높아지고(90%인데 카파 −0.05), 일치해도 기준이 목적에 맞는지(<strong>타당성</strong>)는 따로 봅니다.</li>
+<li>판단자 집단도 <strong>표본</strong>이라서 누가·어떤 지침으로 판단했는지를 함께 읽습니다.</li>
+</ul>
+</section>
+
+<section id="s08" aria-labelledby="s08-h"><h2 id="s08-h"><span class="num">08</span>검증 기록</h2>
+<div class="tbl"><table><thead><tr><th>쪽</th><th>항목</th><th>방법</th><th>결과</th></tr></thead><tbody>
+<tr><td>p.28–29 · p.39</td><td>단어 규칙이 실행 의사를 못 가른다</td><td>5문장 판정표와 정밀도·재현율 계산(scikit-learn)</td><td><span class="tag ok">주장 확인</span> <span class="tag na">가정값</span></td></tr>
+<tr><td>p.37</td><td>10건 중 8건 = 80%</td><td>재계산 · 카파 0.60(scikit-learn)</td><td><span class="tag ok">일치</span></td></tr>
+<tr><td>p.37</td><td>단순 일치율은 서로 같은지만 나타낸다</td><td>90% 일치인데 카파 −0.053인 반례(scikit-learn)</td><td><span class="tag ok">주장 확인</span></td></tr>
+<tr><td>p.38</td><td>72.6±1.5% → 약 73%</td><td>반올림 계산 · 논문 원문 접속 불가</td><td><span class="tag ok">반올림 일치</span> <span class="tag na">수치 출처 미확인</span></td></tr>
+<tr><td>p.31 · p.34</td><td>평가 지침의 세 기준과 우선순위, “Figure 10”</td><td>작성자 지식 · 논문 원문 접속 불가</td><td><span class="tag na">미확인</span></td></tr>
+<tr><td>p.35–36</td><td>동의가 없는 정보를 만들지 않는다</td><td>논리 대조 (오전 04절과 연결)</td><td><span class="tag ok">일치</span></td></tr></tbody></table></div>
+</section>
+
+</main></div>
+<footer><p>이 문서는 「AI 강사양성과정」 4일차 교육자료를 다시 쓴 학습 참고자료입니다. 회색 상자는 자료 원문을 인용하거나 요약한 것(표의 칸이나 여러 칸으로 된 슬라이드를 문장으로 풀어 쓴 곳 포함), 직접 다시 계산한 결과는 초록 ‘검증’ 상자, 자료에 없는 설명은 파란 ‘보충’ 상자로 구분했습니다. 보충 내용은 작성자의 지식에 기반하며 웹 검색으로 확인하지 않았습니다. 인용한 논문·문서의 제목과 연도는 원문을 직접 확인하세요. ‘설명용’, ‘가상’, ‘교육용 예’로 표시된 수치는 실제 측정값이 아닙니다. 이 자료의 법령 설명은 법률 자문이 아니며, 조문은 법령 저장소(legalize-kr), 라이선스 원문은 creativecommons/legalcode, 공정성 지표는 Fairlearn 0.15.0·scikit-learn 실행으로 확인했습니다. 논문(InstructGPT, Obermeyer 외, Naik·Nushi)과 NIST 문서는 원문에 접속할 수 없어 ‘미확인’으로 표시했습니다. 그림에서 읽은 값은 ‘근삿값’, 작성자가 만든 계산·반례·시뮬레이션은 ‘추가’로 표시했습니다.</p></footer>
+</body></html>
