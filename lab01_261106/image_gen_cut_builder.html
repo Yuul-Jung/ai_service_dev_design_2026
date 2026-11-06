@@ -1,0 +1,1649 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>공통 설정 빌더</title>
+<style>
+:root{
+  --bg:#f5f6f8;--surface:#ffffff;--ink:#1b2430;--mut:#5d6877;--line:#d6dbe3;
+  --ac:#1f5fbf;--ac-bg:#e8f0fc;--ok:#1d6b45;
+  color-scheme:light;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#12161c;--surface:#1b212a;--ink:#e6eaf0;--mut:#9aa5b5;--line:#2e3744;
+    --ac:#7fb0f5;--ac-bg:#1e2d45;--ok:#7bd3a4;color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12161c;--surface:#1b212a;--ink:#e6eaf0;--mut:#9aa5b5;--line:#2e3744;
+  --ac:#7fb0f5;--ac-bg:#1e2d45;--ok:#7bd3a4;color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;line-height:1.6;font-size:15px}
+.layout{display:grid;grid-template-columns:190px minmax(0,860px);gap:24px;justify-content:center;max-width:1120px;margin:0 auto;padding:0 16px}
+.wrap{min-width:0;padding:24px 0 56px}
+.panel,#cuts{scroll-margin-top:68px}
+.sidenav{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);align-self:start;margin-top:24px;display:flex;flex-direction:column;gap:2px;max-height:calc(100vh - 48px);overflow-y:auto}
+.sidenav button{text-align:left;border:1px solid transparent;background:transparent;color:var(--mut);padding:7px 12px;border-radius:6px}
+.sidenav button:hover{background:var(--ac-bg);color:var(--ink);border-color:transparent}
+.sidenav button.active{background:var(--ac-bg);color:var(--ink);font-weight:500}
+@media (max-width:900px){
+  .layout{display:block}
+  .sidenav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;flex-direction:row;overflow-x:auto;overflow-y:hidden;max-height:none;margin:0 -16px;padding:8px 16px;background:var(--surface);border-bottom:1px solid var(--line);gap:6px}
+  .sidenav button{white-space:nowrap;flex:0 0 auto;border-color:var(--line)}
+  .sidenav button.active{border-color:var(--ac)}
+  body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--surface)}
+}
+h1{font-size:22px;font-weight:600;margin:0 0 4px}
+.lead{color:var(--mut);margin:0 0 16px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:16px}
+.panel h2{font-size:16px;font-weight:600;margin:0 0 2px}
+.hint{color:var(--mut);font-size:13px;margin:0 0 12px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.full{grid-column:1/-1}
+label{display:block;font-size:13px;color:var(--mut);margin-bottom:4px}
+input[type=text],select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--ac);outline-offset:1px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+button{font:inherit;cursor:pointer;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:7px 12px}
+button:hover{border-color:var(--ac)}
+button.primary{background:var(--ac);border-color:var(--ac);color:#fff}
+:root[data-theme="dark"] button.primary{color:#0d1a2e}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) button.primary{color:#0d1a2e}}
+.res{margin-top:12px;background:var(--ac-bg);border-radius:6px;padding:8px 12px;font-size:14px;overflow-wrap:anywhere;word-break:keep-all}
+.res b{font-weight:600;margin-right:6px}
+.empty{color:var(--mut)}
+.pv{display:grid;grid-template-columns:72px minmax(0,1fr);gap:6px 12px;margin:0 0 12px;font-size:14px}
+.pv dt{color:var(--mut)}
+.pv dd{margin:0;overflow-wrap:anywhere;word-break:keep-all}
+.one{background:var(--ac-bg);border-radius:6px;padding:12px;overflow-wrap:anywhere;word-break:keep-all}
+.status{color:var(--ok);font-size:13px}
+.cutcard{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--ac);border-radius:0 10px 10px 0;padding:16px;margin-bottom:16px}
+.cuthead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}
+.cuthead strong{font-weight:600}
+.chk{display:flex;align-items:center;gap:6px;color:var(--ink);font-size:14px;margin:0;padding-top:22px}
+.out{margin-top:12px;background:var(--ac-bg);border-radius:6px;padding:12px;white-space:pre-wrap;overflow-wrap:anywhere;word-break:keep-all}
+.warns{margin-top:8px;display:flex;flex-direction:column;gap:6px}
+.warn{background:#fdf0dc;color:#8a4b08;border-radius:6px;padding:6px 10px;font-size:13px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .warn{background:#3a2d17;color:#f0c27a}}
+:root[data-theme="dark"] .warn{background:#3a2d17;color:#f0c27a}
+.good{color:var(--ok);font-size:13px;margin-top:8px}
+.tail{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center}
+button:disabled,select:disabled{opacity:.5;cursor:not-allowed}
+textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;resize:vertical}
+textarea:focus{outline:2px solid var(--ac);outline-offset:1px}
+summary{cursor:pointer;color:var(--ink)}
+[hidden]{display:none!important}
+.wscell{border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--bg);margin-bottom:12px}
+.wshead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.wshead strong{font-weight:600}
+.wsbadge{font-size:13px;color:var(--mut)}
+.wsbadge.done{color:var(--ok)}
+.cmp{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.cmp{grid-template-columns:minmax(0,1fr)}}
+.wizq{font-size:18px;font-weight:600;margin:0 0 12px}
+.opts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.opt{border-radius:999px;padding:8px 16px}
+.opt[aria-pressed="true"]{background:var(--ac);border-color:var(--ac);color:#fff}
+:root[data-theme="dark"] .opt[aria-pressed="true"]{color:#0d1a2e}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .opt[aria-pressed="true"]{color:#0d1a2e}}
+.ck{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}
+.ck:last-child{border-bottom:0}
+.ck input{margin-top:4px}
+.ck .auto{font-size:12px;color:var(--mut);margin-left:6px}
+.tblwrap{overflow-x:auto}
+.rub{width:100%;border-collapse:collapse;font-size:14px}
+.rub th,.rub td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+.rub th{font-weight:600;background:var(--bg)}
+.qh{font-size:15px;font-weight:600;margin:16px 0 8px}
+.fb{font-size:14px;margin:0 0 12px}
+.cnt{font-size:13px;color:var(--mut);margin-top:8px}
+.cnt.over{color:#a23b00;font-weight:500}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .cnt.over{color:#f0a070}}
+:root[data-theme="dark"] .cnt.over{color:#f0a070}
+@media (max-width:640px){.chk{padding-top:0}}
+@media (max-width:640px){.grid,.grid.two{grid-template-columns:minmax(0,1fr)}}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav class="sidenav" id="sidenav" aria-label="바로가기"></nav>
+<div class="wrap">
+  <h1>공통 설정 빌더</h1>
+  <p class="lead">대범주를 고르고 세부 특징을 선택하면 모든 컷에 쓸 고정 문구가 만들어집니다. 입력은 선택 사항입니다.</p>
+
+  <section class="panel" id="sec-view" aria-label="화면 모드">
+    <div class="grid two">
+      <div><label for="view-sel">화면 모드</label>
+        <select id="view-sel"><option value="full">전체 기능</option><option value="ws">학생용 워크시트 (5칸)</option><option value="wiz">질문 마법사 (하나씩 고르기)</option><option value="assign">5일차 과제 안내</option></select></div>
+    </div>
+  </section>
+
+  <div id="wsView" hidden>
+    <section class="panel" aria-labelledby="h-ws">
+      <h2 id="h-ws">나만의 영상 프롬프트</h2>
+      <p class="hint">다섯 칸을 채우면 문장이 만들어집니다. 칸마다 선택을 바꿔 보며 결과가 어떻게 달라지는지 비교해 보세요.</p>
+      <div id="wsCells"></div>
+      <p class="hint" id="wsProg" style="margin:0"></p>
+    </section>
+    <section class="panel" aria-labelledby="h-wsout">
+      <h2 id="h-wsout">완성된 문장</h2>
+      <div class="out" id="wsOut" style="margin-top:8px"></div>
+      <div class="cnt" id="wsCnt"></div>
+      <div class="warns" id="wsWarns"></div>
+      <div class="tail">
+        <button class="primary" id="ws-copy">문장 복사</button>
+        <button id="ws-fix">A로 고정해 두기</button>
+        <button id="ws-clear-ab">비교 지우기</button>
+        <span class="status" id="status-ws" role="status"></span>
+      </div>
+    </section>
+    <section class="panel" id="wsCompare" hidden aria-labelledby="h-cmp">
+      <h2 id="h-cmp">비교하기</h2>
+      <p class="hint">A를 고정한 뒤 한 칸만 바꾸면, 그 칸이 결과에 준 영향을 볼 수 있습니다.</p>
+      <div class="cmp">
+        <div><label>A (고정한 문장)</label><div class="out" id="cmpA" style="margin-top:0"></div></div>
+        <div><label>B (현재 문장)</label><div class="out" id="cmpB" style="margin-top:0"></div></div>
+      </div>
+      <p class="hint" id="cmpNote" style="margin:10px 0 0"></p>
+    </section>
+  </div>
+
+  <div id="wizView" hidden>
+    <section class="panel" aria-labelledby="h-wiz">
+      <h2 id="h-wiz">질문에 답하며 만들기</h2>
+      <p class="hint" id="wizProg"></p>
+      <div id="wizBody" aria-live="polite"></div>
+    </section>
+    <section class="panel" aria-labelledby="h-wizp">
+      <h2 id="h-wizp">지금까지 만든 문장</h2>
+      <div class="out" id="wizOut" style="margin-top:8px"></div>
+      <div class="tail">
+        <button class="primary" id="wiz-copy">문장 복사</button>
+        <span class="status" id="status-wiz" role="status"></span>
+      </div>
+    </section>
+  </div>
+
+  <div id="assignView" hidden>
+    <section class="panel" aria-labelledby="h-as">
+      <h2 id="h-as">5일차 과제: 한 칸만 바꿔 비교하기</h2>
+      <p class="hint">영상 생성 프롬프트의 다섯 요소(주제·행동·배경·카메라·분위기)를 직접 골라 문장을 만들고, 한 칸만 바꿨을 때 결과가 어떻게 달라지는지 비교해 설명합니다.</p>
+      <p style="margin:0 0 8px"><strong style="font-weight:600">목표</strong></p>
+      <ul style="margin:0 0 12px;padding-left:20px">
+        <li>다섯 칸을 모두 채워 한 클립 분량의 프롬프트를 완성한다.</li>
+        <li>같은 문장에서 한 칸만 바꿔, 그 칸이 결과에 준 영향을 설명한다.</li>
+        <li>이미지 이해(입력)와 영상 생성(출력)이 같은 원리 위에 있음을 설명한다.</li>
+      </ul>
+      <div class="row"><button class="primary" data-as="goto-ws">워크시트로 이동해 시작하기</button></div>
+    </section>
+
+    <section class="panel" aria-labelledby="h-ck">
+      <h2 id="h-ck">진행 체크</h2>
+      <p class="hint">자동 확인 표시가 있는 단계는 워크시트 상태를 보고 스스로 체크됩니다.</p>
+      <div id="asChecks"></div>
+      <p class="hint" id="asProg" style="margin:8px 0 0"></p>
+    </section>
+
+    <section class="panel" aria-labelledby="h-rf">
+      <h2 id="h-rf">성찰 질문</h2>
+      <p class="hint">모두 선택지로 답합니다. 마지막 소감만 한 줄로 적습니다.</p>
+      <div class="qh">질문 1. 이번에 바꾼 칸은 어디인가요?</div>
+      <div class="opts" id="asQ1"></div>
+      <div class="qh">질문 2. 결과 차이에 가장 큰 영향을 준 요소는 무엇이라고 생각하나요?</div>
+      <div class="opts" id="asQ2"></div>
+      <div class="qh">질문 3. 이미지 이해(VQA)와 영상 생성에 공통으로 쓰이는 원리는 무엇인가요?</div>
+      <div class="opts" id="asQ3"></div>
+      <p class="fb" id="asQ3fb"></p>
+      <label for="as-note">한 줄 소감 (선택)</label>
+      <textarea id="as-note" rows="2"></textarea>
+    </section>
+
+    <section class="panel" aria-labelledby="h-sub">
+      <h2 id="h-sub">제출 요약</h2>
+      <p class="hint">복사해서 제출 창구에 붙여 넣으세요.</p>
+      <label for="as-name">이름 (선택)</label>
+      <input type="text" id="as-name" style="margin-bottom:12px">
+      <div class="out" id="asSummary" style="margin-top:0"></div>
+      <div class="tail">
+        <button class="primary" data-as="copy">제출 요약 복사</button>
+        <span class="status" id="status-as" role="status"></span>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="h-rb">
+      <h2 id="h-rb">평가 기준 (예시 배점, 교사가 조정)</h2>
+      <div class="tblwrap">
+        <table class="rub">
+          <thead><tr><th>항목</th><th>확인 내용</th><th>배점</th></tr></thead>
+          <tbody>
+            <tr><td>프롬프트 완성도</td><td>다섯 칸을 모두 채우고 원칙 점검을 통과했는가</td><td>30</td></tr>
+            <tr><td>비교 분석</td><td>한 칸만 바꿔 비교하고 영향을 설명했는가</td><td>30</td></tr>
+            <tr><td>원리 이해</td><td>텍스트-시각 정렬이라는 공통 원리를 골랐는가</td><td>25</td></tr>
+            <tr><td>제출 형식</td><td>요약을 빠짐없이 제출했는가</td><td>15</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <div id="fullView">
+  <div class="row" style="margin-bottom:16px">
+    <button class="primary" id="btn-ex">예시 불러오기</button>
+    <button id="btn-rand">무작위로 채우기</button>
+    <button id="btn-clear">모두 지우기</button>
+  </div>
+
+  <section class="panel" aria-labelledby="h-tpl">
+    <h2 id="h-tpl">템플릿</h2>
+    <p class="hint">공통 설정, 컷 구성, 출력 설정을 한 번에 저장하고 불러옵니다. 수업용 기본 프리셋이 들어 있습니다.</p>
+    <div class="grid two">
+      <div><label for="tpl-sel">불러올 템플릿</label><select id="tpl-sel"></select></div>
+      <div class="row" style="align-items:flex-end"><button class="primary" id="tpl-load">불러오기</button><button id="tpl-del">삭제</button></div>
+      <div><label for="tpl-name">저장 이름 (비우면 자동 이름)</label><input type="text" id="tpl-name"></div>
+      <div class="row" style="align-items:flex-end"><button id="tpl-save">현재 구성 저장</button></div>
+    </div>
+    <details style="margin-top:12px">
+      <summary>다른 사람과 주고받기 (복사·붙여넣기)</summary>
+      <div class="row" style="margin:12px 0"><button id="tpl-export">현재 구성 복사</button></div>
+      <label for="tpl-import">받은 템플릿 붙여넣기</label>
+      <textarea id="tpl-import" rows="4"></textarea>
+      <div class="row" style="margin-top:8px"><button id="tpl-importgo">가져오기</button></div>
+    </details>
+    <div class="status" id="status-tpl" role="status" style="margin-top:8px"></div>
+  </section>
+
+  <section class="panel" aria-labelledby="h-subj">
+    <h2 id="h-subj">주제</h2>
+    <p class="hint">영상의 주인공을 고릅니다. 대범주에 따라 세부 항목이 바뀝니다.</p>
+    <div class="grid">
+      <div><label for="subj-cat">대범주</label><select id="subj-cat"></select></div>
+    </div>
+    <div class="grid" id="subjFields" style="margin-top:12px"></div>
+    <div style="margin-top:12px"><label for="subjExtra">추가 특징 (선택, 예: 안경을 쓴)</label><input type="text" id="subjExtra"></div>
+    <div class="res" id="res-subj"></div>
+  </section>
+
+  <section class="panel" aria-labelledby="h-bg">
+    <h2 id="h-bg">배경</h2>
+    <p class="hint">지역, 장소, 날씨, 계절, 소품 순으로 고릅니다.</p>
+    <div class="grid" id="placeFields"></div>
+    <div style="margin-top:12px"><label for="bgExtra">추가 배경 요소 (선택, 예: 멀리 보이는 고층 빌딩)</label><input type="text" id="bgExtra"></div>
+    <div class="res" id="res-bg"></div>
+  </section>
+
+  <section class="panel" aria-labelledby="h-light">
+    <h2 id="h-light">조명·시간대</h2>
+    <p class="hint">시간대와 빛의 질감을 고릅니다.</p>
+    <div class="grid two" id="lightFields"></div>
+    <div class="res" id="res-light"></div>
+  </section>
+
+  <section class="panel" aria-labelledby="h-style">
+    <h2 id="h-style">스타일</h2>
+    <p class="hint">영상의 질감, 색감, 분위기를 고릅니다.</p>
+    <div class="grid" id="styleFields"></div>
+    <div class="res" id="res-style"></div>
+  </section>
+
+  <section class="panel" aria-labelledby="h-spec">
+    <h2 id="h-spec">기술 사양</h2>
+    <p class="hint">모든 컷에 같은 값으로 들어갑니다.</p>
+    <div class="grid two" id="specFields"></div>
+    <div class="res" id="res-spec"></div>
+  </section>
+
+  <section class="panel" aria-labelledby="h-pv">
+    <h2 id="h-pv">공통 고정 문구</h2>
+    <p class="hint">컷별 프롬프트 앞뒤에 그대로 복사해 쓰는 문구입니다.</p>
+    <dl class="pv" id="pv"></dl>
+    <label>한 줄 문구</label>
+    <div class="one" id="one"></div>
+    <div class="row" style="margin-top:12px">
+      <button class="primary" id="cp-one">한 줄로 복사</button>
+      <button id="cp-lab">항목별로 복사</button>
+      <span class="status" id="status" role="status"></span>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="h-cuts">
+    <h2 id="h-cuts">컷 구성</h2>
+    <p class="hint">컷 역할을 고르면 동작·샷·카메라가 기본값으로 채워집니다. 필요한 항목만 바꾸세요. 위의 공통 설정은 모든 컷에 자동으로 들어갑니다.</p>
+    <div class="grid two" id="modeFields" style="margin-bottom:8px"></div>
+    <p class="hint" id="modeNote"></p>
+    <p class="hint" id="toolNote"></p>
+    <div class="row">
+      <button class="primary" id="mk4">4컷 구성</button>
+      <button id="mk6">6컷 구성</button>
+      <button id="addcut">컷 추가</button>
+      <button id="clrcuts">컷 모두 지우기</button>
+    </div>
+  </section>
+
+  <div id="cuts"></div>
+
+  <section class="panel" aria-labelledby="h-all">
+    <h2 id="h-all">전체 컷 프롬프트</h2>
+    <p class="hint">번호가 붙은 목록으로 한꺼번에 복사해 영상 도구에 붙여 넣습니다.</p>
+    <div class="out" id="allcuts" style="margin-top:0"></div>
+    <p class="hint" id="lenSummary" style="margin-top:8px"></p>
+    <div class="tail">
+      <button class="primary" id="cp-allcuts">전체 컷 복사</button>
+      <span class="status" id="status-cuts" role="status"></span>
+    </div>
+    <h2 id="h-memo" style="margin-top:20px">편집 메모</h2>
+    <p class="hint">생성 도구에는 넣지 않고, 편집 단계에서 참고하는 메모입니다.</p>
+    <div class="out" id="memo" style="margin-top:0"></div>
+    <div class="tail"><button id="cp-memo">편집 메모 복사</button></div>
+  </section>
+
+  <section class="panel" aria-labelledby="h-json">
+    <h2 id="h-json">복사용 JSON</h2>
+    <p class="hint">선택한 도구의 요청 형태로 컷마다 묶어 보여줍니다. 필드명과 값 범위는 참고용이니 각 도구의 API 문서로 확인하세요.</p>
+    <div class="out" id="jsonOut" style="margin-top:0;white-space:pre;overflow-x:auto;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px"></div>
+    <div class="tail">
+      <button class="primary" id="cp-json">JSON 복사</button>
+      <span class="status" id="status-json" role="status"></span>
+    </div>
+  </section>
+  </div>
+</div>
+</div>
+
+<script>
+var JOBS=["제빵사","요리사","학생","직장인","의사","운동선수","농부","예술가","사진작가","선생님"];
+var COLORS=["하늘색","노란색","빨간색","검은색","흰색","초록색","베이지색","남색","주황색","분홍색","회색"];
+
+var SUBJ={
+ "인물":{fields:[
+  {k:"type",l:"인물 유형",o:["어린 소녀","어린 소년","10대 여성","10대 남성","20대 여성","20대 남성","30대 여성","30대 남성","40~50대 여성","40~50대 남성","노년 여성","노년 남성"]},
+  {k:"job",l:"직업·역할",o:JOBS},
+  {k:"hair",l:"헤어",o:["단발머리","긴 생머리","곱슬머리","포니테일","짧은 머리","땋은 머리","백발"]},
+  {k:"color",l:"의상 색",o:COLORS},
+  {k:"garment",l:"의상 종류",o:["우비","앞치마","정장","후드티","교복","한복","운동복","코트","작업복","원피스"]},
+  {k:"hold",l:"소지품",o:["우산","가방","카메라","책","커피잔","꽃다발","풍선","바구니"]}
+ ],build:function(v){
+  var p=[];
+  if(v.garment){p.push((v.color?v.color+" ":"")+v.garment+eul(v.garment)+" 입은");}
+  else if(v.color){p.push(v.color+" 옷을 입은");}
+  if(v.hold)p.push(v.hold+eul(v.hold)+" 든");
+  var noun=[];
+  if(v.hair)noun.push(v.hair);
+  if(v.type)noun.push(v.type);
+  if(v.job)noun.push(v.job);
+  if(p.length&&!v.type&&!v.job)noun.push("인물");
+  return p.concat(noun).join(" ");
+ }},
+ "동물":{fields:[
+  {k:"species",l:"종류",o:["강아지","고양이","새","말","토끼","사슴","여우","고래","펭귄","곰","다람쥐","오리"]},
+  {k:"age",l:"나이",o:["새끼","어린","다 자란","나이 든"]},
+  {k:"color",l:"털·깃털 색",o:["갈색","검은색","흰색","회색","황금빛","얼룩무늬","주황색 줄무늬"]},
+  {k:"feature",l:"질감·상태",o:["복슬복슬한","윤기 나는","비에 젖은","눈이 쌓인","먼지가 묻은"]},
+  {k:"wear",l:"착용",o:["빨간 목줄을 한","작은 방울 목걸이를 단","노란 스카프를 두른"]}
+ ],build:function(v){
+  var a=[];
+  if(v.wear)a.push(v.wear);
+  if(v.feature)a.push(v.feature);
+  if(v.color)a.push(v.color);
+  if(v.age)a.push(v.age);
+  if(v.species)a.push(v.species);
+  else if(a.length)a.push("동물");
+  return a.join(" ");
+ }},
+ "사물":{fields:[
+  {k:"type",l:"종류",o:["자동차","자전거","우산","커피잔","책","시계","카메라","꽃병","가방","의자","등불","로봇","스마트폰","열기구"]},
+  {k:"material",l:"재질",o:["나무","금속","유리","도자기","가죽","플라스틱","천","종이"]},
+  {k:"color",l:"색",o:COLORS},
+  {k:"state",l:"상태",o:["새것 같은","낡은","반짝이는","비에 젖은","먼지가 쌓인","녹슨"]},
+  {k:"size",l:"크기",o:["작은","중간 크기의","커다란"]}
+ ],build:function(v){
+  var a=[];
+  if(v.size)a.push(v.size);
+  if(v.state)a.push(v.state);
+  if(v.color)a.push(v.color);
+  if(v.material)a.push(v.material);
+  if(v.type)a.push(v.type);
+  else if(a.length)a.push("물건");
+  return a.join(" ");
+ }},
+ "음식":{fields:[
+  {k:"type",l:"종류",o:["빵","케이크","커피","라면","김밥","과일 접시","샐러드","스테이크","아이스크림","국밥","떡볶이"]},
+  {k:"state",l:"상태",o:["갓 구운","김이 오르는","갓 내린","차갑게 식힌","윤기 나는","따끈한"]},
+  {k:"dish",l:"담긴 곳",o:["나무 트레이 위의","흰 접시 위의","유리잔에 담긴","도자기 그릇에 담긴","종이컵에 담긴"]}
+ ],build:function(v){
+  var a=[];
+  if(v.dish)a.push(v.dish);
+  if(v.state)a.push(v.state);
+  if(v.type)a.push(v.type);
+  else if(a.length)a.push("음식");
+  return a.join(" ");
+ }},
+ "식물":{fields:[
+  {k:"type",l:"종류",o:["벚꽃나무","해바라기","장미","들꽃","대나무 숲","단풍나무","선인장","소나무","코스모스"]},
+  {k:"state",l:"상태",o:["활짝 핀","이슬 맺힌","바람에 흔들리는","낙엽이 진","새싹이 돋은","비에 젖은"]}
+ ],build:function(v){
+  var a=[];
+  if(v.state)a.push(v.state);
+  if(v.type)a.push(v.type);
+  return a.join(" ");
+ }},
+ "풍경만 (주제 없음)":{fields:[],build:function(){return "";}}
+};
+
+var PLACES={
+ "도시":["도심 거리","좁은 골목","보행자 거리","시장","지하철역","옥상","다리 위","공원","한강변","버스 정류장"],
+ "자연":["해변","숲길","산 정상","호숫가","들판","논밭","계곡","사막","설원","폭포 앞"],
+ "실내":["카페","주방","교실","도서관","거실","작업실","빵집","서점","체육관","박물관"],
+ "탈것·특수":["기차 안","버스 안","비행기 창가","배 위","열기구 위","놀이공원"]
+};
+var REGIONS=["서울","부산","제주","경주","도쿄","오사카","뉴욕","파리","런던","베니스"];
+var WEATHER=["맑은","흐린","비 오는","눈 내리는","안개 낀","바람 부는"];
+var SEASON=["봄","여름","가을","겨울"];
+var PROPS=["젖은 바닥","네온 간판","가로등","낙엽","화분","벤치","전깃줄","꽃잎","물웅덩이"];
+var TIMES=["새벽녘","이른 아침","한낮","늦은 오후","해질녘","푸른 저녁(블루아워)","한밤중"];
+var LIGHTQ=["황금빛 햇살","역광","부드러운 확산광","네온 불빛","가로등 불빛","따뜻한 주황색 가게 불빛","창가로 들어오는 빛","푸른 달빛","흐린 날의 균일한 빛"];
+var LOOK=["35mm 필름 느낌","다큐멘터리 실사","시네마틱 실사","손그림 애니메이션 느낌","3D 애니메이션 느낌","수채화 일러스트 느낌","스톱모션 클레이 느낌","흑백 영화 느낌","빈티지 캠코더 느낌"];
+var TONE=["따뜻한 색감","차가운 청록 톤","파스텔 톤","선명한 고채도","저채도 톤다운","흑백"];
+var MOOD=["차분하고 시네마틱한 분위기","활기찬 분위기","몽환적인 분위기","긴장감 있는 분위기","평화로운 분위기","유쾌한 분위기","포근한 분위기"];
+var RATIO=["16:9","9:16","1:1","4:3","21:9"];
+var SECS=["5","6","8","10"];
+
+var STORE="vpb_common_v2";
+var S;
+
+function fresh(){
+  return {cat:"인물",subj:{},subjExtra:"",place:{},bgExtra:"",light:{},style:{},spec:{ratio:"16:9",secs:"8"}};
+}
+
+function hasBatchim(w){
+  var c=w.charCodeAt(w.length-1);
+  if(c<0xAC00||c>0xD7A3)return false;
+  return (c-0xAC00)%28!==0;
+}
+function eul(w){return hasBatchim(w)?"을":"를";}
+
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+
+function sel(sec,k,label,opts,val,noEmpty){
+  var h='<div><label for="'+sec+'-'+k+'">'+esc(label)+'</label><select id="'+sec+'-'+k+'" data-sec="'+sec+'" data-k="'+k+'">';
+  if(!noEmpty)h+='<option value="">선택 안 함</option>';
+  opts.forEach(function(o){h+='<option value="'+esc(o)+'"'+(o===val?' selected':'')+'>'+esc(o)+'</option>';});
+  return h+'</select></div>';
+}
+
+function renderSubj(){
+  var c=SUBJ[S.cat];
+  var h="";
+  c.fields.forEach(function(f){h+=sel("subj",f.k,f.l,f.o,S.subj[f.k]);});
+  document.getElementById("subjFields").innerHTML=h;
+}
+function renderPlace(){
+  var cat=S.place.cat||"";
+  var h=sel("place","region","지역",REGIONS,S.place.region);
+  h+=sel("place","cat","장소 대분류",Object.keys(PLACES),cat);
+  h+=sel("place","place","세부 장소",cat?PLACES[cat]:[],S.place.place);
+  h+=sel("place","weather","날씨",WEATHER,S.place.weather);
+  h+=sel("place","season","계절",SEASON,S.place.season);
+  h+=sel("place","prop","소품·요소",PROPS,S.place.prop);
+  document.getElementById("placeFields").innerHTML=h;
+  var ps=document.getElementById("place-place");
+  if(ps&&!cat){ps.disabled=true;}
+}
+function renderStatic(){
+  var cs=document.getElementById("subj-cat");
+  cs.innerHTML=Object.keys(SUBJ).map(function(k){return '<option'+(k===S.cat?' selected':'')+'>'+esc(k)+'</option>';}).join("");
+  document.getElementById("lightFields").innerHTML=sel("light","time","시간대",TIMES,S.light.time)+sel("light","quality","빛의 질감",LIGHTQ,S.light.quality);
+  document.getElementById("styleFields").innerHTML=sel("style","look","질감·장르",LOOK,S.style.look)+sel("style","tone","색감",TONE,S.style.tone)+sel("style","mood","분위기",MOOD,S.style.mood);
+  document.getElementById("specFields").innerHTML=sel("spec","ratio","화면비",RATIO,S.spec.ratio,true)+sel("spec","secs","길이(초)",SECS,S.spec.secs,true);
+  document.getElementById("subjExtra").value=S.subjExtra;
+  document.getElementById("bgExtra").value=S.bgExtra;
+}
+
+function clean(s){return (s||"").trim().replace(/[.,]+$/,"");}
+
+function pSubj(){
+  var base=SUBJ[S.cat].build(S.subj);
+  var ex=clean(S.subjExtra);
+  return [ex,base].filter(Boolean).join(" ");
+}
+function pBg(ov){
+  var v=S.place,a=[];
+  if(v.region)a.push(v.region+"의");
+  if(v.weather)a.push(v.weather);
+  if(v.season)a.push(v.season);
+  if(ov||v.place)a.push(ov||v.place);
+  var s=a.join(" ");
+  var tail=[v.prop,clean(S.bgExtra)].filter(Boolean);
+  return [s].concat(tail).filter(Boolean).join(", ");
+}
+function pLight(){return [S.light.time,S.light.quality].filter(Boolean).join(", ");}
+function pStyle(){return [S.style.look,S.style.tone,S.style.mood].filter(Boolean).join(", ");}
+function pSpec(){return S.spec.ratio+", "+S.spec.secs+"초";}
+
+function setRes(id,label,text){
+  var e=document.getElementById(id);
+  e.innerHTML=text?'<b>'+esc(label)+'</b>'+esc(text):'<span class="empty">'+esc(label)+' 아직 선택하지 않았습니다.</span>';
+}
+
+function oneLine(){
+  var head=[pSubj(),pBg(),pLight()].filter(Boolean).join(", ");
+  var parts=[];
+  if(head)parts.push(head+".");
+  var st=[pStyle(),pSpec()].filter(Boolean).join(", ");
+  parts.push(st+".");
+  return parts.join(" ");
+}
+function labeled(){
+  var rows=[["주제",pSubj()],["배경",pBg()],["조명",pLight()],["스타일",pStyle()],["사양",pSpec()]];
+  return rows;
+}
+
+function update(){
+  setRes("res-subj","주제:",pSubj());
+  setRes("res-bg","배경:",pBg());
+  setRes("res-light","조명:",pLight());
+  setRes("res-style","스타일:",pStyle());
+  setRes("res-spec","사양:",pSpec());
+  var pv=document.getElementById("pv");
+  pv.innerHTML=labeled().map(function(r){return '<dt>'+r[0]+'</dt><dd>'+(r[1]?esc(r[1]):'<span class="empty">-</span>')+'</dd>';}).join("");
+  document.getElementById("one").textContent=oneLine();
+  if(typeof updateCuts==="function")updateCuts();
+  if(typeof updateWs==="function")updateWs();
+  try{localStorage.setItem(STORE,JSON.stringify(S));}catch(e){}
+}
+
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+function maybe(a,p){return Math.random()<p?pick(a):"";}
+
+function randomFill(){
+  var cats=Object.keys(SUBJ);
+  S.cat=pick(cats.slice(0,cats.length-1));
+  S.subj={};
+  SUBJ[S.cat].fields.forEach(function(f){S.subj[f.k]=maybe(f.o,0.75);});
+  var pc=pick(Object.keys(PLACES));
+  S.place={cat:pc,place:pick(PLACES[pc]),region:maybe(REGIONS,0.6),weather:maybe(WEATHER,0.5),season:maybe(SEASON,0.5),prop:maybe(PROPS,0.6)};
+  S.light={time:pick(TIMES),quality:pick(LIGHTQ)};
+  S.style={look:pick(LOOK),tone:pick(TONE),mood:pick(MOOD)};
+  S.subjExtra="";S.bgExtra="";
+  rebuild();
+}
+function example(){
+  S=fresh();
+  S.cat="인물";
+  S.subj={type:"20대 여성",job:"제빵사",hair:"단발머리",color:"하늘색",garment:"앞치마",hold:""};
+  S.place={region:"서울",cat:"도시",place:"좁은 골목",weather:"",season:"",prop:"젖은 바닥"};
+  S.light={time:"새벽녘",quality:"따뜻한 주황색 가게 불빛"};
+  S.style={look:"35mm 필름 느낌",tone:"따뜻한 색감",mood:"차분하고 시네마틱한 분위기"};
+  rebuild();
+}
+function rebuild(){renderStatic();renderSubj();renderPlace();update();}
+
+function copy(text,stEl){
+  var st=stEl||document.getElementById("status");
+  function done(ok){
+    st.textContent=ok?"복사했습니다":"복사하지 못했습니다. 문구를 직접 선택해 복사하세요.";
+    setTimeout(function(){st.textContent="";},2200);
+  }
+  function fb(){
+    try{
+      var t=document.createElement("textarea");
+      t.value=text;t.style.position="absolute";t.style.left="-9999px";
+      document.body.appendChild(t);t.select();
+      var ok=document.execCommand("copy");
+      document.body.removeChild(t);done(ok);
+    }catch(e){done(false);}
+  }
+  try{
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){done(true);},fb);
+      return;
+    }
+  }catch(e){}
+  fb();
+}
+
+var SHOTS=["익스트림 클로즈업","클로즈업","미디엄 샷","풀 샷","와이드 샷"];
+var ANGLES=["아이레벨","로우앵글","하이앵글","오버 더 숄더"];
+var MOVES=["고정","천천히 앞으로 돌리 인","천천히 뒤로 돌리 아웃","뒤에서 천천히 따라가는 트래킹","천천히 좌우 팬","천천히 위로 틸트","핸드헬드","드론 항공샷"];
+var DEPTHS=["얕은 심도","깊은 심도","배경이 부드럽게 흐려진 보케"];
+var SPEEDS=["천천히","느긋하게","빠르게"];
+var BGMOVES=["구름이 천천히 흘러간다","보행자들이 천천히 걸어간다","나뭇잎이 바람에 흔들린다","비가 내린다","눈이 천천히 내린다","물결이 잔잔하게 일렁인다","연기가 피어오른다","불빛이 은은하게 깜빡인다"];
+var TRANS=["하드 컷","크로스 디졸브","페이드 아웃 → 페이드 인","매치 컷","와이프","점프 컷"];
+var TRANS_SAMPLES={
+ "하드 컷":[["장소 전환 컷","다른 장소로 바로 넘어갑니다."],["시간 점프 컷","같은 장소에서 시간이 흐른 뒤로 바로 넘어갑니다."],["인서트 컷","인물에서 사물·디테일 클로즈업으로 넘어갑니다."],["리액션 컷","행동을 본 인물의 표정으로 넘어갑니다."],["동작 이어 컷","같은 동작이 이어지는 다른 각도로 넘어갑니다."]],
+ "크로스 디졸브":[["시간 경과","화면이 겹치며 시간이 흐른 것을 보여 줍니다."],["회상·몽환","부드럽게 겹치며 회상이나 꿈 같은 느낌을 줍니다."],["장소 이동","겹치며 천천히 다른 장소로 넘어갑니다."]],
+ "페이드 아웃 → 페이드 인":[["장면 마무리","어두워졌다 밝아지며 한 단락을 끝맺습니다."],["하루 지남","암전 뒤 다음 날 장면으로 시작합니다."]],
+ "매치 컷":[["모양 매치","비슷한 모양의 물체로 이어집니다."],["동작 매치","같은 움직임이 다른 장면으로 이어집니다."],["색 매치","같은 색감의 장면으로 이어집니다."]],
+ "와이프":[["좌→우 밀기","화면이 왼쪽에서 오른쪽으로 밀려 바뀝니다."],["상→하 밀기","화면이 위에서 아래로 밀려 바뀝니다."],["원형 열림","원이 열리듯 다음 장면이 나타납니다."]],
+ "점프 컷":[["같은 구도 시간 점프","같은 구도에서 시간만 건너뜁니다."],["속도감 컷","짧게 끊어 빠른 리듬을 만듭니다."]]
+};
+function transSample(c){
+  if(!c.trans||!c.trans2||!own(TRANS_SAMPLES,c.trans))return null;
+  var l=TRANS_SAMPLES[c.trans];
+  for(var i=0;i<l.length;i++){if(l[i][0]===c.trans2)return l[i];}
+  return null;
+}
+var LINKS=["같은 장소·주제 유지","앞 컷의 마지막 장면에서 이어서"];
+var KEEPS=["나머지는 그대로 유지","건물과 배경은 그대로 유지","인물의 외모와 의상은 그대로 유지","색감과 조명은 그대로 유지"];
+var SUBJ_GEN={"인물":"인물","동물":"동물","사물":"사물","음식":"음식","식물":"식물"};
+var ABSTRACT_W=["감동적인","쓸쓸한","아름다운","멋진","웅장한","감성적인","분위기 있는","환상적인"];
+
+var ENV={who:"env",speed:true,items:["불빛이 켜진다","김이 피어오른다","비가 내린다","눈이 내린다","바람에 흔들린다","해가 떠오른다","구름이 흘러간다","파도가 밀려온다","낙엽이 흩날린다","물결이 일렁인다"]};
+var ACT_SETS={
+ "인물":{
+  "이동":{who:"subject",speed:true,items:["걸어간다","걸어 나온다","걸어 들어온다","뛰어간다","달려온다","앞으로 다가온다","멀어져 간다","자전거를 타고 지나간다"]},
+  "자세·정지":{who:"subject",speed:false,items:["서 있다","앉아 있다","난간에 기대어 있다","창가에 서 있다","벤치에 앉아 있다"]},
+  "시선·표정":{who:"subject",speed:true,items:["정면을 바라본다","창밖을 바라본다","뒤를 돌아본다","미소 짓는다","고개를 든다","하늘을 올려다본다"]},
+  "사물 다루기":{who:"subject",speed:true,hand:["책장을 넘긴다","커피를 한 모금 마신다","우산을 편다"],items:["문을 연다","창문을 연다","우산을 편다","커피를 한 모금 마신다","책장을 넘긴다"]},
+  "환경 변화":ENV},
+ "동물":{
+  "이동":{who:"subject",speed:true,items:["걸어간다","걸어 나온다","뛰어간다","달려온다","날아오른다","헤엄친다","앞으로 다가온다","멀어져 간다"]},
+  "자세·정지":{who:"subject",speed:false,items:["앉아 있다","엎드려 있다","웅크리고 있다","서 있다","나뭇가지에 앉아 있다"]},
+  "행동":{who:"subject",speed:true,items:["귀를 쫑긋 세운다","고개를 갸웃한다","하늘을 올려다본다","정면을 바라본다","뒤를 돌아본다","꼬리를 흔든다","하품한다","기지개를 켠다"]},
+  "환경 변화":ENV},
+ "사물":{
+  "움직임":{who:"subject",speed:true,items:["회전한다","굴러간다","굴러온다","흔들린다","떠오른다","가라앉는다","앞으로 다가온다","멀어져 간다"]},
+  "상태 변화":{who:"subject",speed:true,topic:true,items:["불빛이 깜빡인다","빛을 반사한다","김이 피어오른다","물방울이 맺힌다","먼지가 피어오른다"]},
+  "자세·정지":{who:"subject",speed:false,items:["놓여 있다","세워져 있다","걸려 있다"]},
+  "환경 변화":ENV},
+ "음식":{
+  "상태 변화":{who:"subject",speed:true,topic:true,items:["김이 피어오른다","윤기가 반짝인다","육즙이 맺힌다","녹아내린다","거품이 올라온다","물방울이 맺힌다"]},
+  "자세·정지":{who:"subject",speed:false,items:["놓여 있다"]},
+  "환경 변화":ENV},
+ "식물":{
+  "상태 변화":{who:"subject",speed:true,topic:true,items:["꽃이 피어난다","꽃잎이 흩날린다","이슬이 맺힌다","잎이 떨어진다","바람에 흔들린다","새싹이 돋아난다"]},
+  "자세·정지":{who:"subject",speed:false,items:["서 있다"]},
+  "환경 변화":ENV},
+ "풍경만 (주제 없음)":{"환경 변화":ENV}
+};
+function actSet(){return ACT_SETS[S.cat]||ACT_SETS["인물"];}
+
+var ROLES={
+ "도입":{kind:"env",shot:"와이드 샷",move:"고정",angle:"",depth:"",speed:"",light:""},
+ "등장":{kind:"appear",shot:"미디엄 샷",move:"천천히 앞으로 돌리 인",angle:"",depth:"",speed:"천천히",light:""},
+ "전개":{kind:"develop",shot:"풀 샷",move:"뒤에서 천천히 따라가는 트래킹",angle:"",depth:"",speed:"",light:""},
+ "디테일":{kind:"detail",shot:"클로즈업",move:"천천히 앞으로 돌리 인",angle:"",depth:"얕은 심도",speed:"",light:""},
+ "클라이맥스":{kind:"climax",shot:"미디엄 샷",move:"천천히 위로 틸트",angle:"로우앵글",depth:"",speed:"천천히",light:""},
+ "마무리":{kind:"end",shot:"미디엄 샷",move:"고정",angle:"",depth:"",speed:"",light:"역광"}
+};
+var DEF={
+ env:{all:["환경 변화","불빛이 켜진다"]},
+ detail:{all:["환경 변화","김이 피어오른다"],"식물":["환경 변화","바람에 흔들린다"]},
+ appear:{"인물":["이동","걸어 나온다"],"동물":["이동","걸어 나온다"],"사물":["움직임","굴러온다"],"음식":["상태 변화","김이 피어오른다"],"식물":["상태 변화","꽃이 피어난다"],"풍경만 (주제 없음)":["환경 변화","해가 떠오른다"]},
+ develop:{"인물":["이동","걸어간다"],"동물":["이동","뛰어간다"],"사물":["움직임","회전한다"],"음식":["상태 변화","김이 피어오른다"],"식물":["상태 변화","바람에 흔들린다"],"풍경만 (주제 없음)":["환경 변화","구름이 흘러간다"]},
+ climax:{"인물":["시선·표정","하늘을 올려다본다"],"동물":["행동","귀를 쫑긋 세운다"],"사물":["움직임","떠오른다"],"음식":["상태 변화","육즙이 맺힌다"],"식물":["상태 변화","꽃잎이 흩날린다"],"풍경만 (주제 없음)":["환경 변화","해가 떠오른다"]},
+ end:{"인물":["시선·표정","미소 짓는다"],"동물":["자세·정지","앉아 있다"],"사물":["상태 변화","빛을 반사한다"],"음식":["상태 변화","김이 피어오른다"],"식물":["상태 변화","이슬이 맺힌다"],"풍경만 (주제 없음)":["환경 변화","구름이 흘러간다"]}
+};
+function roleAct(kind){var t=DEF[kind];return t[S.cat]||t.all||["환경 변화","불빛이 켜진다"];}
+
+var STORE_C="vpb_cuts_v2",STORE_M="vpb_mode_v1";
+var C=null,builtFor=null;
+var DEFTOOL="범용 (500자 기준)";
+var CUSTOMS=["300","500","800","1000","1500","2000","2500","4000"];
+var TOOLS={
+ "범용 (500자 기준)":{unit:"chars",limit:500,json:"generic",note:"도구 제한을 모를 때 쓰는 안전 기준입니다."},
+ "Runway":{unit:"chars",limit:1000,json:"runway",ratios:["16:9","9:16","1:1","4:3","21:9"],secs:["5","10"],note:"Runway 도움말(Gen-4 계열)의 1,000자 기준입니다. 최신 모델은 다를 수 있습니다."},
+ "Kling":{unit:"chars",limit:2500,json:"kling",ratios:["16:9","9:16","1:1"],secs:["5","10"],note:"여러 API 문서에 나온 2,500자 기준입니다. 앱 화면의 입력 한도는 다를 수 있습니다."},
+ "Google Veo":{unit:"tokens",limit:1024,json:"veo",note:"모델 표 기준 약 1,024 토큰입니다(제3자 문서가 인용한 값). 한국어는 글자 수를 토큰으로 보수적으로 추정합니다."},
+ "OpenAI Sora":{unit:"chars",limit:1000,json:"sora",note:"공식 수치를 확인하지 못했습니다. 제3자 문서의 1,000자 미만 권고를 기준으로 하며, 문서마다 값이 다릅니다."},
+ "직접 설정":{unit:"chars",limit:null,json:"generic",note:"아래에서 한도를 직접 고르세요."}
+};
+var RUNWAY_PX={"16:9":"1280:720","9:16":"720:1280","1:1":"960:960","4:3":"1104:832","21:9":"1584:672"};
+var SORA_SIZE={"16:9":"1280x720","9:16":"720x1280"};
+var M={mode:"t2v",keep:KEEPS[0],tool:DEFTOOL,custom:"1000",compress:true};
+
+function ga(w){return hasBatchim(w)?"이":"가";}
+function eun(w){return hasBatchim(w)?"은":"는";}
+
+function blankCut(){
+  return {role:"직접 구성",cat:"환경 변화",act:"",speed:"",shot:"미디엄 샷",angle:"",move:"고정",place:"",time:"",quality:"",depth:"",bgmove:"",trans:"",trans2:"",link:"",useSubj:true,extra:""};
+}
+function applyRole(c,r){
+  var p=ROLES[r],pr=roleAct(p.kind),set=actSet();
+  c.role=r;c.cat=pr[0];c.act=pr[1];
+  c.useSubj=set[c.cat].who==="subject";
+  c.speed=set[c.cat].speed?p.speed:"";
+  c.shot=p.shot;c.angle=p.angle;c.move=p.move;c.depth=p.depth;
+  c.quality=p.light;c.place="";c.time="";
+}
+function syncCuts(){
+  var set=actSet(),ch=false;
+  C.forEach(function(c){
+    var cat=Object.prototype.hasOwnProperty.call(set,c.cat)?set[c.cat]:null;
+    if(!cat||(c.act&&cat.items.indexOf(c.act)<0)){
+      ch=true;
+      if(own(ROLES,c.role)){var pr=roleAct(ROLES[c.role].kind);c.cat=pr[0];c.act=pr[1];}
+      else{c.cat=Object.keys(set)[0];c.act="";}
+      cat=set[c.cat];
+      c.useSubj=cat.who==="subject";
+      if(!cat.speed)c.speed="";
+    }
+  });
+  return ch;
+}
+
+function cutAction(c){
+  var cat=actSet()[c.cat];
+  if(!cat||!c.act)return null;
+  var sp=(cat.speed&&c.speed)?c.speed+" ":"";
+  return {text:sp+c.act,who:cat.who,topic:!!cat.topic};
+}
+
+function pStyleLv(lv){
+  if(lv>=4)return "";
+  var a=[S.style.look];
+  if(lv<2)a.push(S.style.tone);
+  if(lv<1)a.push(S.style.mood);
+  return a.filter(Boolean).join(", ");
+}
+function composeT2V(c,i,lv){
+  lv=lv||0;
+  var a=cutAction(c),extra=clean(c.extra),subj=pSubj(),parts=[];
+  if(lv<3&&i>0&&c.link===LINKS[1])parts.push("앞 컷의 마지막 장면에서 이어서 시작한다.");
+  if(a){
+    var useS=a.who==="subject"&&c.useSubj&&subj;
+    var body=[extra,a.text].filter(Boolean).join(" ");
+    parts.push((useS?subj+(a.topic?eun(subj):ga(subj))+" ":"")+body+".");
+  }else if(extra){parts.push(extra+".");}
+  parts.push(c.shot+(c.angle?", "+c.angle:"")+", 카메라는 "+c.move+".");
+  var li=[c.time||S.light.time,c.quality||S.light.quality].filter(Boolean).join(", ");
+  var bg=lv>=3?(c.place||S.place.place||""):pBg(c.place);
+  var scene=[bg,li,c.depth].filter(Boolean).join(", ");
+  if(scene)parts.push(scene+".");
+  if(c.bgmove&&lv<2)parts.push(c.bgmove+".");
+  if(lv<3&&i>0&&c.link===LINKS[0])parts.push("앞 컷과 같은 장소·"+(SUBJ_GEN[S.cat]||"장면")+"·조명을 유지한다.");
+  parts.push([pStyleLv(lv),pSpec()].filter(Boolean).join(", ")+".");
+  return parts.join(" ");
+}
+function composeI2V(c,i){
+  var a=cutAction(c),extra=clean(c.extra),parts=[];
+  if(a){
+    var g=SUBJ_GEN[S.cat];
+    var useS=a.who==="subject"&&c.useSubj&&g;
+    var body=[extra,a.text].filter(Boolean).join(" ");
+    parts.push((useS?g+(a.topic?eun(g):ga(g))+" ":"")+body+".");
+  }else if(extra){parts.push(extra+".");}
+  parts.push("카메라는 "+c.move+".");
+  if(c.bgmove)parts.push(c.bgmove+".");
+  parts.push(M.keep+".");
+  parts.push(S.spec.secs+"초.");
+  return parts.join(" ");
+}
+function composeCut(c,i,lv){return M.mode==="i2v"?composeI2V(c,i):composeT2V(c,i,lv);}
+
+function measure(text){
+  var t=TOOLS[M.tool]||TOOLS[DEFTOOL];
+  var len=Array.from(text).length;
+  var limit=t.limit||parseInt(M.custom,10)||1000;
+  if(t.unit==="tokens"){
+    var han=(text.match(/[\uAC00-\uD7A3\u3131-\u318E\u4E00-\u9FFF]/g)||[]).length;
+    return {n:Math.ceil(han+(len-han)/3),limit:limit,unit:"tokens"};
+  }
+  return {n:len,limit:limit,unit:"chars"};
+}
+function fitCut(c,i){
+  var lv=0,text=composeCut(c,i,0),m=measure(text);
+  if(M.compress&&M.mode==="t2v"&&m.n>m.limit){
+    for(lv=1;lv<=4;lv++){text=composeCut(c,i,lv);m=measure(text);if(m.n<=m.limit)break;}
+    if(lv>4)lv=4;
+  }
+  return {text:text,n:m.n,limit:m.limit,unit:m.unit,lv:lv,over:m.n>m.limit};
+}
+function cntText(f){
+  return f.n+" / "+f.limit+(f.unit==="tokens"?" 토큰(추정)":"자")+(f.lv?" · 자동 압축 "+f.lv+"단계 적용":"")+(f.over?" · 한도 초과":" · 통과");
+}
+function toolNoteText(){
+  var t=TOOLS[M.tool]||TOOLS[DEFTOOL],L=[t.note];
+  if(t.ratios&&t.ratios.indexOf(S.spec.ratio)<0)L.push("화면비 "+S.spec.ratio+"는 확인된 지원 목록("+t.ratios.join(", ")+")에 없습니다.");
+  if(t.secs&&t.secs.indexOf(S.spec.secs)<0)L.push("길이 "+S.spec.secs+"초는 확인된 지원 값("+t.secs.join(", ")+"초)에 없습니다.");
+  if(M.tool==="Runway"&&M.mode==="t2v")L.push("Runway Gen-4 계열은 기준 이미지가 필요하므로 이미지→비디오 모드를 권장합니다.");
+  return L.join(" ");
+}
+function buildReq(text){
+  var t=TOOLS[M.tool]||TOOLS[DEFTOOL],r=S.spec.ratio,sec=parseInt(S.spec.secs,10);
+  switch(t.json){
+    case "runway":return {model:"gen4_turbo",promptImage:"<기준 이미지 URL>",promptText:text,ratio:RUNWAY_PX[r]||r,duration:sec};
+    case "kling":return {prompt:text,aspect_ratio:r,duration:sec,mode:"std"};
+    case "veo":return {model:"veo-3.1-generate-preview",prompt:text,config:{aspectRatio:r,durationSeconds:sec}};
+    case "sora":return {model:"sora-2",prompt:text,size:SORA_SIZE[r]||"1280x720",seconds:String(sec)};
+    default:return {prompt:text,aspect_ratio:r,duration_seconds:sec};
+  }
+}
+function jsonText(){
+  var arr=C.map(function(c,i){return {cut:i+1,request:buildReq(fitCut(c,i).text)};});
+  return JSON.stringify({tool:M.tool,mode:M.mode,cuts:arr},null,2);
+}
+
+function lintCut(c,i){
+  var w=[],cat=actSet()[c.cat];
+  if(!c.act)w.push("세부 동작을 선택하세요.");
+  if(c.act&&cat&&cat.who==="subject"&&!(c.useSubj&&pSubj()))w.push("주체가 없는 문장입니다. 공통 설정에서 주제를 고르고 ‘공통 주제 포함’을 켜세요.");
+  if(c.act&&cat&&cat.hand&&cat.hand.indexOf(c.act)>-1){
+    w.push(c.shot.indexOf("클로즈업")>-1&&M.mode==="t2v"?"손동작을 클로즈업하면 왜곡되기 쉽습니다. 미디엄 샷이나 풀 샷을 권장합니다.":"정교한 손동작은 실패율이 높습니다. 결과를 여러 번 뽑아 비교하세요.");
+  }
+  if(i===0&&c.link)w.push("첫 컷에는 이어받을 앞 컷이 없어 이어받기 설정이 적용되지 않습니다.");
+  var ex=clean(c.extra);
+  if(ex){
+    var found=ABSTRACT_W.filter(function(x){return ex.indexOf(x)>-1;});
+    if(found.length)w.push("추가 문구에 추상어가 있습니다("+found.join(", ")+"). 눈에 보이는 요소로 바꿔 보세요.");
+    if(/없이|없음|않는|하지 않/.test(ex))w.push("추가 문구에 부정 표현이 있습니다. 긍정문으로 바꿔 보세요.");
+    if(/하고 |하며|한 뒤|그리고|면서/.test(ex))w.push("추가 문구에 동작이 둘 이상일 수 있습니다. 한 컷에는 동작 하나만 쓰세요.");
+    if(/간판|글자|자막|손가락|군중/.test(ex))w.push("글자·손가락·군중은 왜곡되기 쉽습니다. 멀리서 찍는 구도를 고려하세요.");
+  }
+  return w;
+}
+
+function selC(i,k,label,opts,val,emptyLabel,dis){
+  var h='<div><label for="c'+i+'-'+k+'">'+esc(label)+'</label><select id="c'+i+'-'+k+'" data-cut="'+i+'" data-k="'+k+'"'+(dis?' disabled':'')+'>';
+  if(emptyLabel)h+='<option value="">'+esc(emptyLabel)+'</option>';
+  opts.forEach(function(o){h+='<option value="'+esc(o)+'"'+(o===val?' selected':'')+'>'+esc(o)+'</option>';});
+  return h+'</select></div>';
+}
+function placeSelect(i,c){
+  var h='<div><label for="c'+i+'-place">이 컷의 장소</label><select id="c'+i+'-place" data-cut="'+i+'" data-k="place"><option value="">공통과 동일</option>';
+  Object.keys(PLACES).forEach(function(g){
+    h+='<optgroup label="'+esc(g)+'">'+PLACES[g].map(function(p){return '<option value="'+esc(p)+'"'+(p===c.place?' selected':'')+'>'+esc(p)+'</option>';}).join("")+'</optgroup>';
+  });
+  return h+'</select></div>';
+}
+
+function renderMode(){
+  function opts(list,val){return list.map(function(o){return '<option value="'+esc(o)+'"'+(o===val?' selected':'')+'>'+esc(o)+'</option>';}).join("");}
+  var h='<div><label for="m-mode">출력 모드</label><select id="m-mode" data-mode="mode">'+
+    '<option value="t2v"'+(M.mode==="t2v"?' selected':'')+'>텍스트→비디오 (전체 묘사)</option>'+
+    '<option value="i2v"'+(M.mode==="i2v"?' selected':'')+'>이미지→비디오 (움직임만)</option></select></div>';
+  h+='<div><label for="m-keep">유지 지시 (이미지→비디오)</label><select id="m-keep" data-mode="keep"'+(M.mode==="i2v"?'':' disabled')+'>'+opts(KEEPS,M.keep)+'</select></div>';
+  h+='<div><label for="m-tool">대상 도구 (글자 수 점검, JSON 형식)</label><select id="m-tool" data-mode="tool">'+opts(Object.keys(TOOLS),M.tool)+'</select></div>';
+  h+='<div><label for="m-custom">한도 직접 설정 (자)</label><select id="m-custom" data-mode="custom"'+(M.tool==="직접 설정"?'':' disabled')+'>'+opts(CUSTOMS,M.custom)+'</select></div>';
+  h+='<div class="full"><label class="chk" style="padding-top:0"><input type="checkbox" data-mode="compress"'+(M.compress?' checked':'')+'> 한도를 넘으면 스타일·배경 요소를 단계적으로 줄여 맞추기</label></div>';
+  document.getElementById("modeFields").innerHTML=h;
+  document.getElementById("modeNote").textContent=M.mode==="i2v"
+    ?"기준 이미지가 외형, 장소, 스타일을 정하므로 문구에는 움직임만 담깁니다. 샷 크기, 앵글, 장소, 시간대, 스타일은 쓰이지 않습니다."
+    :"공통 설정과 컷 설정을 모두 문장에 담습니다.";
+}
+function saveMode(){try{localStorage.setItem(STORE_M,JSON.stringify(M));}catch(e){}}
+
+function buildCuts(){
+  var host=document.getElementById("cuts");
+  if(!host)return;
+  builtFor=S.cat;
+  if(!C.length){
+    host.innerHTML='<div class="panel"><p class="hint" style="margin:0">컷이 없습니다. 위의 「4컷 구성」 또는 「컷 추가」로 시작하세요.</p></div>';
+    return;
+  }
+  var roles=Object.keys(ROLES).concat(["직접 구성"]),set=actSet();
+  host.innerHTML=C.map(function(c,i){
+    var cat=set[c.cat],n=i+1,first=(i===0);
+    var h='<section class="cutcard" aria-label="컷 '+n+'">';
+    h+='<div class="cuthead"><strong>컷 '+n+'</strong><div class="row">'+
+      '<button data-cutact="up" data-i="'+i+'" aria-label="컷 '+n+' 위로"'+(i===0?' disabled':'')+'>위로</button>'+
+      '<button data-cutact="down" data-i="'+i+'" aria-label="컷 '+n+' 아래로"'+(i===C.length-1?' disabled':'')+'>아래로</button>'+
+      '<button data-cutact="del" data-i="'+i+'" aria-label="컷 '+n+' 삭제">삭제</button></div></div>';
+    h+='<div class="grid">';
+    h+=selC(i,"role","컷 역할",roles,c.role,"");
+    h+=selC(i,"cat","동작 대범주",Object.keys(set),c.cat,"");
+    h+=selC(i,"act","세부 동작",cat.items,c.act,"선택하세요");
+    h+=selC(i,"speed","속도",SPEEDS,c.speed,"지정 안 함",!cat.speed);
+    h+=selC(i,"shot","샷 크기",SHOTS,c.shot,"");
+    h+=selC(i,"angle","앵글",ANGLES,c.angle,"지정 안 함");
+    h+=selC(i,"move","카메라 움직임",MOVES,c.move,"");
+    h+=selC(i,"depth","심도",DEPTHS,c.depth,"지정 안 함");
+    h+=selC(i,"bgmove","배경 움직임",BGMOVES,c.bgmove,"지정 안 함");
+    h+=placeSelect(i,c);
+    h+=selC(i,"time","이 컷의 시간대",TIMES,c.time,"공통과 동일");
+    h+=selC(i,"quality","이 컷의 빛",LIGHTQ,c.quality,"공통과 동일");
+    h+=selC(i,"trans","앞 컷과의 전환 (편집용)",TRANS,c.trans,"지정 안 함",first);
+    var smp=transSample(c);
+    h+=selC(i,"trans2","전환 세부 샘플",(c.trans&&own(TRANS_SAMPLES,c.trans))?TRANS_SAMPLES[c.trans].map(function(x){return x[0];}):[],c.trans2,"샘플 선택",first||!c.trans).replace(/<\/div>$/,(smp?'<div class="hint" style="margin:4px 0 0">'+esc(smp[1])+'</div>':'')+'</div>');
+    h+=selC(i,"link","이어받기",LINKS,c.link,"새 장면 (연결 없음)",first);
+    h+='<div><label class="chk"><input type="checkbox" data-cut="'+i+'" data-k="useSubj"'+(c.useSubj?' checked':'')+(cat.who==="env"?' disabled':'')+'> 공통 주제 포함</label></div>';
+    h+='<div class="full"><label for="c'+i+'-extra">추가 문구 (선택, 예: 빵집 문을)</label><input type="text" id="c'+i+'-extra" data-cut="'+i+'" data-k="extra" value="'+esc(c.extra)+'"></div>';
+    h+='</div><div class="out" data-out></div><div class="cnt" data-cnt></div><div class="warns" data-warns></div>';
+    h+='<div class="tail"><button class="primary" data-cutact="copy" data-i="'+i+'">이 컷 복사</button><span class="status" data-st role="status"></span></div></section>';
+    return h;
+  }).join("");
+}
+
+function updateCuts(){
+  if(!C)return;
+  if(builtFor!==S.cat){syncCuts();buildCuts();saveCuts();}
+  var cards=document.querySelectorAll(".cutcard");
+  cards.forEach(function(card,i){
+    var c=C[i];
+    if(!c)return;
+    var f=fitCut(c,i);
+    card.querySelector("[data-out]").textContent=f.text;
+    var cn=card.querySelector("[data-cnt]");
+    cn.textContent=cntText(f);
+    cn.className="cnt"+(f.over?" over":"");
+    var box=card.querySelector("[data-warns]");
+    box.innerHTML="";
+    var w=lintCut(c,i);
+    if(w.length){
+      w.forEach(function(m){var d=document.createElement("div");d.className="warn";d.textContent=m;box.appendChild(d);});
+    }else{
+      var g=document.createElement("div");g.className="good";g.textContent="점검 통과: 기본 원칙에 맞는 프롬프트입니다.";box.appendChild(g);
+    }
+  });
+  var all=document.getElementById("allcuts");
+  if(all)all.textContent=C.length?allText():"컷이 없습니다.";
+  var memo=document.getElementById("memo");
+  if(memo)memo.textContent=memoText();
+  var ls=document.getElementById("lenSummary");
+  if(ls)ls.textContent=C.map(function(c,i){var g=fitCut(c,i);return "컷 "+(i+1)+": "+g.n+" / "+g.limit+(g.over?" 초과":" 통과");}).join("  ·  ");
+  var jo=document.getElementById("jsonOut");
+  if(jo)jo.textContent=C.length?jsonText():"컷이 없습니다.";
+  var tn=document.getElementById("toolNote");
+  if(tn)tn.textContent=toolNoteText();
+}
+function allText(){
+  return C.map(function(c,i){return "컷 "+(i+1)+". "+fitCut(c,i).text;}).join("\n\n");
+}
+function memoText(){
+  var L=[];
+  if(M.mode==="i2v")L.push("이미지→비디오: 컷마다 기준 이미지를 업로드하고, 위 문구를 움직임 지시로 입력하세요.");
+  C.forEach(function(c,i){
+    if(i>0&&c.trans){var sm=transSample(c);L.push("컷 "+i+" → 컷 "+(i+1)+" 전환: "+c.trans+(sm?" · "+sm[0]+" — "+sm[1]:""));}
+    if(i>0&&c.link===LINKS[1])L.push("컷 "+(i+1)+": 컷 "+i+"의 마지막 프레임을 기준 이미지로 사용");
+  });
+  return L.length?L.join("\n"):"메모할 내용이 없습니다.";
+}
+function saveCuts(){try{localStorage.setItem(STORE_C,JSON.stringify(C));}catch(e){}}
+
+function makeCuts(roles){
+  C=roles.map(function(r){var c=blankCut();applyRole(c,r);return c;});
+  buildCuts();updateCuts();saveCuts();
+}
+
+function onCut(i,t){
+  var k=t.getAttribute("data-k"),c=C[i];
+  if(!c)return;
+  if(k==="useSubj"){c.useSubj=t.checked;}
+  else if(k==="role"){
+    if(ROLES[t.value]){applyRole(c,t.value);}else{c.role=t.value;}
+    buildCuts();
+  }else if(k==="cat"){
+    var cat=actSet()[t.value];
+    c.cat=t.value;c.act="";c.useSubj=cat.who==="subject";
+    if(!cat.speed)c.speed="";
+    buildCuts();
+  }else if(k==="trans"){
+    c.trans=t.value;c.trans2="";buildCuts();
+  }else if(k==="trans2"){
+    c.trans2=t.value;buildCuts();
+  }else{c[k]=t.value;}
+  updateCuts();saveCuts();
+}
+
+function migrateTrans(){
+  try{
+    if(localStorage.getItem("vpb_trans_v2"))return;
+    var raw=localStorage.getItem(STORE_C);
+    if(raw){
+      var d=JSON.parse(raw);
+      if(Array.isArray(d)){d.forEach(function(c){if(c&&c.trans==="하드 컷")c.trans="";});localStorage.setItem(STORE_C,JSON.stringify(d));}
+    }
+    var rt=localStorage.getItem(STORE_T);
+    if(rt){
+      var u=JSON.parse(rt);
+      if(Array.isArray(u)){u.forEach(function(t){if(t&&t.data&&Array.isArray(t.data.C))t.data.C.forEach(function(c){if(c&&c.trans==="하드 컷")c.trans="";});});localStorage.setItem(STORE_T,JSON.stringify(u));}
+    }
+    localStorage.setItem("vpb_trans_v2","1");
+  }catch(e){}
+}
+
+function initCuts(){
+  migrateTrans();
+  try{
+    var rm=localStorage.getItem(STORE_M);
+    if(rm){var m=JSON.parse(rm);if(m&&(m.mode==="t2v"||m.mode==="i2v")&&KEEPS.indexOf(m.keep)>-1){M.mode=m.mode;M.keep=m.keep;if(own(TOOLS,m.tool))M.tool=m.tool;if(CUSTOMS.indexOf(m.custom)>-1)M.custom=m.custom;if(typeof m.compress==="boolean")M.compress=m.compress;}}
+  }catch(e){}
+  renderMode();
+  var ok=false;
+  try{
+    var raw=localStorage.getItem(STORE_C);
+    if(raw){
+      var d=JSON.parse(raw);
+      if(Array.isArray(d)&&d.every(function(c){return c&&typeof c.cat==="string";})){C=d;ok=true;}
+    }
+  }catch(e){}
+  if(!ok){makeCuts(["도입","등장","디테일","마무리"]);}
+  else{syncCuts();buildCuts();updateCuts();}
+
+  document.getElementById("mk4").addEventListener("click",function(){makeCuts(["도입","등장","디테일","마무리"]);});
+  document.getElementById("mk6").addEventListener("click",function(){makeCuts(["도입","등장","전개","디테일","클라이맥스","마무리"]);});
+  document.getElementById("addcut").addEventListener("click",function(){
+    var c=blankCut();applyRole(c,"전개");C.push(c);buildCuts();updateCuts();saveCuts();
+  });
+  document.getElementById("clrcuts").addEventListener("click",function(){C=[];buildCuts();updateCuts();saveCuts();});
+  document.getElementById("cp-allcuts").addEventListener("click",function(){
+    copy(C.length?allText():"",document.getElementById("status-cuts"));
+  });
+  document.getElementById("cp-memo").addEventListener("click",function(){
+    copy(memoText(),document.getElementById("status-cuts"));
+  });
+  document.getElementById("cp-json").addEventListener("click",function(){
+    copy(C.length?jsonText():"",document.getElementById("status-json"));
+  });
+  document.addEventListener("input",function(ev){
+    var t=ev.target,ci=t.getAttribute&&t.getAttribute("data-cut");
+    if(ci!==null&&ci!==undefined&&t.getAttribute("data-k")==="extra"){
+      C[parseInt(ci,10)].extra=t.value;updateCuts();saveCuts();
+    }
+  });
+  document.addEventListener("click",function(ev){
+    var b=ev.target.closest?ev.target.closest("[data-cutact]"):null;
+    if(!b)return;
+    var i=parseInt(b.getAttribute("data-i"),10),a=b.getAttribute("data-cutact");
+    if(a==="copy"){copy(fitCut(C[i],i).text,b.parentNode.querySelector("[data-st]"));return;}
+    if(a==="del"){C.splice(i,1);}
+    else if(a==="up"&&i>0){var t1=C[i];C[i]=C[i-1];C[i-1]=t1;}
+    else if(a==="down"&&i<C.length-1){var t2=C[i];C[i]=C[i+1];C[i+1]=t2;}
+    buildCuts();updateCuts();saveCuts();
+  });
+}
+
+var STORE_T="vpb_templates_v1";
+var UT=[],BUILTIN=null,tplTimer=null;
+function clone(o){return JSON.parse(JSON.stringify(o));}
+function own(o,k){return typeof k==="string"&&Object.prototype.hasOwnProperty.call(o,k);}
+function snapshot(){return {v:1,S:clone(S),C:clone(C),M:{mode:M.mode,keep:M.keep,tool:M.tool,custom:M.custom,compress:M.compress}};}
+function strMap(src){
+  var o={};
+  if(src&&typeof src==="object"){Object.keys(src).forEach(function(k){if(typeof src[k]==="string")o[k]=src[k];});}
+  return o;
+}
+function sanitizeS(x){
+  if(!x||typeof x!=="object"||!own(SUBJ,x.cat))return null;
+  var o=fresh();
+  o.cat=x.cat;
+  o.subj=strMap(x.subj);o.place=strMap(x.place);o.light=strMap(x.light);o.style=strMap(x.style);
+  o.subjExtra=typeof x.subjExtra==="string"?x.subjExtra:"";
+  o.bgExtra=typeof x.bgExtra==="string"?x.bgExtra:"";
+  if(x.spec&&RATIO.indexOf(x.spec.ratio)>-1)o.spec.ratio=x.spec.ratio;
+  if(x.spec&&SECS.indexOf(x.spec.secs)>-1)o.spec.secs=x.spec.secs;
+  return o;
+}
+function sanitizeCut(x){
+  var o=blankCut();
+  if(x&&typeof x==="object"){Object.keys(o).forEach(function(k){if(typeof x[k]===typeof o[k])o[k]=x[k];});}
+  if(o.role!=="직접 구성"&&!own(ROLES,o.role))o.role="직접 구성";
+  return o;
+}
+function sanitizeM(m){
+  var o={mode:"t2v",keep:KEEPS[0],tool:DEFTOOL,custom:"1000",compress:true};
+  if(m&&typeof m==="object"){
+    if(m.mode==="t2v"||m.mode==="i2v")o.mode=m.mode;
+    if(KEEPS.indexOf(m.keep)>-1)o.keep=m.keep;
+    if(own(TOOLS,m.tool))o.tool=m.tool;
+    if(CUSTOMS.indexOf(m.custom)>-1)o.custom=m.custom;
+    if(typeof m.compress==="boolean")o.compress=m.compress;
+  }
+  return o;
+}
+function applyTemplate(d){
+  if(!d||typeof d!=="object"||!Array.isArray(d.C))return false;
+  var ns=sanitizeS(d.S);
+  if(!ns)return false;
+  S=ns;
+  C=d.C.slice(0,12).map(sanitizeCut);
+  M=sanitizeM(d.M);
+  builtFor=null;
+  syncCuts();
+  rebuild();
+  renderMode();
+  saveMode();
+  saveCuts();
+  updateCuts();
+  return true;
+}
+
+function mkBuiltin(name,sObj,roles,mObj){
+  var keep=S;
+  S=sanitizeS(sObj);
+  var cs=roles.map(function(r){var c=blankCut();applyRole(c,r);return c;});
+  var d={v:1,S:clone(S),C:cs,M:sanitizeM(mObj||null)};
+  S=keep;
+  return {name:name,data:d};
+}
+function builtins(){
+  if(BUILTIN)return BUILTIN;
+  var R4=["도입","등장","디테일","마무리"];
+  BUILTIN=[
+    mkBuiltin("인물: 새벽 골목 빵집 (4컷)",
+      {cat:"인물",subj:{type:"20대 여성",job:"제빵사",hair:"단발머리",color:"하늘색",garment:"앞치마"},
+       place:{region:"서울",cat:"도시",place:"좁은 골목",prop:"젖은 바닥"},
+       light:{time:"새벽녘",quality:"따뜻한 주황색 가게 불빛"},
+       style:{look:"35mm 필름 느낌",tone:"따뜻한 색감",mood:"차분하고 시네마틱한 분위기"},spec:{ratio:"16:9",secs:"8"}},R4),
+    mkBuiltin("동물: 비 오는 날 강아지 (4컷)",
+      {cat:"동물",subj:{species:"강아지",age:"새끼",color:"갈색",feature:"비에 젖은",wear:"빨간 목줄을 한"},
+       place:{region:"서울",cat:"도시",place:"보행자 거리",weather:"비 오는",prop:"물웅덩이"},
+       light:{time:"늦은 오후",quality:"흐린 날의 균일한 빛"},
+       style:{look:"다큐멘터리 실사",tone:"저채도 톤다운",mood:"포근한 분위기"},spec:{ratio:"16:9",secs:"8"}},R4),
+    mkBuiltin("풍경: 벚꽃 길의 하루 (6컷)",
+      {cat:"풍경만 (주제 없음)",subj:{},
+       place:{region:"경주",cat:"자연",place:"숲길",weather:"맑은",season:"봄",prop:"꽃잎"},
+       light:{time:"이른 아침",quality:"황금빛 햇살"},
+       style:{look:"시네마틱 실사",tone:"파스텔 톤",mood:"평화로운 분위기"},spec:{ratio:"16:9",secs:"8"}},
+      ["도입","등장","전개","디테일","클라이맥스","마무리"]),
+    mkBuiltin("음식: 카페의 갓 구운 빵 (4컷)",
+      {cat:"음식",subj:{type:"빵",state:"갓 구운",dish:"나무 트레이 위의"},
+       place:{cat:"실내",place:"카페",prop:"화분"},
+       light:{time:"이른 아침",quality:"창가로 들어오는 빛"},
+       style:{look:"35mm 필름 느낌",tone:"따뜻한 색감",mood:"포근한 분위기"},spec:{ratio:"16:9",secs:"8"}},R4),
+    mkBuiltin("사물: 비 오는 날 노란 우산 (3컷, 세로)",
+      {cat:"사물",subj:{type:"우산",color:"노란색",material:"천"},
+       place:{region:"서울",cat:"도시",place:"도심 거리",weather:"비 오는",prop:"물웅덩이"},
+       light:{time:"늦은 오후",quality:"흐린 날의 균일한 빛"},
+       style:{look:"시네마틱 실사",tone:"선명한 고채도",mood:"유쾌한 분위기"},spec:{ratio:"9:16",secs:"5"}},
+      ["도입","전개","마무리"])
+  ];
+  return BUILTIN;
+}
+
+function loadUT(){
+  try{
+    var raw=localStorage.getItem(STORE_T);
+    if(raw){
+      var a=JSON.parse(raw);
+      if(Array.isArray(a))UT=a.filter(function(t){return t&&typeof t.name==="string"&&t.data&&typeof t.data==="object";});
+    }
+  }catch(e){UT=[];}
+}
+function saveUT(){try{localStorage.setItem(STORE_T,JSON.stringify(UT));}catch(e){}}
+function tplMsg(text){
+  var st=document.getElementById("status-tpl");
+  st.textContent=text;
+  if(tplTimer)clearTimeout(tplTimer);
+  tplTimer=setTimeout(function(){st.textContent="";},4000);
+}
+function renderTplSel(val){
+  var sel=document.getElementById("tpl-sel"),b=builtins();
+  var h='<optgroup label="수업용 기본 프리셋">'+b.map(function(t,i){return '<option value="b:'+i+'">'+esc(t.name)+'</option>';}).join("")+'</optgroup>';
+  if(UT.length)h+='<optgroup label="내 템플릿">'+UT.map(function(t,i){return '<option value="u:'+i+'">'+esc(t.name)+'</option>';}).join("")+'</optgroup>';
+  sel.innerHTML=h;
+  sel.value=val||"b:0";
+  if(!sel.value)sel.value="b:0";
+  document.getElementById("tpl-del").disabled=sel.value.charAt(0)!=="u";
+}
+function currentTpl(){
+  var v=document.getElementById("tpl-sel").value,k=v.charAt(0),i=parseInt(v.slice(2),10);
+  return k==="b"?builtins()[i]:UT[i];
+}
+
+function initTemplates(){
+  loadUT();
+  renderTplSel("b:0");
+  document.getElementById("tpl-sel").addEventListener("change",function(){
+    document.getElementById("tpl-del").disabled=this.value.charAt(0)!=="u";
+  });
+  document.getElementById("tpl-load").addEventListener("click",function(){
+    var t=currentTpl();
+    if(t&&applyTemplate(clone(t.data)))tplMsg("불러왔습니다: "+t.name);
+    else tplMsg("불러오지 못했습니다. 템플릿 형식을 확인하세요.");
+  });
+  document.getElementById("tpl-del").addEventListener("click",function(){
+    var v=document.getElementById("tpl-sel").value;
+    if(v.charAt(0)!=="u")return;
+    var i=parseInt(v.slice(2),10),n=UT[i]?UT[i].name:"";
+    UT.splice(i,1);saveUT();renderTplSel("b:0");
+    tplMsg("삭제했습니다: "+n);
+  });
+  document.getElementById("tpl-save").addEventListener("click",function(){
+    var inp=document.getElementById("tpl-name");
+    var name=inp.value.trim()||("내 템플릿 "+(UT.length+1));
+    var idx=-1;
+    UT.forEach(function(t,i){if(t.name===name)idx=i;});
+    if(idx<0&&UT.length>=30){tplMsg("저장 공간이 가득 찼습니다. 안 쓰는 템플릿을 삭제하세요.");return;}
+    var entry={name:name,data:snapshot()};
+    if(idx>=0)UT[idx]=entry;else{UT.push(entry);idx=UT.length-1;}
+    saveUT();renderTplSel("u:"+idx);inp.value="";
+    tplMsg("저장했습니다: "+name);
+  });
+  document.getElementById("tpl-export").addEventListener("click",function(){
+    copy(JSON.stringify(snapshot()),document.getElementById("status-tpl"));
+  });
+  document.getElementById("tpl-importgo").addEventListener("click",function(){
+    var box=document.getElementById("tpl-import"),d=null;
+    try{d=JSON.parse(box.value);}catch(e){d=null;}
+    if(d&&applyTemplate(d)){box.value="";tplMsg("가져왔습니다. 저장하려면 ‘현재 구성 저장’을 누르세요.");}
+    else tplMsg("형식이 올바르지 않습니다. ‘현재 구성 복사’로 복사한 내용을 그대로 붙여 넣으세요.");
+  });
+}
+
+var STORE_W="vpb_ws_v1",STORE_V="vpb_view_v1";
+var WC=null,WA=null,view="full";
+var WS_KEYS=[["주제","subj"],["행동","act"],["배경","place"],["카메라·사양","cam"],["분위기","mood"]];
+
+function syncWs(){var keep=C;C=[WC];syncCuts();C=keep;}
+function saveWs(){try{localStorage.setItem(STORE_W,JSON.stringify(WC));}catch(e){}}
+function wsCells(){
+  var a=cutAction(WC);
+  return {
+    "주제":pSubj(),
+    "행동":a?a.text:"",
+    "배경":[S.place.place,S.place.weather].filter(Boolean).join(" "),
+    "카메라·사양":WC.shot+", "+WC.move+", "+S.spec.ratio+", "+S.spec.secs+"초",
+    "분위기":[S.light.time,S.style.tone,S.style.mood].filter(Boolean).join(", ")
+  };
+}
+function wsSel(key,label,opts,val,emptyLabel,dis){
+  var id="ws-"+key.replace(".","-");
+  var h='<div><label for="'+id+'">'+esc(label)+'</label><select id="'+id+'" data-ws="'+key+'"'+(dis?' disabled':'')+'>';
+  if(emptyLabel)h+='<option value="">'+esc(emptyLabel)+'</option>';
+  opts.forEach(function(o){h+='<option value="'+esc(o)+'"'+(o===val?' selected':'')+'>'+esc(o)+'</option>';});
+  return h+'</select></div>';
+}
+function wsCell(id,title,inner){
+  return '<div class="wscell"><div class="wshead"><strong>'+title+'</strong><span class="wsbadge" data-badge="'+id+'"></span></div><div class="grid two">'+inner+'</div></div>';
+}
+function renderWs(){
+  var host=document.getElementById("wsCells");
+  if(!host||!WC)return;
+  var set=actSet(),cat=set[WC.cat],fields=SUBJ[S.cat].fields;
+  var a=wsSel("subj.cat","대범주",Object.keys(SUBJ),S.cat,"");
+  fields.slice(0,2).forEach(function(x){a+=wsSel("subj."+x.k,x.l,x.o,S.subj[x.k],"선택 안 함");});
+  var b=wsSel("act.cat","대범주",Object.keys(set),WC.cat,"")+
+        wsSel("act.act","세부 동작",cat.items,WC.act,"선택하세요")+
+        wsSel("act.speed","속도",SPEEDS,WC.speed,"지정 안 함",!cat.speed);
+  var pc=S.place.cat||"";
+  var c=wsSel("place.cat","장소 대분류",Object.keys(PLACES),pc,"선택하세요")+
+        wsSel("place.place","세부 장소",pc?PLACES[pc]:[],S.place.place,"선택하세요",!pc)+
+        wsSel("place.weather","날씨",WEATHER,S.place.weather,"선택 안 함");
+  var d=wsSel("cam.shot","샷 크기",SHOTS,WC.shot,"")+wsSel("cam.move","카메라 움직임",MOVES,WC.move,"")+wsSel("cam.ratio","화면비",RATIO,S.spec.ratio,"")+wsSel("cam.secs","길이(초)",SECS,S.spec.secs,"");
+  var e=wsSel("mood.time","시간대",TIMES,S.light.time,"선택 안 함")+
+        wsSel("mood.tone","색감",TONE,S.style.tone,"선택 안 함")+
+        wsSel("mood.mood","분위기",MOOD,S.style.mood,"선택 안 함");
+  host.innerHTML=wsCell("subj","주제",a)+wsCell("act","행동",b)+wsCell("place","배경",c)+wsCell("cam","카메라·사양",d)+wsCell("mood","분위기",e);
+}
+function wsFilled(k,cells){
+  if(k==="주제")return S.cat==="풍경만 (주제 없음)"||!!cells["주제"];
+  return !!cells[k];
+}
+function updateWs(){
+  if(!WC)return;
+  var v=document.getElementById("wsView");
+  if(!v||v.hidden)return;
+  var text=composeT2V(WC,0,0),m=measure(text),over=m.n>m.limit;
+  document.getElementById("wsOut").textContent=text;
+  var cn=document.getElementById("wsCnt");
+  cn.textContent=m.n+" / "+m.limit+(m.unit==="tokens"?" 토큰(추정)":"자")+(over?" · 한도 초과":" · 통과");
+  cn.className="cnt"+(over?" over":"");
+  var box=document.getElementById("wsWarns");
+  box.innerHTML="";
+  var w=lintCut(WC,0);
+  if(w.length){w.forEach(function(x){var d=document.createElement("div");d.className="warn";d.textContent=x;box.appendChild(d);});}
+  else{var g=document.createElement("div");g.className="good";g.textContent="점검 통과: 기본 원칙에 맞는 문장입니다.";box.appendChild(g);}
+  var cells=wsCells(),done=0,empty=[];
+  WS_KEYS.forEach(function(p){
+    var ok=wsFilled(p[0],cells),b=document.querySelector('[data-badge="'+p[1]+'"]');
+    if(ok)done++;else empty.push(p[0]);
+    if(b){b.textContent=ok?"완료":"비어 있음";b.className="wsbadge"+(ok?" done":"");}
+  });
+  document.getElementById("wsProg").textContent="5칸 중 "+done+"칸 완료"+(empty.length?" · 비어 있는 칸: "+empty.join(", "):"");
+  var panel=document.getElementById("wsCompare");
+  if(WA){
+    panel.hidden=false;
+    document.getElementById("cmpA").textContent=WA.text;
+    document.getElementById("cmpB").textContent=text;
+    var diff=WS_KEYS.map(function(p){return p[0];}).filter(function(k){return WA.cells[k]!==cells[k];});
+    var note;
+    if(!diff.length)note="아직 A와 같습니다. 한 칸만 바꿔 보세요.";
+    else if(diff.length===1)note="바뀐 칸: "+diff[0]+". 이 칸이 결과에 준 영향을 비교해 보세요.";
+    else note="바뀐 칸: "+diff.join(", ")+". 여러 칸이 바뀌어 영향을 가려내기 어렵습니다. 한 칸만 바꿔 보세요.";
+    document.getElementById("cmpNote").textContent=note;
+  }else{panel.hidden=true;}
+  buildNav();
+}
+function onWs(key,t){
+  var p=key.split("."),sec=p[0],k=p[1],v=t.value;
+  if(sec==="subj"){
+    if(k==="cat"){S.cat=v;S.subj={};syncWs();renderWs();}
+    else{S.subj[k]=v;}
+  }else if(sec==="act"){
+    if(k==="cat"){var cat=actSet()[v];WC.cat=v;WC.act="";WC.useSubj=cat.who==="subject";if(!cat.speed)WC.speed="";renderWs();}
+    else{WC[k]=v;}
+  }else if(sec==="place"){
+    if(k==="cat"){S.place.cat=v;S.place.place="";renderWs();}
+    else{S.place[k]=v;}
+  }else if(sec==="cam"){if(k==="ratio")S.spec.ratio=v;else if(k==="secs")S.spec.secs=v;else WC[k]=v;}
+  else if(sec==="mood"){
+    if(k==="time")S.light.time=v;
+    else if(k==="tone")S.style.tone=v;
+    else S.style.mood=v;
+  }
+  saveWs();update();
+}
+function setView(v){
+  view=(v==="ws"||v==="wiz"||v==="assign")?v:"full";
+  try{localStorage.setItem(STORE_V,view);}catch(e){}
+  document.getElementById("wsView").hidden=view!=="ws";
+  document.getElementById("wizView").hidden=view!=="wiz";
+  document.getElementById("assignView").hidden=view!=="assign";
+  document.getElementById("fullView").hidden=view!=="full";
+  var sel=document.getElementById("view-sel");
+  if(sel)sel.value=view;
+  if(view==="ws"){syncWs();renderWs();updateWs();}
+  else if(view==="wiz"){syncWs();renderWiz();}
+  else if(view==="assign"){syncWs();renderAssign();}
+  else{rebuild();buildCuts();updateCuts();}
+  buildNav();
+}
+
+var NAVSETS={
+  full:[["화면 모드","sec-view"],["템플릿","h-tpl"],["주제","h-subj"],["배경","h-bg"],["조명·시간대","h-light"],["스타일","h-style"],["기술 사양","h-spec"],["공통 고정 문구","h-pv"],["컷 구성","h-cuts"],["컷 목록","cuts"],["전체 컷 프롬프트","h-all"],["편집 메모","h-memo"],["복사용 JSON","h-json"]],
+  ws:[["화면 모드","sec-view"],["5칸 채우기","h-ws"],["완성된 문장","h-wsout"],["비교하기","h-cmp"]],
+  wiz:[["화면 모드","sec-view"],["질문에 답하기","h-wiz"],["만든 문장","h-wizp"]],
+  assign:[["화면 모드","sec-view"],["과제 안내","h-as"],["진행 체크","h-ck"],["성찰 질문","h-rf"],["제출 요약","h-sub"],["평가 기준","h-rb"]]
+};
+var navItems=[],navKey="",navTick=false;
+function navTarget(id){
+  var e=document.getElementById(id);
+  if(!e)return null;
+  return (e.closest&&e.closest(".panel"))||e;
+}
+function buildNav(){
+  var nav=document.getElementById("sidenav");
+  if(!nav)return;
+  var items=(NAVSETS[view]||NAVSETS.full).filter(function(it){var t=navTarget(it[1]);return t&&t.offsetParent!==null;});
+  var key=view+"|"+items.map(function(it){return it[1];}).join(",");
+  if(key===navKey){navActive();return;}
+  navKey=key;navItems=items;
+  nav.innerHTML=items.map(function(it){return '<button type="button" data-nav="'+it[1]+'">'+esc(it[0])+'</button>';}).join("");
+  navActive();
+}
+function navActive(){
+  var nav=document.getElementById("sidenav");
+  if(!nav)return;
+  var cur=-1;
+  navItems.forEach(function(it,i){
+    var t=navTarget(it[1]);
+    if(t&&t.getBoundingClientRect().top<=110)cur=i;
+  });
+  var atEnd=(window.innerHeight+window.scrollY)>=(document.body.scrollHeight-4);
+  if(atEnd&&navItems.length)cur=navItems.length-1;
+  var btns=nav.querySelectorAll("button");
+  for(var i=0;i<btns.length;i++){
+    var on=(i===cur);
+    btns[i].classList.toggle("active",on);
+    if(on)btns[i].setAttribute("aria-current","true");else btns[i].removeAttribute("aria-current");
+  }
+}
+function initNav(){
+  var nav=document.getElementById("sidenav");
+  nav.addEventListener("click",function(ev){
+    var b=ev.target.closest?ev.target.closest("[data-nav]"):null;
+    if(!b)return;
+    var t=navTarget(b.getAttribute("data-nav"));
+    if(!t)return;
+    var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    t.scrollIntoView({behavior:reduce?"auto":"smooth",block:"start"});
+  });
+  function tick(){
+    if(navTick)return;
+    navTick=true;
+    window.requestAnimationFrame(function(){navTick=false;navActive();});
+  }
+  window.addEventListener("scroll",tick,{passive:true});
+  window.addEventListener("resize",tick);
+}
+
+var wizStep=0;
+function wizSteps(){
+  var st=[],set=actSet(),F=SUBJ[S.cat].fields;
+  st.push({q:"무엇을 찍을까요?",opts:Object.keys(SUBJ),cur:S.cat,set:function(v){S.cat=v;S.subj={};syncWs();}});
+  F.slice(0,3).forEach(function(f,i){
+    st.push({q:f.l+eul(f.l)+" 골라 주세요.",opts:f.o,cur:S.subj[f.k],optional:i>0,set:function(v){S.subj[f.k]=v;}});
+  });
+  if(Object.keys(set).length>1){
+    st.push({q:"어떤 종류의 움직임인가요?",opts:Object.keys(set),cur:WC.cat,set:function(v){
+      var c=actSet()[v];WC.cat=v;WC.act="";WC.useSubj=c.who==="subject";if(!c.speed)WC.speed="";}});
+  }
+  st.push({q:"구체적으로 어떤 모습인가요?",opts:set[WC.cat].items,cur:WC.act,set:function(v){WC.act=v;}});
+  if(set[WC.cat].speed){
+    st.push({q:"얼마나 빠르게 움직일까요?",opts:SPEEDS,cur:WC.speed,optional:true,skipLabel:"보통 속도",set:function(v){WC.speed=v;}});
+  }
+  st.push({q:"어떤 종류의 장소인가요?",opts:Object.keys(PLACES),cur:S.place.cat,set:function(v){S.place.cat=v;S.place.place="";}});
+  st.push({q:"어디인가요?",opts:S.place.cat?PLACES[S.place.cat]:[],cur:S.place.place,set:function(v){S.place.place=v;}});
+  st.push({q:"날씨는 어떤가요?",opts:WEATHER,cur:S.place.weather,optional:true,set:function(v){S.place.weather=v;}});
+  st.push({q:"언제인가요?",opts:TIMES,cur:S.light.time,optional:true,set:function(v){S.light.time=v;}});
+  st.push({q:"빛은 어떤가요?",opts:LIGHTQ,cur:S.light.quality,optional:true,set:function(v){S.light.quality=v;}});
+  st.push({q:"샷 크기는 어떻게 할까요?",opts:SHOTS,cur:WC.shot,set:function(v){WC.shot=v;}});
+  st.push({q:"카메라는 어떻게 움직일까요?",opts:MOVES,cur:WC.move,set:function(v){WC.move=v;}});
+  st.push({q:"색감은 어떻게 할까요?",opts:TONE,cur:S.style.tone,optional:true,set:function(v){S.style.tone=v;}});
+  st.push({q:"어떤 분위기로 만들까요?",opts:MOOD,cur:S.style.mood,optional:true,set:function(v){S.style.mood=v;}});
+  st.push({q:"화면 비율은요?",opts:RATIO,cur:S.spec.ratio,set:function(v){S.spec.ratio=v;}});
+  st.push({q:"길이는 몇 초로 할까요?",opts:SECS,cur:S.spec.secs,fmt:function(o){return o+"초";},set:function(v){S.spec.secs=v;}});
+  return st;
+}
+function renderWiz(){
+  var body=document.getElementById("wizBody");
+  if(!body||!WC)return;
+  var steps=wizSteps();
+  if(wizStep>steps.length)wizStep=steps.length;
+  if(wizStep<0)wizStep=0;
+  var h="";
+  if(wizStep<steps.length){
+    var st=steps[wizStep];
+    document.getElementById("wizProg").textContent="질문 "+(wizStep+1)+" / "+steps.length;
+    h+='<h3 class="wizq">'+esc(st.q)+'</h3><div class="opts">';
+    st.opts.forEach(function(o,i){
+      h+='<button class="opt" data-wiz="opt" data-oi="'+i+'" aria-pressed="'+(o===st.cur?"true":"false")+'">'+esc(st.fmt?st.fmt(o):o)+'</button>';
+    });
+    h+='</div><div class="row">';
+    h+='<button data-wiz="back"'+(wizStep===0?' disabled':'')+'>이전</button>';
+    if(st.optional)h+='<button data-wiz="skip">'+esc(st.skipLabel||"건너뛰기")+'</button>';
+    h+='</div>';
+  }else{
+    document.getElementById("wizProg").textContent="모든 질문에 답했습니다.";
+    h+='<h3 class="wizq">완성했어요. 아래 문장을 복사해 영상 도구에 붙여 넣으세요.</h3>';
+    h+='<div class="row"><button data-wiz="back">이전</button><button data-wiz="restart">처음부터 다시</button><button data-wiz="ws">워크시트에서 다듬기</button><button data-wiz="full">전체 기능에서 다듬기</button></div>';
+  }
+  body.innerHTML=h;
+  document.getElementById("wizOut").textContent=composeT2V(WC,0,0);
+}
+function initWiz(){
+  document.getElementById("wizBody").addEventListener("click",function(ev){
+    var b=ev.target.closest?ev.target.closest("[data-wiz]"):null;
+    if(!b)return;
+    var a=b.getAttribute("data-wiz"),steps=wizSteps(),st=steps[wizStep];
+    if(a==="opt"&&st){st.set(st.opts[parseInt(b.getAttribute("data-oi"),10)]);wizStep++;saveWs();update();renderWiz();}
+    else if(a==="skip"&&st){st.set("");wizStep++;saveWs();update();renderWiz();}
+    else if(a==="back"){wizStep=Math.max(0,wizStep-1);renderWiz();}
+    else if(a==="restart"){wizStep=0;renderWiz();}
+    else if(a==="ws"){setView("ws");}
+    else if(a==="full"){setView("full");}
+  });
+  document.getElementById("wiz-copy").addEventListener("click",function(){
+    copy(composeT2V(WC,0,0),document.getElementById("status-wiz"));
+  });
+}
+function initWs(){
+  var wc=null;
+  try{var r=localStorage.getItem(STORE_W);if(r)wc=JSON.parse(r);}catch(e){}
+  if(wc&&typeof wc==="object"){WC=sanitizeCut(wc);}
+  else{WC=blankCut();applyRole(WC,"등장");}
+  syncWs();
+  loadWa();
+  document.getElementById("ws-copy").addEventListener("click",function(){copy(composeT2V(WC,0,0),document.getElementById("status-ws"));});
+  document.getElementById("ws-fix").addEventListener("click",function(){WA={text:composeT2V(WC,0,0),cells:wsCells()};saveWa();updateWs();});
+  document.getElementById("ws-clear-ab").addEventListener("click",function(){WA=null;saveWa();updateWs();});
+  document.getElementById("view-sel").addEventListener("change",function(){setView(this.value);});
+  initWiz();
+  initNav();
+  initAssign();
+  var v="full";
+  try{v=localStorage.getItem(STORE_V)||"full";}catch(e){}
+  setView(v);
+}
+
+var STORE_WA="vpb_wa_v1",STORE_AS="vpb_assign_v1";
+function saveWa(){try{if(WA)localStorage.setItem(STORE_WA,JSON.stringify(WA));else localStorage.removeItem(STORE_WA);}catch(e){}}
+function loadWa(){
+  try{
+    var r=localStorage.getItem(STORE_WA);
+    if(r){var o=JSON.parse(r);if(o&&typeof o.text==="string"&&o.cells&&typeof o.cells==="object")WA={text:o.text,cells:strMap(o.cells)};}
+  }catch(e){WA=null;}
+}
+function wsDiff(){
+  if(!WA)return null;
+  var c=wsCells();
+  return WS_KEYS.map(function(p){return p[0];}).filter(function(k){return WA.cells[k]!==c[k];});
+}
+
+var AS={name:"",note:"",q1:"",q2:"",q3:"",checks:{}};
+var AS_Q3={
+  a:"텍스트와 이미지를 같은 의미 공간에서 연결한다",
+  b:"이미지를 글자로 바꾼 뒤 OCR로만 읽는다",
+  c:"프레임을 무작위로 이어붙여 영상을 만든다"
+};
+var AS_STEPS=[
+  {id:"s1",t:"화면 모드를 ‘학생용 워크시트’로 바꾸고 주제를 고릅니다."},
+  {id:"s2",t:"다섯 칸을 모두 채워 문장을 완성합니다. (점검 통과)",auto:function(){
+    var c=wsCells();
+    return WS_KEYS.every(function(p){return wsFilled(p[0],c);})&&lintCut(WC,0).length===0;}},
+  {id:"s3",t:"‘A로 고정’ 후 한 칸만 바꿔 B를 만듭니다.",auto:function(){var d=wsDiff();return !!d&&d.length===1;}},
+  {id:"s4",t:"A와 B를 교사가 안내한 영상 도구로 생성합니다. 도구가 없으면 두 문장의 차이를 비교합니다."},
+  {id:"s5",t:"성찰 질문에 답합니다.",auto:function(){return !!(AS.q1&&AS.q2&&AS.q3);}},
+  {id:"s6",t:"제출 요약을 복사해 제출합니다."}
+];
+function saveAs(){try{localStorage.setItem(STORE_AS,JSON.stringify(AS));}catch(e){}}
+function loadAs(){
+  try{
+    var r=localStorage.getItem(STORE_AS);
+    if(r){
+      var o=JSON.parse(r);
+      if(o&&typeof o==="object"){
+        AS.name=typeof o.name==="string"?o.name:"";
+        AS.note=typeof o.note==="string"?o.note:"";
+        var keys=WS_KEYS.map(function(p){return p[0];});
+        AS.q1=keys.indexOf(o.q1)>-1?o.q1:"";
+        AS.q2=keys.indexOf(o.q2)>-1?o.q2:"";
+        AS.q3=own(AS_Q3,o.q3)?o.q3:"";
+        AS.checks={};
+        if(o.checks&&typeof o.checks==="object"){AS_STEPS.forEach(function(st){if(o.checks[st.id]===true)AS.checks[st.id]=true;});}
+      }
+    }
+  }catch(e){}
+}
+function stepDone(st){return st.auto?!!st.auto():!!AS.checks[st.id];}
+function asSummary(){
+  var L=["[5일차 과제] 한 칸만 바꿔 비교하기"];
+  if(AS.name.trim())L.push("이름: "+AS.name.trim());
+  L.push("");
+  L.push("문장 A: "+(WA?WA.text:"(고정하지 않음)"));
+  L.push("문장 B: "+composeT2V(WC,0,0));
+  var d=wsDiff();
+  L.push("바뀐 칸: "+(d?(d.length?d.join(", "):"없음"):"-"));
+  L.push("");
+  L.push("성찰");
+  L.push("1) 바꾼 칸: "+(AS.q1||"(미응답)"));
+  L.push("2) 가장 큰 영향을 준 요소: "+(AS.q2||"(미응답)"));
+  L.push("3) 공통 원리: "+(AS.q3?AS_Q3[AS.q3]+(AS.q3==="a"?" (정답)":" (오답)"):"(미응답)"));
+  if(AS.note.trim())L.push("4) 한 줄 소감: "+AS.note.trim());
+  var done=AS_STEPS.filter(stepDone).length;
+  L.push("");
+  L.push("진행: "+AS_STEPS.length+"단계 중 "+done+"단계 완료");
+  return L.join("\n");
+}
+function optBtns(host,kind,list,cur){
+  var h="";
+  list.forEach(function(o){h+='<button class="opt" data-as="'+kind+'" data-v="'+esc(o[0])+'" aria-pressed="'+(o[0]===cur?"true":"false")+'">'+esc(o[1])+'</button>';});
+  document.getElementById(host).innerHTML=h;
+}
+function renderAssign(){
+  if(!WC)return;
+  var keys=WS_KEYS.map(function(p){return [p[0],p[0]];});
+  optBtns("asQ1","q1",keys,AS.q1);
+  optBtns("asQ2","q2",keys,AS.q2);
+  optBtns("asQ3","q3",Object.keys(AS_Q3).map(function(k){return [k,AS_Q3[k]];}),AS.q3);
+  var fb=document.getElementById("asQ3fb");
+  if(!AS.q3)fb.textContent="";
+  else if(AS.q3==="a")fb.textContent="정답입니다. 이미지 이해는 이미지를 토큰으로 바꿔 질문과 함께 처리하고, 영상 생성은 텍스트 지시를 시각 표현과 맞춰 만든다는 점에서 텍스트와 시각을 연결하는 원리를 공유합니다.";
+  else fb.textContent="다시 생각해 보세요. 두 기술 모두 글과 이미지를 같은 의미 공간에서 연결하는 방식에 기대고 있습니다.";
+  var h="";
+  AS_STEPS.forEach(function(st){
+    var done=stepDone(st);
+    h+='<label class="ck"><input type="checkbox" data-as="chk" data-id="'+st.id+'"'+(done?' checked':'')+(st.auto?' disabled':'')+'><span>'+esc(st.t)+(st.auto?'<span class="auto">자동 확인</span>':'')+'</span></label>';
+  });
+  document.getElementById("asChecks").innerHTML=h;
+  document.getElementById("as-name").value=AS.name;
+  document.getElementById("as-note").value=AS.note;
+  refreshAssign();
+}
+function refreshAssign(){
+  var done=AS_STEPS.filter(stepDone).length;
+  document.getElementById("asProg").textContent=AS_STEPS.length+"단계 중 "+done+"단계 완료";
+  document.getElementById("asSummary").textContent=asSummary();
+}
+function initAssign(){
+  loadAs();
+  var v=document.getElementById("assignView");
+  v.addEventListener("click",function(ev){
+    var b=ev.target.closest?ev.target.closest("[data-as]"):null;
+    if(!b)return;
+    var a=b.getAttribute("data-as");
+    if(a==="q1"||a==="q2"||a==="q3"){AS[a]=b.getAttribute("data-v");saveAs();renderAssign();}
+    else if(a==="goto-ws"){setView("ws");}
+    else if(a==="copy"){copy(asSummary(),document.getElementById("status-as"));}
+  });
+  v.addEventListener("change",function(ev){
+    var t=ev.target;
+    if(t.getAttribute&&t.getAttribute("data-as")==="chk"){
+      var id=t.getAttribute("data-id");
+      if(t.checked)AS.checks[id]=true;else delete AS.checks[id];
+      saveAs();refreshAssign();
+    }
+  });
+  document.getElementById("as-name").addEventListener("input",function(e){AS.name=e.target.value;saveAs();refreshAssign();});
+  document.getElementById("as-note").addEventListener("input",function(e){AS.note=e.target.value;saveAs();refreshAssign();});
+}
+
+function init(){
+  S=null;
+  try{var raw=localStorage.getItem(STORE);if(raw){S=JSON.parse(raw);}}catch(e){S=null;}
+  if(!S||!S.spec||!SUBJ[S.cat]){S=fresh();example();}
+  else{rebuild();}
+
+  document.addEventListener("change",function(ev){
+    var t=ev.target;
+    var cn=t.getAttribute&&t.getAttribute("data-cut");
+    if(cn!==null&&cn!==undefined){onCut(parseInt(cn,10),t);return;}
+    var md=t.getAttribute&&t.getAttribute("data-mode");
+    if(md){M[md]=(t.type==="checkbox")?t.checked:t.value;saveMode();renderMode();updateCuts();return;}
+    var wk=t.getAttribute&&t.getAttribute("data-ws");
+    if(wk){onWs(wk,t);return;}
+    if(t.id==="subj-cat"){
+      S.cat=t.value;S.subj={};renderSubj();update();return;
+    }
+    var sec=t.getAttribute&&t.getAttribute("data-sec");
+    if(!sec)return;
+    var k=t.getAttribute("data-k");
+    if(sec==="place"&&k==="cat"){
+      S.place.cat=t.value;S.place.place="";renderPlace();update();return;
+    }
+    S[sec][k]=t.value;
+    update();
+  });
+  document.getElementById("subjExtra").addEventListener("input",function(e){S.subjExtra=e.target.value;update();});
+  document.getElementById("bgExtra").addEventListener("input",function(e){S.bgExtra=e.target.value;update();});
+  document.getElementById("btn-ex").addEventListener("click",example);
+  document.getElementById("btn-rand").addEventListener("click",randomFill);
+  document.getElementById("btn-clear").addEventListener("click",function(){S=fresh();rebuild();});
+  document.getElementById("cp-one").addEventListener("click",function(){copy(oneLine());});
+  document.getElementById("cp-lab").addEventListener("click",function(){
+    copy(labeled().map(function(r){return r[0]+": "+r[1];}).join("\n"));
+  });
+  initCuts();
+  initTemplates();
+  initWs();
+}
+init();
+</script>
+</body>
+</html>
