@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="제10장 참고자료: 무료 웹 호스팅·배포 플랫폼의 검증된 비교와 AI 서비스 적용 기준">
+<title>제10장 참고자료 | 무료 호스팅·배포 서비스 비교</title>
+<style>
+:root{--navy:#121a2c;--ink:#17243b;--sub:#59677d;--line:#dce5f1;--blue:#2463eb;--paper:#f6f8fb}*{box-sizing:border-box}
+body{margin:0;background:var(--paper);font-family:system-ui,-apple-system,"Noto Sans KR","Malgun Gothic",sans-serif;color:var(--ink);line-height:1.68}
+a{color:#1755bc;overflow-wrap:anywhere}a:focus-visible{outline:3px solid #f3bd45;outline-offset:3px}
+.wrap{width:min(1140px,calc(100% - 32px));margin:auto}.top{background:var(--navy);color:white;padding:18px 0}
+.top a{color:#d6e6ff;text-decoration:none}.hero{background:linear-gradient(125deg,#121a2c,#213d69);color:white;padding:54px 0}
+.eyebrow{color:#a4c8ff;font-size:.84rem;letter-spacing:.12em;font-weight:700}.hero h1{margin:10px 0;font-size:clamp(1.9rem,4vw,3.1rem);letter-spacing:-.04em}
+.hero p{color:#e0e9f8;max-width:850px}main{padding:28px 0 70px}
+section{background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px;margin:20px 0;box-shadow:0 2px 10px #182a4510}
+h2{font-size:1.4rem;margin:0 0 14px}h3{margin:22px 0 8px}p{margin:10px 0}.muted{color:var(--sub)}
+.tablewrap{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:900px;font-size:.9rem}th{background:#eaf0fa;text-align:left;white-space:nowrap}
+td,th{border-bottom:1px solid var(--line);padding:10px 11px;vertical-align:top}tbody tr:hover{background:#f7faff}
+.pills{display:flex;flex-wrap:wrap;gap:8px}.pill{border:1px solid #b3c8ee;background:#eff5ff;border-radius:20px;padding:5px 11px;font-size:.85rem}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.tile{border:1px solid var(--line);padding:17px;border-radius:10px;background:#fcfdff}.tile b{display:block;color:#174a9e}
+.note{border-left:4px solid #d89a1e;background:#fff7e7;padding:12px 16px;border-radius:0 8px 8px 0}
+code{background:#eef2f8;border-radius:4px;padding:2px 5px}.path{display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;margin:20px 0}.path span{border:1px solid #b9cbea;background:#eef5ff;padding:12px 15px;border-radius:9px;text-align:center}.path i{font-style:normal;color:#69809f}
+footer{text-align:center;padding:24px;color:#607087;font-size:.84rem}@media(max-width:760px){.grid{grid-template-columns:1fr}.hero{padding:36px 0}section{padding:18px}}
+</style></head><body><div class="top"><div class="wrap"><a href="../../../index.html">← AI 서비스 개발·설계 2026 · 메인 목차</a></div></div>
+<header class="hero"><div class="wrap"><div class="eyebrow">CHAPTER 10 · REFERENCE · VERIFIED 2026-11-14</div><h1>무료 웹 호스팅·배포 플랫폼 비교</h1>
+<p>정적 HTML 교재부터 Python API·AI 서비스 배포까지: 무료 제공 조건, 숨은 제약, 선택 기준을 공식 문서 중심으로 정리합니다.</p>
+<div class="pills"><span class="pill">정적 웹 호스팅</span><span class="pill">서버리스</span><span class="pill">Python API</span><span class="pill">Linux VM</span><span class="pill">무료 비용 검증</span></div></div></header>
+<main class="wrap">
+<section><h2>1. 비교 기준과 판정 원칙</h2><p>순위는 시장점유율이 아닌 <b>교육자료 배포 및 AI 서비스 개발에 대한 추천 우선순위</b>입니다. 아래 서비스는 공식 안내 페이지가 확인되는 후보로, 무료 사용량·가입 가능 여부·상업적 사용·결제 카드 등록은 가입 직전 반드시 재확인해야 합니다.</p>
+<div class="note"><b>무료 ≠ 무제한 ≠ 서버 상시 실행</b><br>정적 호스팅, 서버리스 함수, 프로세스가 계속 실행되는 가상 서버는 서로 다른 제품입니다. 무료 체험 크레딧은 영구 무료와 구분하며, 확인되지 않은 수치는 표기하지 않습니다.</div>
+<p class="muted">원본 참고 글: <a href="https://jjaeho.tistory.com/52">무료 호스팅 TOP 10 (외부 블로그)</a>. 비교표는 원문을 복제하지 않고 공식 사이트 기반으로 재구성했습니다.</p></section>
+<section><h2>2. 용도별 추천 순위 · 공식 안내 연결</h2><p class="muted">이 목록은 종합 추천 우선순위입니다. 1~8위는 주로 정적 웹·프런트엔드, 9~10위는 서버/API, 나머지는 특정 용도의 대안입니다. 서로 다른 범주를 일률적인 성능 순위로 읽지 않습니다.</p><div class="tablewrap"><table><thead><tr><th>순위</th><th>서비스</th><th>유형</th><th>추천 용도</th><th>무료 범위</th><th>제약·주의</th><th>출처</th></tr></thead><tbody><tr><td>01</td><td><a href="https://pages.github.com/" target="_blank" rel="noopener noreferrer">GitHub Pages</a></td><td>정적·문서</td><td>HTML 교재·기술문서</td><td>공개 문서·소스 통합 관리</td><td>게시 사이트 최대 1GB, 월 100GB 소프트 대역폭 제한</td><td><a href="https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits" target="_blank" rel="noopener noreferrer">공식 근거</a></td></tr>
+<tr><td>02</td><td><a href="https://pages.cloudflare.com/" target="_blank" rel="noopener noreferrer">Cloudflare Pages</a></td><td>정적·서버리스</td><td>대량 정적 자료·글로벌 공개</td><td>월 500회 빌드</td><td>무료 사이트당 최대 20,000개 파일, 개별 25MiB; Functions 별도 제한</td><td><a href="https://developers.cloudflare.com/pages/platform/limits/" target="_blank" rel="noopener noreferrer">공식 근거</a></td></tr>
+<tr><td>03</td><td><a href="https://docs.gitlab.com/user/project/pages/" target="_blank" rel="noopener noreferrer">GitLab Pages</a></td><td>정적·문서</td><td>GitLab 기반 문서·정적 사이트</td><td>GitLab Free 제공</td><td>CI/CD 구성 필요; 서버 측 PHP/Python 직접 실행 불가</td><td><a href="https://docs.gitlab.com/user/project/pages/" target="_blank" rel="noopener noreferrer">공식 근거</a></td></tr>
+<tr><td>04</td><td><a href="https://azure.microsoft.com/en-us/products/app-service/static" target="_blank" rel="noopener noreferrer">Azure Static Web Apps</a></td><td>정적·API</td><td>정적 웹과 API 결합</td><td>무료 플랜 제공</td><td>리소스 한도·API 제약은 플랜 문서 재확인</td><td><a href="https://learn.microsoft.com/en-us/azure/static-web-apps/plans" target="_blank" rel="noopener noreferrer">공식 근거</a></td></tr>
+<tr><td>05</td><td><a href="https://www.netlify.com/" target="_blank" rel="noopener noreferrer">Netlify</a></td><td>정적·함수</td><td>프런트엔드·폼·함수</td><td>무료 플랜 제공</td><td>빌드·대역폭·함수 통합 사용량과 초과 정책 확인</td><td><a href="https://www.netlify.com/pricing/" target="_blank" rel="noopener noreferrer">공식 근거</a></td></tr>
+<tr><td>06</td><td><a href="https://vercel.com/" target="_blank" rel="noopener noreferrer">Vercel</a></td><td>정적·서버리스</td><td>Next.js 개인 실습</td><td>Hobby 무료</td><td>개인·비상업적 용도만; 함수·CPU 사용량 제한</td><td><a href="https://vercel.com/docs/plans/hobby" target="_blank" rel="noopener noreferrer">공식 근거</a></td></tr>
+<tr><td>07</td><td><a href="https://firebase.google.com/products/hosting" target="_blank" rel="noopener noreferrer">Firebase Hosting</a></td><td>정적·BaaS</td><td>웹·모바일 앱 연계</td><td>Spark 무료 범위 제공</td><td>서비스별 할당량·과금 활성화 여부 확인</td><td><a href="https://firebase.google.com/docs/hosting/usage-quotas-pricing" target="_blank" rel="noopener noreferrer">공식 근거</a></td></tr>
+<tr><td>08</td><td><a href="https://www.digitalocean.com/products/app-platform" target="_blank" rel="noopener noreferrer">DigitalOcean App Platform</a></td><td>정적</td><td>간편한 정적 사이트</td><td>팀당 정적 앱 최대 3개 무료</td><td>동적 서비스/worker는 유료; 무료 트래픽 조건 확인</td><td><a href="https://docs.digitalocean.com/reference/mcp/agent-deploy-guidelines/" target="_blank" rel="noopener noreferrer">공식 근거</a></td></tr>
+<tr><td>09</td><td><a href="https://render.com/" target="_blank" rel="noopener noreferrer">Render</a></td><td>동적·API</td><td>FastAPI/Flask 시제품</td><td>무료 웹 서비스 플랜</td><td>15분 미사용 시 중지; 저장소·DB 지속성 주의</td><td><a href="https://render.com/docs/free" target="_blank" rel="noopener noreferrer">공식 근거</a></td></tr>
+<tr><td>10</td><td><a href="https://www.oracle.com/cloud/free/" target="_blank" rel="noopener noreferrer">Oracle Cloud Always Free</a></td><td>VM·서버</td><td>Ubuntu·Docker·API</td><td>A1 합산 2 OCPU·12GB 상당</td><td>리전 용량 부족 가능; 네트워크·보안·과금 설정 주의</td><td><a href="https://docs.oracle.com/en-us/iaas/Content/FreeTier/freetier_topic-Always_Free_Resources.htm" target="_blank" rel="noopener noreferrer">공식 근거</a></td></tr>
+<tr><td>11</td><td><a href="https://codeberg.page/" target="_blank" rel="noopener noreferrer">Codeberg Pages</a></td><td>정적·문서</td><td>오픈소스·개인 문서</td><td>Pages 기능 안내 제공</td><td>서비스 정책·프로젝트 적격성 확인</td><td><a href="https://docs.codeberg.org/codeberg-pages/" target="_blank" rel="noopener noreferrer">공식 근거</a></td></tr>
+<tr><td>12</td><td><a href="https://neocities.org/" target="_blank" rel="noopener noreferrer">Neocities</a></td><td>정적</td><td>개인 HTML·CSS 사이트</td><td>무료 계정 제공</td><td>파일 형식·크기·대역폭 제한 확인</td><td><a href="https://neocities.org/" target="_blank" rel="noopener noreferrer">공식 근거</a></td></tr>
+<tr><td>13</td><td><a href="https://www.infinityfree.com/" target="_blank" rel="noopener noreferrer">InfinityFree</a></td><td>PHP·DB</td><td>PHP/MySQL 학습</td><td>무료 호스팅 제공</td><td>상업 운영·리소스·보안 정책 별도 확인</td><td><a href="https://www.infinityfree.com/" target="_blank" rel="noopener noreferrer">공식 근거</a></td></tr>
+<tr><td>14</td><td><a href="https://www.pythonanywhere.com/" target="_blank" rel="noopener noreferrer">PythonAnywhere</a></td><td>Python 웹</td><td>작은 Python 웹 실습</td><td>무료 계정 안내</td><td>외부 인터넷 접근·도메인·자원 제한</td><td><a href="https://www.pythonanywhere.com/pricing/" target="_blank" rel="noopener noreferrer">공식 근거</a></td></tr>
+<tr><td>15</td><td><a href="https://sites.google.com/" target="_blank" rel="noopener noreferrer">Google Sites</a></td><td>노코드</td><td>안내 페이지·간단한 공유</td><td>개인 무료 사용 가능</td><td>서버 코드·자유로운 HTML 배포 불가</td><td><a href="https://support.google.com/sites/" target="_blank" rel="noopener noreferrer">공식 근거</a></td></tr></tbody></table></div></section>
+<section><h2>3. 적대적 검증: 이전 설명에서 수정한 핵심 오류</h2>
+<div class="grid">
+<div class="tile"><b>Oracle Cloud A1</b><p>무료 ARM 인스턴스의 공식 안내는 월 1,500 OCPU 시간·9,000GB 시간으로, 상시 이용 기준 <strong>합산 2 OCPU·12GB RAM 상당</strong>입니다. 기존 4 OCPU·24GB 표기는 폐기합니다.</p><a href="https://docs.oracle.com/en-us/iaas/Content/FreeTier/freetier_topic-Always_Free_Resources.htm">공식 문서</a></div>
+<div class="tile"><b>000webhost 종료</b><p>2024년 7월 신규 가입 중지, 2024년 10월 14일 종료. 운영 중인 무료 서비스 목록에서는 제외합니다.</p><a href="https://www.hostinger.com/blog/000webhost-closes/">공식 공지</a></div>
+<div class="tile"><b>Vercel Hobby</b><p>무료 요금제는 개인·비상업적 사용으로 제한됩니다. 업무·상업적 AI 서비스 배포를 추천하지 않습니다.</p><a href="https://vercel.com/docs/plans/hobby">공식 문서</a></div>
+<div class="tile"><b>GitHub Pages</b><p>배포 사이트 최대 1GB, 월 100GB 대역폭은 <strong>소프트 제한</strong>입니다. 서버 측 Python 프로세스는 직접 실행할 수 없습니다.</p><a href="https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits">공식 문서</a></div>
+<div class="tile"><b>Cloudflare Pages</b><p>무료 월 500회 빌드, 최대 20,000개 파일, 파일당 25MiB 제한. Functions 요청은 Workers 요금제 한도로 따로 계산됩니다.</p><a href="https://developers.cloudflare.com/pages/platform/limits/">공식 문서</a></div>
+<div class="tile"><b>DigitalOcean·Railway</b><p>DigitalOcean은 <strong>정적 앱 3개</strong>까지만 무료 대상입니다. Railway 등 크레딧형 서비스는 월별 한도·체험 크레딧·초과 청구를 따로 검토해야 하며 이 표에서 영구 무료 서버로 확정하지 않았습니다.</p><a href="https://docs.digitalocean.com/reference/mcp/agent-deploy-guidelines/">공식 문서</a></div>
+</div></section>
+<section><h2>4. 선택 가이드: 프로젝트에 맞는 배포 방식</h2><div class="grid">
+<div class="tile"><b>HTML 교재·SVG·이미지</b><p><strong>GitHub Pages → Cloudflare Pages</strong><br>정적 자료 및 소스 이력 중심. 기존 GitHub 저장소와 목차 유지.</p></div>
+<div class="tile"><b>React·Next.js 프런트엔드</b><p><strong>Netlify / Vercel / Cloudflare</strong><br>개인·상업용 정책과 빌드·함수 한도를 먼저 대조.</p></div>
+<div class="tile"><b>FastAPI·백엔드 연계</b><p><strong>Render(실습) / 별도 Ubuntu 서버</strong><br>무료 인스턴스 유휴 중지·데이터 영속성 제한 주의.</p></div></div>
+<div class="path"><span>GitHub 저장소<br><small>HTML / CSS / JS</small></span><i>→</i><span>GitHub Pages<br><small>공개 학습자료</small></span><i>↔</i><span>FastAPI 서버<br><small>인증 / API</small></span><i>↔</i><span>별도 연산 서버<br><small>LLM / Elasticsearch / KiCad</small></span></div>
+<p>GitHub Pages가 서버 API를 호출할 수는 있지만, 인증 토큰이나 API 키를 정적 HTML·JavaScript에 노출하면 안 됩니다. 외부 공개 API는 인증·접근 제어·HTTPS·CORS·속도 제한을 고려해야 합니다. GPU 모델 추론을 무료 정적 호스팅에서 직접 실행할 수 있다고 가정하지 않습니다.</p></section>
+<section><h2>5. 게시 전 점검</h2><ol><li>계정·리전에서 무료 가입과 자원 개설이 가능한지 확인</li><li>상업적 사용 허용·카드 등록·자동 청구·초과 과금 규칙 확인</li><li>월 빌드·대역폭·파일 크기·함수 실행·유휴 중지 조건 확인</li><li>DB 백업·지속 저장소·도메인·HTTPS·로그 보존 확인</li><li>비밀키를 GitHub 저장소·공개 HTML에 포함하지 않도록 검사</li></ol>
+<p class="muted">문서 갱신 기준: 2026-11-14. 요금·제품 정책은 수시로 변경되므로 링크된 공식 문서를 우선합니다. 특정 서비스의 무료 정책을 확인하지 못한 부분은 수치로 단정하지 않았습니다.</p></section>
+</main><footer>AI 서비스 개발·설계 2026 · 제10장 참고자료 · 공식 출처 기반 비교</footer></body></html>
