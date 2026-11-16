@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 콘텐츠 도구 & 프롬프트 빌더 v5</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0f14;--surface:#161920;--surface2:#1e2230;--border:#2a2f3e;
+  --accent:#4f8ef7;--av:#f7a259;--aa:#59f7a2;--at:#a259f7;--ac:#f7596a;--ap:#ffb432;
+  --text:#e8eaf0;--muted:#7a8099;--dim:#4a5068;
+  --r:10px;--mono:'JetBrains Mono',monospace;
+}
+@media(prefers-color-scheme:light){
+  :root{--bg:#f0f2f8;--surface:#fff;--surface2:#e8ecf5;--border:#d0d5e8;--text:#1a1d2e;--muted:#5a6080;--dim:#9a9fb8;}
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:14px;line-height:1.7;}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:28px 40px 20px;max-width:1300px;margin:0 auto;}
+.eyebrow{font-size:11px;font-family:var(--mono);color:var(--accent);letter-spacing:.12em;margin-bottom:7px;}
+header h1{font-size:24px;font-weight:700;margin-bottom:5px;}
+header p{color:var(--muted);font-size:13px;}
+main{max-width:1300px;margin:0 auto;padding:0 40px 60px;}
+section{margin-top:32px;}
+.sec-title{font-size:12px;font-family:var(--mono);color:var(--dim);margin-bottom:14px;padding-bottom:7px;border-bottom:1px solid var(--border);}
+
+/* 도서관 카드 */
+.lib-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+.ltab{font-size:12px;padding:5px 13px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;transition:all .15s;}
+.ltab.active,.ltab:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+.domain-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px;}
+.dcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.dcard-head{padding:14px 16px 10px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+.dcard-kdc{font-size:10px;font-family:var(--mono);color:var(--accent);letter-spacing:.08em;}
+.dcard-title{font-size:15px;font-weight:700;margin:2px 0 4px;}
+.dcard-sub{font-size:12px;color:var(--muted);}
+.dcard-str{font-size:11px;background:rgba(79,142,247,.12);color:var(--accent);border:1px solid rgba(79,142,247,.2);border-radius:6px;padding:3px 8px;white-space:nowrap;}
+.dcard-body{padding:12px 16px;}
+.site-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);}
+.site-row:last-child{border-bottom:none;}
+.site-left{display:flex;align-items:center;gap:8px;min-width:0;}
+.site-rank{font-family:var(--mono);font-size:11px;color:var(--dim);width:18px;flex-shrink:0;}
+.g1{color:#ffd700;font-weight:700;}.g2{color:#c0c0c0;font-weight:700;}.g3{color:#cd7f32;font-weight:700;}
+.site-name{font-weight:600;font-size:13px;white-space:nowrap;}
+.site-desc{font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px;}
+.site-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.stars-s{font-size:10px;color:var(--av);}
+.site-link{font-size:11px;font-family:var(--mono);color:var(--accent);text-decoration:none;}
+.site-link:hover{text-decoration:underline;}
+
+/* AI 도구 테이블 */
+.tool-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.ttab{font-size:12px;padding:5px 13px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;transition:all .15s;}
+.ttab.active{color:#fff;border-color:transparent;}
+.ttab[data-cat="전체"].active{background:var(--accent);}
+.ttab[data-cat="영상"].active{background:var(--av);}
+.ttab[data-cat="음원"].active{background:var(--aa);color:#111!important;}
+.ttab[data-cat="이미지"].active{background:var(--accent);}
+.ttab[data-cat="텍스트"].active{background:var(--at);}
+.ttab[data-cat="슬라이드"].active{background:var(--ap);color:#111!important;}
+.ttab[data-cat="코드"].active{background:var(--ac);}
+.tool-table{width:100%;border-collapse:collapse;font-size:13px;}
+.tool-table th{text-align:left;padding:8px 10px;font-size:11px;font-family:var(--mono);color:var(--dim);border-bottom:1px solid var(--border);font-weight:400;}
+.tool-table td{padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.tool-table tr:last-child td{border-bottom:none;}
+.tool-table tr:hover td{background:rgba(255,255,255,.02);}
+.rk{font-family:var(--mono);font-size:11px;color:var(--dim);}
+.rk.r1{color:#ffd700;font-weight:700;}.rk.r2{color:#c0c0c0;font-weight:700;}.rk.r3{color:#cd7f32;font-weight:700;}
+.tool-nm{font-weight:600;}
+.tag{font-size:10px;font-family:var(--mono);padding:2px 7px;border-radius:12px;white-space:nowrap;font-weight:600;margin-left:5px;}
+.tag-v{background:rgba(247,162,89,.15);color:var(--av);border:1px solid rgba(247,162,89,.3);}
+.tag-a{background:rgba(89,247,162,.12);color:var(--aa);border:1px solid rgba(89,247,162,.25);}
+.tag-i{background:rgba(79,142,247,.12);color:var(--accent);border:1px solid rgba(79,142,247,.25);}
+.tag-t{background:rgba(162,89,247,.12);color:var(--at);border:1px solid rgba(162,89,247,.25);}
+.tag-c{background:rgba(247,89,106,.12);color:var(--ac);border:1px solid rgba(247,89,106,.25);}
+.tag-p{background:rgba(255,180,50,.12);color:var(--ap);border:1px solid rgba(255,180,50,.25);}
+.tool-desc-col{color:var(--muted);}
+.stars{color:var(--av);font-size:12px;}
+.tool-link{font-size:11px;font-family:var(--mono);color:var(--accent);text-decoration:none;white-space:nowrap;}
+.tool-link:hover{text-decoration:underline;}
+
+/* 프롬프트 빌더 */
+.builder{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:24px;}
+.common-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:11px;margin-bottom:18px;}
+.fg{display:flex;flex-direction:column;gap:4px;}
+.fl{font-size:11px;font-family:var(--mono);color:var(--muted);letter-spacing:.05em;}
+select,input[type=text]{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:8px 28px 8px 10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;width:100%;appearance:none;-webkit-appearance:none;transition:border-color .15s;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a8099' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;}
+input[type=text]{background-image:none;padding-right:10px;}
+select:focus,input:focus{outline:none;border-color:var(--accent);}
+.domain-sel-label{font-size:11px;font-family:var(--mono);color:var(--muted);margin-bottom:9px;}
+.domain-btn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:8px;margin-bottom:20px;}
+.dbtn{padding:9px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;font-size:12px;font-family:'Noto Sans KR',sans-serif;text-align:left;transition:all .2s;line-height:1.4;width:100%;}
+.dbtn .dbtn-kdc{font-size:10px;font-family:var(--mono);color:var(--dim);display:block;margin-bottom:2px;}
+.dbtn .dbtn-name{font-weight:600;color:var(--text);font-size:12px;}
+.dbtn:hover{border-color:var(--accent);}
+.dbtn.active{border-color:var(--accent);background:rgba(79,142,247,.12);}
+.dbtn.active .dbtn-kdc{color:var(--accent);}
+.dbtn.active .dbtn-name{color:var(--accent);}
+
+/* 아코디언 */
+.accordion-wrap{margin-bottom:18px;}
+.accordion-panel{display:none;background:var(--surface2);border:1px solid var(--accent);border-radius:9px;padding:20px;animation:fadeIn .2s ease;}
+.accordion-panel.open{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+.panel-title{font-size:13px;font-weight:700;color:var(--accent);margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.panel-hint{font-size:12px;color:var(--muted);margin-bottom:16px;padding:8px 12px;background:rgba(79,142,247,.07);border-radius:6px;border-left:3px solid var(--accent);}
+.panel-section{margin-bottom:16px;}
+.panel-section-title{font-size:11px;font-family:var(--mono);color:var(--accent);margin-bottom:8px;letter-spacing:.06em;}
+.panel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:10px;}
+.panel-grid .span2{grid-column:span 2;}
+.panel-grid .span3{grid-column:span 3;}
+
+/* 출력 */
+.presets{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px;}
+.chip{font-size:12px;padding:5px 11px;border-radius:20px;background:var(--surface2);border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all .15s;}
+.chip:hover,.chip.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center;}
+button{padding:8px 16px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:opacity .15s,transform .1s;font-family:'Noto Sans KR',sans-serif;}
+button:active{transform:scale(.97);}
+.btn-p{background:var(--accent);color:#fff;}
+.btn-s{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+.btn-c{background:var(--surface2);color:var(--aa);border:1px solid rgba(89,247,162,.25);font-size:12px;padding:6px 13px;}
+button:hover{opacity:.85;}
+.out-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;min-height:120px;}
+.out-label{font-size:10px;font-family:var(--mono);color:var(--dim);margin-bottom:7px;}
+#promptOutput{font-family:var(--mono);font-size:13px;color:var(--text);line-height:1.9;white-space:pre-wrap;word-break:break-word;}
+.char-count{font-size:11px;font-family:var(--mono);color:var(--muted);margin-top:7px;text-align:right;}
+.char-count.over{color:var(--ac);}
+.toast{display:none;font-size:12px;color:var(--aa);font-family:var(--mono);}
+.divider{border:none;border-top:1px solid var(--border);margin:18px 0;}
+footer{max-width:1300px;margin:0 auto;padding:16px 40px 32px;font-size:11px;color:var(--dim);font-family:var(--mono);border-top:1px solid var(--border);}
+@media(max-width:640px){header,main,footer{padding-left:16px;padding-right:16px;}header h1{font-size:19px;}.domain-cards,.domain-btn-grid,.common-grid,.panel-grid{grid-template-columns:1fr!important;}.panel-grid .span2,.panel-grid .span3{grid-column:span 1;}}
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">AI CONTENT TOOLKIT · KDC 도서분류 기준 · 2025</div>
+  <h1>AI 도구 · 도메인 전문 사이트 & 프롬프트 빌더</h1>
+  <p>KDC 전문 영역별 주요 사이트 10선 · AI 콘텐츠 도구 60선 · 영역별 전용 프롬프트 생성기 (1000자 이내)</p>
+  <p style="margin-top:10px;font-size:.85rem"><a href="../index.html" style="color:inherit">← 학습 허브</a> · <a href="../materials/day11/deck/day11_1_research_and_content.html" style="color:inherit">← 11일차 강의자료 설계</a></p>
+</header>
+<main>
+
+<section>
+  <div class="sec-title">01 / 도메인 전문 영역별 주요 사이트 — KDC 도서분류 기준 Top 10</div>
+  <p style="margin:6px 0 14px;font-size:.82rem;opacity:.8;line-height:1.6">KDC(한국십진분류)의 주류 번호를 따랐습니다. 교육학은 사회과학 아래의 <b>370</b>에 속하며, 이 도구는 주류 중 200(종교)·800(문학)을 다루지 않습니다. 별점과 순위는 제작자의 주관적 평가입니다.</p>
+  <div class="lib-tabs" id="libTabs"></div>
+  <div class="domain-cards" id="domainCards"></div>
+</section>
+
+<section>
+  <div class="sec-title">02 / AI 콘텐츠 도구 일람 — 분류별 선호도 Top 10</div>
+  <p style="margin:6px 0 14px;font-size:.82rem;opacity:.8;line-height:1.6">‘선호도’ 별점과 순위는 제작자의 주관적 평가이며 출처가 있는 통계가 아닙니다. 도구 이름·버전은 2025년 기준이므로 수업 전에 각 서비스의 최신 안내를 확인하세요.</p>
+  <div class="tool-tabs" id="toolTabs"></div>
+  <div style="overflow-x:auto;">
+    <table class="tool-table">
+      <thead><tr><th style="width:32px;">#</th><th>도구명</th><th>핵심 기능 · 강점</th><th>선호도</th><th>링크</th></tr></thead>
+      <tbody id="toolBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="sec-title">03 / 전문 영역별 프롬프트 빌더 — 아코디언 세부 패널 · 1000자 이내</div>
+  <div class="builder">
+    <div style="margin-bottom:16px;">
+      <div class="fl" style="margin-bottom:8px;">빠른 프리셋</div>
+      <div class="presets" id="presetChips"></div>
+    </div>
+    <hr class="divider">
+    <div class="fl" style="margin-bottom:10px;">공통 항목</div>
+    <div class="common-grid">
+      <div class="fg"><label class="fl">사용 AI 도구</label>
+        <select id="selTool">
+          <option value="">선택</option>
+          <option>Runway Gen-3</option><option>Kling</option><option>Sora</option><option>Veo 2</option>
+          <option>Suno v4</option><option>Udio</option><option>Mubert</option>
+          <option>Midjourney v7</option><option>Adobe Firefly</option><option>DALL-E 3</option>
+          <option>Claude</option><option>ChatGPT-4o</option><option>Gamma</option><option>GitHub Copilot</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">콘텐츠 유형</label>
+        <select id="selContent">
+          <option value="">선택</option>
+          <option>영상 — Text-to-Video</option><option>영상 — Image-to-Video</option>
+          <option>음원 — BGM 반주</option><option>음원 — 보컬 포함</option>
+          <option>이미지 — 사진풍 실사</option><option>이미지 — 일러스트</option>
+          <option>텍스트 — 카피라이팅</option><option>텍스트 — 스크립트</option>
+          <option>슬라이드 — 프레젠테이션</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">분위기·톤</label>
+        <select id="selMood">
+          <option value="">선택</option>
+          <option>Cinematic epic · 시네마틱</option><option>Dramatic intense · 드라마틱</option>
+          <option>Calm and peaceful · 차분한</option><option>Energetic and dynamic · 역동적</option>
+          <option>Dark and moody · 어둡고 무거운</option><option>Warm and friendly · 따뜻한</option>
+          <option>Professional and clean · 전문적</option><option>Futuristic and tech · 미래적</option>
+          <option>Nostalgic retro · 복고풍</option><option>Mysterious and tense · 긴장감</option>
+          <option>Playful and fun · 유쾌한</option><option>Elegant and luxurious · 고급스러운</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">화질·스타일</label>
+        <select id="selStyle">
+          <option value="">선택</option>
+          <option>Photorealistic 8K</option><option>Cinematic film grain 35mm</option>
+          <option>Hyperrealistic HDR</option><option>Anime stylized</option>
+          <option>Digital illustration flat</option><option>Minimalist clean</option>
+          <option>Vintage film look</option><option>High contrast black and white</option>
+          <option>Watercolor soft</option><option>3D render stylized</option>
+        </select>
+      </div>
+    </div>
+    <hr class="divider">
+    <div class="domain-sel-label">전문 영역 선택 → 해당 영역 전용 세부 항목이 펼쳐집니다 (비전공자도 쉽게 선택 가능)</div>
+    <div class="domain-btn-grid" id="domainBtnGrid"></div>
+    <div class="accordion-wrap" id="accordionWrap"></div>
+    <hr class="divider">
+    <div class="btn-row">
+      <button class="btn-p" onclick="buildPrompt()">🔧 프롬프트 생성</button>
+      <button class="btn-s" onclick="resetAll()">↺ 초기화</button>
+      <button class="btn-c" onclick="copyPrompt()">복사 ✓</button>
+      <span class="toast" id="copyToast">클립보드에 복사됨!</span>
+    </div>
+    <div class="out-box">
+      <div class="out-label">GENERATED PROMPT</div>
+      <div id="promptOutput">— 공통 항목 + 전문 영역을 선택하고 [프롬프트 생성]을 누르세요 —</div>
+    </div>
+    <div class="char-count" id="charCount"></div>
+  </div>
+</section>
+</main>
+<footer>AI Content Toolkit 2025 · KDC 도서분류 기준 · 도메인 지식 + AI = 최고의 콘텐츠</footer>
+
+<script>
+// ════════════════════════════════════════════════════
+// 도서관 도메인 사이트 데이터
+// ════════════════════════════════════════════════════
+const domains=[
+  {kdc:"000",label:"총류 · AI · 정보과학",strength:"AI 모델·논문·데이터셋 검색, 최신 연구 동향",sites:[
+    {r:1,name:"Papers With Code",desc:"AI 논문+코드 동시 제공",star:5,url:"paperswithcode.com"},
+    {r:2,name:"arXiv",desc:"AI·CS 최신 논문 무료",star:5,url:"arxiv.org"},
+    {r:3,name:"Hugging Face",desc:"모델·데이터셋·데모 허브",star:5,url:"huggingface.co"},
+    {r:4,name:"Semantic Scholar",desc:"AI 기반 학술 검색",star:4,url:"semanticscholar.org"},
+    {r:5,name:"Google Scholar",desc:"전 분야 학술 검색 최강",star:5,url:"scholar.google.com"},
+    {r:6,name:"OpenAI Research",desc:"GPT·DALL-E 연구 블로그",star:4,url:"openai.com/research"},
+    {r:7,name:"DeepMind Blog",desc:"Gemini·AlphaFold 연구",star:4,url:"deepmind.google/blog"},
+    {r:8,name:"Distill.pub",desc:"AI 개념 시각화 해설",star:4,url:"distill.pub"},
+    {r:9,name:"Weights & Biases",desc:"ML 실험 추적·시각화",star:4,url:"wandb.ai"},
+    {r:10,name:"Kaggle",desc:"데이터·경진대회·노트북",star:4,url:"kaggle.com"},
+  ]},
+  {kdc:"100",label:"철학 · 심리학 · 인지과학",strength:"인간 사고·행동 이해, UX 심리 적용",sites:[
+    {r:1,name:"Stanford Encyclopedia",desc:"철학 개념 최고 권위",star:5,url:"plato.stanford.edu"},
+    {r:2,name:"APA PsycINFO",desc:"심리학 논문 데이터베이스",star:5,url:"apa.org"},
+    {r:3,name:"Psychology Today",desc:"대중 심리학 최대 매체",star:4,url:"psychologytoday.com"},
+    {r:4,name:"Cognitive Science Society",desc:"인지과학 연구 학회",star:4,url:"cognitivesciencesociety.org"},
+    {r:5,name:"Nielsen Norman Group",desc:"UX 심리학 적용 연구",star:5,url:"nngroup.com"},
+    {r:6,name:"Positive Psychology",desc:"긍정 심리학 자료 집결",star:4,url:"positivepsychology.com"},
+    {r:7,name:"TED (Psychology)",desc:"심리·뇌과학 강연",star:4,url:"ted.com/topics/psychology"},
+    {r:8,name:"The Marginalian",desc:"철학·문학 인문 에세이",star:3,url:"themarginalian.org"},
+    {r:9,name:"Coursera Psychology",desc:"주요 대학 심리학 강좌",star:4,url:"coursera.org"},
+    {r:10,name:"JSTOR",desc:"인문·사회과학 아카이브",star:4,url:"jstor.org"},
+  ]},
+  {kdc:"300",label:"사회과학 · 경영 · 경제",strength:"시장 분석, 비즈니스 전략, 경제 데이터",sites:[
+    {r:1,name:"Harvard Business Review",desc:"경영 전략 최고 권위지",star:5,url:"hbr.org"},
+    {r:2,name:"McKinsey Insights",desc:"글로벌 경영 컨설팅 리포트",star:5,url:"mckinsey.com/insights"},
+    {r:3,name:"World Bank Open Data",desc:"세계 경제 통계 무료 공개",star:5,url:"data.worldbank.org"},
+    {r:4,name:"OECD Data",desc:"선진국 경제·사회 지표",star:5,url:"stats.oecd.org"},
+    {r:5,name:"Statista",desc:"시장 통계·인포그래픽",star:4,url:"statista.com"},
+    {r:6,name:"Bloomberg",desc:"금융·경제 실시간 뉴스",star:4,url:"bloomberg.com"},
+    {r:7,name:"SSRN",desc:"사회과학 프리프린트 논문",star:4,url:"ssrn.com"},
+    {r:8,name:"IMF Data",desc:"국제통화기금 경제 데이터",star:4,url:"imf.org/en/Data"},
+    {r:9,name:"CB Insights",desc:"스타트업·VC 트렌드 분석",star:4,url:"cbinsights.com"},
+    {r:10,name:"Euromonitor",desc:"소비자 시장 글로벌 리서치",star:3,url:"euromonitor.com"},
+  ]},
+  {kdc:"370",label:"교육학 · 에듀테크",strength:"학습 설계, 교육 콘텐츠 제작, 이러닝 플랫폼",sites:[
+    {r:1,name:"Coursera",desc:"명문대 강좌·AI 활용 최대",star:5,url:"coursera.org"},
+    {r:2,name:"edX",desc:"MIT·Harvard 무료 강좌",star:5,url:"edx.org"},
+    {r:3,name:"Khan Academy",desc:"K-12 무료 교육 최강",star:5,url:"khanacademy.org"},
+    {r:4,name:"EDUCAUSE",desc:"고등교육 에듀테크 연구",star:4,url:"educause.edu"},
+    {r:5,name:"TED-Ed",desc:"교육용 애니메이션 강의",star:4,url:"ed.ted.com"},
+    {r:6,name:"Instructional Design",desc:"교수설계 이론·실전 가이드",star:4,url:"instructionaldesign.org"},
+    {r:7,name:"Moodle",desc:"오픈소스 LMS 최대 커뮤니티",star:4,url:"moodle.org"},
+    {r:8,name:"Udemy",desc:"실무 기술 강좌 최대 마켓",star:4,url:"udemy.com"},
+    {r:9,name:"ISTE",desc:"교육 기술 국제 학회",star:4,url:"iste.org"},
+    {r:10,name:"Class Central",desc:"MOOC 강좌 비교·리뷰",star:3,url:"classcentral.com"},
+  ]},
+  {kdc:"400",label:"자연과학 · 수학 · 물리",strength:"과학 논문, 수식·시뮬레이션, 데이터 분석",sites:[
+    {r:1,name:"Nature",desc:"세계 최고 과학 저널",star:5,url:"nature.com"},
+    {r:2,name:"Science Magazine",desc:"AAAS 최고 권위 과학지",star:5,url:"science.org"},
+    {r:3,name:"PubMed",desc:"생명과학·의학 논문 최대",star:5,url:"pubmed.ncbi.nlm.nih.gov"},
+    {r:4,name:"Wolfram Alpha",desc:"수학·과학 계산 AI 엔진",star:5,url:"wolframalpha.com"},
+    {r:5,name:"Khan Academy Math",desc:"수학 개념 무료 강의",star:4,url:"khanacademy.org"},
+    {r:6,name:"NASA Technical Reports",desc:"우주·항공 연구 공개 자료",star:4,url:"ntrs.nasa.gov"},
+    {r:7,name:"PhysicsForums",desc:"물리 Q&A 전문가 커뮤니티",star:3,url:"physicsforums.com"},
+    {r:8,name:"Brilliant.org",desc:"수학·과학 인터랙티브 학습",star:4,url:"brilliant.org"},
+    {r:9,name:"Observable",desc:"데이터 시각화·수식 노트북",star:4,url:"observablehq.com"},
+    {r:10,name:"Desmos",desc:"그래프 계산기·수식 시각화",star:4,url:"desmos.com"},
+  ]},
+  {kdc:"500",label:"기술·공학 · 반도체·전자",strength:"엔지니어링 설계, 반도체 공정, 전자 회로",sites:[
+    {r:1,name:"IEEE Xplore",desc:"전기·전자·반도체 논문 최대",star:5,url:"ieeexplore.ieee.org"},
+    {r:2,name:"SEMI.org",desc:"반도체 산업 표준·통계",star:5,url:"semi.org"},
+    {r:3,name:"Semiconductor Engineering",desc:"반도체 공정 심층 분석",star:5,url:"semiengineering.com"},
+    {r:4,name:"EETimes",desc:"전자공학 최신 뉴스·트렌드",star:4,url:"eetimes.com"},
+    {r:5,name:"TSMC Technology",desc:"파운드리 기술 공개 자료",star:4,url:"tsmc.com"},
+    {r:6,name:"SparkFun",desc:"전자 부품·회로 튜토리얼",star:4,url:"sparkfun.com"},
+    {r:7,name:"Hackaday",desc:"하드웨어 해킹·메이커 커뮤니티",star:3,url:"hackaday.com"},
+    {r:8,name:"All About Circuits",desc:"회로이론·전자공학 무료 교재",star:4,url:"allaboutcircuits.com"},
+    {r:9,name:"TechInsights",desc:"반도체 칩 분해·분석 리포트",star:4,url:"techinsights.com"},
+    {r:10,name:"VLSI Research",desc:"반도체 시장·기술 조사",star:3,url:"vlsiresearch.com"},
+  ]},
+  {kdc:"600",label:"예술 · 음악 · 영상",strength:"창작 레퍼런스, 영상 제작, 음악 이론·트렌드",sites:[
+    {r:1,name:"Behance",desc:"디자인·영상 포트폴리오 최대",star:5,url:"behance.net"},
+    {r:2,name:"Dribbble",desc:"UI/UX 디자인 커뮤니티",star:5,url:"dribbble.com"},
+    {r:3,name:"Vimeo",desc:"고품질 영상 크리에이터 플랫폼",star:5,url:"vimeo.com"},
+    {r:4,name:"SoundCloud",desc:"음악 공유·발굴 플랫폼",star:4,url:"soundcloud.com"},
+    {r:5,name:"ArtStation",desc:"게임·영화 아트 포트폴리오",star:5,url:"artstation.com"},
+    {r:6,name:"MusicTheory.net",desc:"음악 이론 무료 강의",star:4,url:"musictheory.net"},
+    {r:7,name:"No Film School",desc:"영상 제작 기술·트렌드",star:4,url:"nofilmschool.com"},
+    {r:8,name:"Motionographer",desc:"모션그래픽 레퍼런스",star:4,url:"motionographer.com"},
+    {r:9,name:"Adobe Color",desc:"색상 팔레트·컬러 이론",star:4,url:"color.adobe.com"},
+    {r:10,name:"Pinterest",desc:"시각적 레퍼런스·무드보드",star:3,url:"pinterest.com"},
+  ]},
+  {kdc:"700",label:"언어학 · 커뮤니케이션",strength:"카피라이팅, 번역, 콘텐츠 전략, 다국어 처리",sites:[
+    {r:1,name:"Grammarly Blog",desc:"영어 문법·글쓰기 가이드",star:5,url:"grammarly.com/blog"},
+    {r:2,name:"DeepL",desc:"AI 번역 품질 최고",star:5,url:"deepl.com"},
+    {r:3,name:"Content Marketing Institute",desc:"콘텐츠 마케팅 전략·리서치",star:5,url:"contentmarketinginstitute.com"},
+    {r:4,name:"Copyblogger",desc:"카피라이팅 최고 블로그",star:4,url:"copyblogger.com"},
+    {r:5,name:"Nielsen Norman Group",desc:"UX 라이팅·콘텐츠 설계",star:5,url:"nngroup.com"},
+    {r:6,name:"Moz Blog",desc:"SEO·콘텐츠 최적화",star:4,url:"moz.com/blog"},
+    {r:7,name:"Linguistic Society",desc:"언어학 학술 최고 기관",star:4,url:"linguisticsociety.org"},
+    {r:8,name:"Ethnologue",desc:"세계 언어 데이터베이스",star:4,url:"ethnologue.com"},
+    {r:9,name:"ProZ",desc:"번역가 전문 커뮤니티",star:3,url:"proz.com"},
+    {r:10,name:"COCA Corpus",desc:"영어 말뭉치 분석 도구",star:4,url:"english-corpora.org/coca"},
+  ]},
+  {kdc:"900",label:"역사 · 지리 · 문화콘텐츠",strength:"역사 고증, 문화 콘텐츠 기획, 지역 스토리텔링",sites:[
+    {r:1,name:"JSTOR",desc:"역사·인문학 아카이브 최대",star:5,url:"jstor.org"},
+    {r:2,name:"Smithsonian Magazine",desc:"역사·문화 심층 콘텐츠",star:5,url:"smithsonianmag.com"},
+    {r:3,name:"National Geographic",desc:"지리·문화·자연 최고 매체",star:5,url:"nationalgeographic.com"},
+    {r:4,name:"Google Arts & Culture",desc:"세계 미술·역사 디지털 아카이브",star:5,url:"artsandculture.google.com"},
+    {r:5,name:"Internet Archive",desc:"역사 자료·미디어 무료 아카이브",star:4,url:"archive.org"},
+    {r:6,name:"Encyclopedia Britannica",desc:"백과사전 최고 권위",star:5,url:"britannica.com"},
+    {r:7,name:"UNESCO",desc:"세계유산·문화 정책 자료",star:4,url:"unesco.org"},
+    {r:8,name:"Old Maps Online",desc:"역사 지도 디지털 아카이브",star:4,url:"oldmapsonline.org"},
+    {r:9,name:"한국사데이터베이스",desc:"한국사 1차 사료 최대",star:4,url:"db.history.go.kr"},
+    {r:10,name:"World Digital Library",desc:"희귀 역사 문헌 디지털화",star:4,url:"loc.gov/collections"},
+  ]},
+];
+
+// ════════════════════════════════════════════════════
+// 전문 영역별 아코디언 필드 — 대폭 확장판
+// 각 영역: 섹션별 분류 + 선택지 풍성하게
+// ════════════════════════════════════════════════════
+const domainFields={
+"000":{emoji:"🤖",title:"AI · 정보과학 전용 항목",
+  hint:"AI·정보과학 콘텐츠를 만들 때 필요한 항목입니다. 연구자가 아니어도 목적과 대상만 선택하면 프롬프트가 완성됩니다.",
+  sections:[
+    {title:"목적 & 작업",fields:[
+      {id:"ai_goal",    label:"전체 목표",    opts:["AI 개념을 쉽게 설명하고 싶다","연구 결과를 발표하고 싶다","AI 도구 사용법을 가르치고 싶다","데이터 분석 결과를 공유하고 싶다","AI 서비스·제품을 홍보하고 싶다","학습 자료를 만들고 싶다","AI 뉴스·트렌드를 전달하고 싶다"]},
+      {id:"ai_task",    label:"세부 작업 유형",opts:["모델 추론·예측 결과 설명","데이터 시각화·인포그래픽","논문 요약·분석 리포트","코드 생성·디버깅 가이드","챗봇·에이전트 시나리오","파인튜닝·학습 과정 소개","AI 윤리·규제 이슈 다루기","프롬프트 엔지니어링 튜토리얼"]},
+    ]},
+    {title:"기술 맥락",fields:[
+      {id:"ai_model",   label:"다루는 AI 모델", opts:["GPT-4o / ChatGPT","Claude 3.5","Gemini 1.5","Llama 3 (오픈소스)","Mistral","Stable Diffusion / Flux","Suno / Udio (음악 AI)","Runway / Kling (영상 AI)","특정 모델 없이 일반적으로"]},
+      {id:"ai_data",    label:"다루는 데이터 종류",opts:["텍스트·문서","이미지·사진","영상·동영상","음성·오디오","표·스프레드시트","시계열·센서 데이터","멀티모달 (여러 종류 혼합)","데이터 없음 (개념 설명만)"]},
+    ]},
+    {title:"출력 & 대상",fields:[
+      {id:"ai_output",  label:"만들고 싶은 결과물",opts:["쉽게 읽히는 블로그 글","발표용 슬라이드","유튜브 설명 영상 스크립트","인포그래픽·카드뉴스","기술 문서·매뉴얼","SNS 짧은 콘텐츠","뉴스레터·이메일","대화형 튜토리얼"]},
+      {id:"ai_level",   label:"대상 독자 수준",  opts:["AI를 처음 접하는 일반인","IT에 관심 있는 직장인","대학교 1~2학년","개발자·엔지니어","데이터 사이언티스트","AI 연구자·박사급","기업 임원·의사결정자","초중고 학생"]},
+    ]},
+    {title:"추가 옵션",fields:[
+      {id:"ai_lang",    label:"언어·지역",      opts:["한국어 중심","영어 중심","한영 병기","글로벌 범용"]},
+      {id:"ai_custom",  label:"추가 요구사항",  type:"text", placeholder:"예: 최신 2025년 트렌드 반영, 사례 3개 이상 포함, 초등학생도 이해할 수 있게..."},
+    ]},
+  ]
+},
+"100":{emoji:"🧠",title:"철학 · 심리학 전용 항목",
+  hint:"심리학·철학 콘텐츠는 주제와 적용 대상이 핵심입니다. 어렵게 생각하지 말고 '어떤 감정·상황'을 다루고 싶은지 선택하세요.",
+  sections:[
+    {title:"주제 & 테마",fields:[
+      {id:"psy_theme",  label:"다루고 싶은 심리 주제",opts:["인지 편향과 의사결정 오류","감정 조절과 스트레스 관리","동기부여와 목표 달성","인간관계와 사회적 영향력","자존감·자기효능감 향상","습관 형성과 행동 변화","창의성과 집중력","공감과 감정 지능 (EQ)","트라우마 회복과 심리 치료","행복과 긍정 심리학","의식·무의식·꿈의 심리학","소비 심리와 마케팅 행동"]},
+      {id:"psy_philosophy",label:"철학적 관점 (선택)",opts:["해당 없음","실존주의 (삶의 의미 탐구)","스토아 철학 (내면의 평정)","불교 철학 (마음챙김·명상)","공리주의 (최대 행복)","인본주의 (인간 가능성)","비판 이론 (사회 구조 분석)"]},
+    ]},
+    {title:"적용 & 맥락",fields:[
+      {id:"psy_target",  label:"적용 대상·상황",  opts:["직장인 번아웃 극복","학생 시험 불안 관리","부모-자녀 관계 개선","연인·부부 갈등 해결","조직 리더십과 팀 문화","마케팅·소비자 행동 분석","의료·상담 현장 적용","교육 현장 (교사·학생)","노인·시니어 심리","청소년 정체성 발달"]},
+      {id:"psy_format",  label:"콘텐츠 형식",    opts:["사례 중심 스토리텔링","개념 설명 카드뉴스","체크리스트·자가진단","Q&A 대화형","연구 사례·통계 근거","인포그래픽 시각화","워크숍 활동지","강의 슬라이드","유튜브 스크립트","팟캐스트 대본"]},
+    ]},
+    {title:"톤 & 출력",fields:[
+      {id:"psy_tone",    label:"서술 톤·스타일",  opts:["쉽고 친근한 일상 언어","학술적·논리적","공감·위로하는 감성적","코칭·동기부여형","비판적·분석적","유머를 곁들인 가벼운","뉴스레터풍 짧고 명확한"]},
+      {id:"psy_length",  label:"콘텐츠 길이",    opts:["30초 SNS 릴스 스크립트","3분 유튜브 쇼츠","10분 미니 강의","30분 클래스","1시간 워크숍","긴 아티클·에세이"]},
+      {id:"psy_custom",  label:"추가 요구사항",  type:"text", placeholder:"예: 한국 직장 문화 사례 포함, MZ세대 공감 언어, 특정 이론(매슬로우) 기반..."},
+    ]},
+  ]
+},
+"300":{emoji:"📊",title:"사회과학 · 경영 · 경제 전용 항목",
+  hint:"비즈니스·경제 콘텐츠는 '누구에게 무엇을 전달하는가'가 핵심입니다. 발표 목적과 청중을 선택하면 맞춤 프롬프트가 생성됩니다.",
+  sections:[
+    {title:"목적 & 용도",fields:[
+      {id:"biz_purpose", label:"콘텐츠 목적",    opts:["신규 사업 아이디어 발표","투자 유치 IR 피칭","분기·연간 실적 보고","시장 진입 전략 제안","브랜드·마케팅 캠페인 발표","사내 교육·트레이닝 자료","정부·공공 정책 브리핑","경쟁사 분석 리포트","소비자 조사 결과 발표","ESG·지속가능경영 보고"]},
+      {id:"biz_industry",label:"산업 분야",      opts:["IT·소프트웨어·SaaS","반도체·하드웨어","금융·핀테크·투자","유통·이커머스·물류","식품·음료·소비재","의료·바이오·헬스케어","에너지·환경·ESG","공공·정부·공공기관","교육·에듀테크","미디어·엔터테인먼트","자동차·모빌리티","패션·뷰티·라이프스타일"]},
+    ]},
+    {title:"청중 & 메시지",fields:[
+      {id:"biz_audience",label:"주요 청중",      opts:["대표이사·C레벨 임원","투자자·벤처캐피털","이사회·주주","마케팅·브랜드 팀","영업·BD 현장","재무·기획 팀","정책 입안자·규제 기관","일반 소비자·대중","언론·미디어","학계·연구기관","파트너·공급사"]},
+      {id:"biz_message", label:"핵심 전달 메시지",opts:["우리 제품·서비스가 왜 최고인가","시장 기회가 얼마나 큰가","경쟁사 대비 우리의 우위","투자 대비 수익(ROI)이 높다","리스크가 낮고 안정적이다","사회적 가치·임팩트가 있다","빠른 성장 가능성이 있다","혁신적 기술로 차별화된다"]},
+    ]},
+    {title:"데이터 & 시각화",fields:[
+      {id:"biz_data",    label:"데이터 근거 방식",opts:["시장 규모·성장률 통계","매출·영업이익 수치","사용자·고객 수 지표","비교 분석 (경쟁사 대비)","설문·인터뷰 질적 데이터","케이스스터디·성공 사례","트렌드·예측 데이터","재무 모델·시나리오 분석"]},
+      {id:"biz_visual",  label:"시각화 방식",    opts:["막대·원형·꺾은선 차트","타임라인·로드맵","프로세스 플로우차트","매트릭스·2×2 표","인포그래픽 카드","비교표·기능 체크리스트","지도·히트맵","간트 차트·일정표"]},
+    ]},
+    {title:"형식 & 스타일",fields:[
+      {id:"biz_format",  label:"결과물 형식",    opts:["PPT 슬라이드 (10장 이내)","A4 1페이지 요약","상세 보고서 (10~20페이지)","유튜브·웨비나 스크립트","이메일·뉴스레터","대시보드·데이터 시각화","보도자료·PR","SNS 카드뉴스"]},
+      {id:"biz_tone",    label:"발표 톤",         opts:["자신감 있고 설득력 있는","데이터 기반 냉철·객관적","스토리텔링 중심 감성적","간결하고 임팩트 있는","전문적이고 포멀한","친근하고 접근하기 쉬운"]},
+      {id:"biz_custom",  label:"추가 요구사항",  type:"text", placeholder:"예: 2025 Q3 실적 반영, 영문 병기, 슬라이드당 3줄 이하, 특정 KPI 포함..."},
+    ]},
+  ]
+},
+"400":{emoji:"🔬",title:"자연과학 · 수학 · 물리 전용 항목",
+  hint:"과학 콘텐츠는 '어떤 개념을 누구에게 어떻게 보여줄지'가 핵심입니다. 수식을 몰라도 주제와 대상만 선택하면 됩니다.",
+  sections:[
+    {title:"과학 주제",fields:[
+      {id:"sci_topic",   label:"다루고 싶은 과학 주제",opts:["양자역학과 양자컴퓨터","블랙홀과 우주의 기원","DNA·유전자와 생명공학","기후변화와 탄소중립","인공지능의 수학적 원리","확률과 통계 (일상 속)","뇌과학과 신경과학","나노기술과 신소재","핵에너지와 핵융합","수학의 아름다움 (소수·위상)","바이러스·면역학","화학반응과 에너지","물리학의 역사와 위대한 발견"]},
+      {id:"sci_domain",  label:"과학 세부 분야",  opts:["물리학 (역학·전자기·열역학)","화학 (유기·무기·분석화학)","생물학·분자생물학","지구과학·기상학","천문학·우주과학","수학·통계학","의학·바이오의학","환경과학·생태학","재료과학·나노공학"]},
+    ]},
+    {title:"설명 방식",fields:[
+      {id:"sci_level",   label:"설명 수준·대상",  opts:["초등학생 (비유와 그림 중심)","중학생 (기본 개념 이해)","고등학생 (심화 개념)","대학교 1~2학년 (전공 기초)","이공계 전공자","일반 성인 (교양 수준)","연구자·박사급","의사결정자·경영진"]},
+      {id:"sci_analogy", label:"비유·설명 방식",  opts:["일상 사물에 비유 (쉬운 언어)","수식·그래프 중심","역사·발견 스토리 중심","실험·관찰 과정 중심","문답·Q&A 형식","시뮬레이션·인터랙티브","전문 용어 그대로 사용"]},
+    ]},
+    {title:"형식 & 비주얼",fields:[
+      {id:"sci_format",  label:"콘텐츠 형식",     opts:["유튜브 과학 채널 스크립트","TED 강연 스타일","교과서·학습 자료","인포그래픽·포스터","3D 애니메이션·시뮬레이션","뉴스 기사·칼럼","팟캐스트 대본","SNS 카드뉴스 (5~10장)"]},
+      {id:"sci_visual",  label:"시각화 스타일",   opts:["과학 다큐멘터리풍 (BBC·NatGeo)","교과서 삽화 스타일","3D 렌더링·CG","손그림·스케치 느낌","데이터 플롯·그래프","인터랙티브 모델","미니멀 아이콘 디자인","사진 실사 중심"]},
+      {id:"sci_custom",  label:"추가 요구사항",   type:"text", placeholder:"예: SI 단위 사용, 최신 2024년 연구 반영, 한국 사례 포함, 오개념 교정 포함..."},
+    ]},
+  ]
+},
+"500":{emoji:"⚙️",title:"기술·공학 · 반도체·전자 전용 항목",
+  hint:"공학·반도체 콘텐츠는 '어떤 기술을 어떤 목적으로 보여주는가'가 중요합니다. 비전문가라면 목적과 청중만 선택해도 됩니다.",
+  sections:[
+    {title:"기술 주제",fields:[
+      {id:"eng_topic",   label:"다루고 싶은 기술 주제",opts:["반도체 칩 설계·제조 공정","AI 반도체 (NPU·GPU·TPU)","메모리 반도체 (D램·낸드)","전기차 배터리·파워 반도체","5G·6G 통신 반도체","IoT 센서·마이크로컨트롤러","디스플레이 기술 (OLED·마이크로LED)","양자컴퓨팅 하드웨어","로봇공학·자동화 시스템","에너지 하베스팅·신재생에너지","스마트팩토리·산업 IoT","소프트웨어 정의 반도체 (칩렛)"]},
+      {id:"eng_field",   label:"공학 세부 분야",   opts:["반도체·집적회로 설계","반도체 제조 공정·장비","전자·아날로그 회로 설계","임베디드 시스템·펌웨어","기계·메카트로닉스","재료공학·나노공학","에너지·전력 시스템","통신·RF 공학","소프트웨어·시스템 아키텍처"]},
+    ]},
+    {title:"공정 & 단계",fields:[
+      {id:"eng_process",  label:"다루는 공정·단계", opts:["아이디어·컨셉 설계","회로 설계·시뮬레이션 (EDA)","마스크·레이아웃 설계","웨이퍼 제조·리소그래피","식각·증착·CMP 공정","패키징·와이어본딩","테스트·검사·QC","양산·수율 최적화","시스템 통합·검증","필드 적용·유지보수"]},
+      {id:"eng_scale",    label:"기술 스케일",      opts:["3nm 이하 첨단 공정","5~7nm 선진 공정","10~28nm 주류 공정","레거시 공정 (28nm 이상)","패키징·후공정 중심","시스템 레벨 통합"]},
+    ]},
+    {title:"청중 & 비주얼",fields:[
+      {id:"eng_audience", label:"대상 청중",         opts:["반도체 엔지니어·연구원","기업 임원·전략 담당","투자자·애널리스트","대학원생·연구기관","학부생·비전공자","일반 대중·미디어","정책 입안자·정부 관계자","파트너사·공급망"]},
+      {id:"eng_visual",   label:"시각화 방식",       opts:["3D 공정 단면도 애니메이션","회로·블록 다이어그램","전자현미경(SEM) 이미지풍","클린룸 실제 환경 영상","기술 스펙 인포그래픽","공정 플로우차트","비교 성능 차트","개념 아이콘 일러스트"]},
+    ]},
+    {title:"톤 & 형식",fields:[
+      {id:"eng_tone",     label:"발표 톤",           opts:["기술 정밀·논리적","비즈니스 전략적","교육·설명적 (쉽게)","홍보·마케팅형","투자 설득형","학술·논문 스타일"]},
+      {id:"eng_format",   label:"결과물 형식",       opts:["발표 슬라이드 (20장)","백서·기술 문서","유튜브 테크 채널 영상","인포그래픽 포스터","뉴스 기사·보도자료","학회 발표 자료","SNS 카드뉴스","이메일 뉴스레터"]},
+      {id:"eng_custom",   label:"추가 요구사항",     type:"text", placeholder:"예: TSMC 3nm 기준, EUV 리소그래피 포함, 삼성전자 사례, 경쟁사 비교 포함..."},
+    ]},
+  ]
+},
+"600":{emoji:"🎨",title:"예술 · 음악 · 영상 전용 항목",
+  hint:"예술·영상·음악 콘텐츠는 감각적 디테일이 AI 품질을 결정합니다. 원하는 느낌을 최대한 구체적으로 선택하세요.",
+  sections:[
+    {title:"창작 유형 & 장르",fields:[
+      {id:"art_type",    label:"만들고 싶은 콘텐츠 종류",opts:["단편 영화·뮤직비디오","기업 홍보·브랜드 영상","제품 광고·상업 영상","유튜브·SNS 콘텐츠","교육·다큐멘터리 영상","행사·이벤트 오프닝","음악 앨범·EP","배경음악·BGM","전시·인스톨레이션","모션그래픽·타이틀 시퀀스","웹툰·일러스트 시리즈","3D 애니메이션"]},
+      {id:"art_genre",   label:"장르·음악 스타일",   opts:["팝·K-팝","인디·어쿠스틱","재즈·블루스","클래식·오케스트라","힙합·R&B·소울","일렉트로닉·EDM","록·메탈","발라드·감성","라운지·앰비언트","월드뮤직·전통음악","시네마틱 오케스트라","로파이 힙합"]},
+    ]},
+    {title:"카메라 & 화면",fields:[
+      {id:"art_camera",  label:"카메라 무브먼트",    opts:["Low angle tracking (낮은 추적)","High angle dolly in (높은 줌인)","Extreme close-up (극단 클로즈업)","Aerial drone wide (항공 와이드)","Slow motion 240fps (슬로모션)","Handheld shaky cam (핸드헬드)","Dutch angle tilt (기울인 앵글)","Zoom out slowly (천천히 줌아웃)","Pan left to right (수평 패닝)","Static locked off (고정 샷)","360° rotating shot (회전 샷)"]},
+      {id:"art_comp",    label:"화면 구도",          opts:["가운데 대칭 구도 (Kubrick 스타일)","삼분할 법칙","대각선·동적 구도","프레임 인 프레임","실루엣·역광 구도","롱 테이크·원테이크","POV 1인칭 시점","오버더숄더 (어깨너머)"]},
+    ]},
+    {title:"조명 & 색감",fields:[
+      {id:"art_light",   label:"조명·시간대",        opts:["골든 아워 (해질녘 황금빛)","블루 아워 (새벽·황혼)","한낮 강한 햇빛","야간 도시 네온 불빛","스튜디오 소프트 라이팅","촛불·따뜻한 조명","역광·실루엣","산업적 형광등·차가운 빛","빗속·물 반사 조명","달빛·별빛 야외"]},
+      {id:"art_color",   label:"색감·팔레트",        opts:["따뜻한 오렌지·골드","차가운 블루·틸","흑백 모노크롬","파스텔·소프트 톤","네온·사이버펑크","필름 그레인 복고풍","생동감 있는 비비드","어둡고 채도 낮은 무드","자연 그린·어스 톤","보라·마젠타 판타지"]},
+    ]},
+    {title:"레퍼런스 & 추가",fields:[
+      {id:"art_director",label:"감독·아티스트 레퍼런스", opts:["해당 없음","Wong Kar-wai (왕가위) 색감","Christopher Nolan 대칭·웅장함","Wes Anderson 파스텔·대칭","Stanley Kubrick 1점 투시","Zack Snyder 슬로모션·다크","Michel Gondry 초현실·유쾌함","Bong Joon-ho 봉준호 연출","Roger Deakins 빛·그림자","Emmanuel Lubezki 롱테이크"]},
+      {id:"art_music_bpm",label:"음악 BPM·템포",     opts:["해당 없음 (영상만)","60 BPM 이하 (매우 느린)","60~90 BPM (느린·발라드)","90~120 BPM (보통·팝)","120~140 BPM (빠른·댄스)","140~170 BPM (매우 빠른·EDM)","170 BPM 이상 (드럼앤베이스)"]},
+      {id:"art_custom",  label:"추가 연출 요소",     type:"text", placeholder:"예: 클라이맥스에 슬로모션, 엔딩에 페이드아웃, 주인공 얼굴 클로즈업 없이, 텍스트 오버레이 최소화..."},
+    ]},
+  ]
+},
+"700":{emoji:"✍️",title:"언어학 · 커뮤니케이션 전용 항목",
+  hint:"카피·콘텐츠 제작은 '누구에게 어떤 채널로 무엇을 말하는가'가 전부입니다. 브랜드가 없어도 목적과 채널만 선택하면 됩니다.",
+  sections:[
+    {title:"목적 & 메시지",fields:[
+      {id:"lang_purpose",label:"커뮤니케이션 목적",opts:["브랜드 인지도를 높이고 싶다","제품·서비스를 판매하고 싶다","사람들의 행동 변화를 유도하고 싶다","공공 인식 캠페인을 하고 싶다","내부 직원 소통을 강화하고 싶다","고객 충성도를 높이고 싶다","위기 상황을 관리하고 싶다","채용·인재 유치를 하고 싶다","학습·교육 콘텐츠를 전달하고 싶다","사회적 가치·CSR을 알리고 싶다"]},
+      {id:"lang_core_msg",label:"핵심 메시지 방향",opts:["이것이 당신의 문제를 해결한다","이것이 당신을 더 행복하게 한다","이것이 세상을 더 좋게 만든다","이것이 당신의 시간을 아껴준다","이것이 당신을 특별하게 만든다","이것이 가장 신뢰할 수 있는 선택이다","이것이 당신과 함께 성장한다","이것은 당신만을 위한 것이다"]},
+    ]},
+    {title:"채널 & 형식",fields:[
+      {id:"lang_channel", label:"게시·배포 채널",   opts:["Instagram (인스타그램)","TikTok (틱톡)·YouTube Shorts","YouTube 일반 영상","Facebook·카카오스토리","LinkedIn (링크드인)","트위터·X","네이버 블로그·포스트","카카오톡 채널","TV·라디오 광고","신문·잡지 광고","옥외광고·OOH","이메일·뉴스레터","웹사이트 랜딩페이지","사내 인트라넷·슬랙"]},
+      {id:"lang_format",  label:"콘텐츠 형식",      opts:["15초 광고 카피","30초 영상 스크립트","1분 쇼츠 대본","SNS 캡션 (150자)","블로그 도입부 (300자)","보도자료 도입부","이메일 제목+본문","상품 상세페이지 카피","배너 광고 문구","채용 공고 소개글","연설·스피치 오프닝"]},
+    ]},
+    {title:"스타일 & 타겟",fields:[
+      {id:"lang_style",   label:"카피 스타일",       opts:["스토리텔링 내러티브","질문으로 호기심 유발","통계·데이터로 신뢰 구축","유머·위트로 친근하게","감성·공감으로 감동을","권위·전문성으로 신뢰를","긴급함·희소성 강조","사용 후기·소셜 증명","비교·대조로 차별화","문제 제기 → 해결책 제시"]},
+      {id:"lang_target",  label:"타겟 독자·고객",   opts:["10대 Z세대","20대 초반 대학생","20~30대 MZ세대 직장인","30~40대 부모·가족","40~50대 중장년층","60대 이상 시니어","B2B 기업 담당자","스타트업·창업자","전문직 (의사·변호사 등)","해외 글로벌 독자"]},
+    ]},
+    {title:"언어 & 길이",fields:[
+      {id:"lang_lang",    label:"언어·지역",         opts:["한국어 (KR)","영어 (EN)","한영 병기","일본어 (JP)","중국어 간체 (CN)","스페인어 (ES)","글로벌 범용 (영어 중심)"]},
+      {id:"lang_length",  label:"텍스트 길이",       opts:["슬로건 (5단어 이내)","태그라인 (10단어 이내)","SNS 한 줄 (50자)","SNS 캡션 (150자)","짧은 본문 (300자)","중간 본문 (600자)","긴 아티클 (1000자 이상)"]},
+      {id:"lang_custom",  label:"브랜드·추가 맥락", type:"text", placeholder:"예: 브랜드명 'OO', MZ 세대 타겟, 친근한 반말체, 이모지 활용, 경쟁사 OO보다 강조..."},
+    ]},
+  ]
+},
+"370":{emoji:"🎓",title:"교육학 · 에듀테크 전용 항목",
+  hint:"교육 콘텐츠는 '학습자가 무엇을 배우고 무엇을 할 수 있게 되는가'가 핵심입니다. 비교육 전공자도 항목만 선택하면 체계적 프롬프트가 완성됩니다.",
+  sections:[
+    {title:"학습 목표 & 주제",fields:[
+      {id:"edu_subject",  label:"교육 주제·과목",   opts:["AI·디지털 리터러시","프로그래밍·코딩 입문","데이터 분석·통계","수학 (기초~심화)","과학 (물리·화학·생물)","영어·외국어 학습","역사·사회·문화","경제·금융 교육","창의·예술 교육","비판적 사고·논리","직무 역량 (취업·승진)","리더십·소통 능력","환경·지속가능성","의료·건강 교육","법률·권리 교육"]},
+      {id:"edu_goal",     label:"학습 목표 (Bloom 수준)",opts:["기억하기 — 개념·용어를 암기한다","이해하기 — 개념을 자신의 말로 설명한다","적용하기 — 배운 것을 새로운 상황에 쓴다","분석하기 — 요소를 나누고 관계를 파악한다","평가하기 — 기준에 따라 판단하고 비판한다","창조하기 — 새로운 것을 설계하고 만든다"]},
+    ]},
+    {title:"학습자 & 환경",fields:[
+      {id:"edu_level",    label:"학습자 수준",       opts:["유아·어린이 (5~7세)","초등 저학년 (1~3학년)","초등 고학년 (4~6학년)","중학생 (1~3학년)","고등학생 (1~3학년)","대학교 1~2학년 (교양)","대학교 3~4학년 (전공)","대학원생·연구자","직장인 초급·신입","직장인 중급·실무자","직장인 시니어·관리자","기업 임원·의사결정자","시니어·60대 이상"]},
+      {id:"edu_prior",    label:"사전 지식 수준",    opts:["완전 초보 (아무것도 모른다)","기초 개념은 알고 있다","중간 정도 알고 있다","어느 정도 경험 있다","전문가 수준이다"]},
+    ]},
+    {title:"교수법 & 형식",fields:[
+      {id:"edu_method",   label:"교수법·학습 모델",  opts:["강의식 직접 교수법","플립드 러닝 (거꾸로 수업)","프로젝트 기반 학습 (PBL)","문제 해결 학습 (Problem-based)","게임 기반 학습 (GBL)","협동·팀 학습","마이크로러닝 (짧은 단위)","멘토링·코칭 방식","사례 연구·케이스 메서드","소크라테스식 대화·문답법"]},
+      {id:"edu_format",   label:"콘텐츠 형식",       opts:["설명 영상 (Explainer Video)","인터랙티브 퀴즈·게임","시뮬레이션·실습 환경","인포그래픽·시각 자료","워크시트·활동지","강의 슬라이드 (PPT)","사례 연구 텍스트","체크리스트·자기점검표","플래시카드·암기 카드","팟캐스트·오디오 강의","e러닝 모듈·SCORM","라이브 웨비나 대본"]},
+    ]},
+    {title:"시간 & 환경",fields:[
+      {id:"edu_time",     label:"학습 시간",         opts:["1~2분 마이크로러닝","5분 짧은 영상","10분 미니 강의","30분 모듈 수업","1시간 클래스","3시간 집중 과정","하루 워크숍","주간 커리큘럼 (5~10차시)"]},
+      {id:"edu_env",      label:"학습 환경",         opts:["교실 대면 수업","온라인 비동기 (녹화)","온라인 실시간 (줌·Teams)","혼합형 블렌디드","모바일 앱 학습","VR·메타버스 환경","자기주도 독학","기업 내부 교육"]},
+      {id:"edu_custom",   label:"추가 교육 맥락",    type:"text", placeholder:"예: 반도체 개론 1주차, 비전공자 대상, 사례 연계, 퀴즈 포함, 한국 교육과정 기준..."},
+    ]},
+  ]
+},
+"900":{emoji:"🏛️",title:"역사 · 지리 · 문화콘텐츠 전용 항목",
+  hint:"역사·문화 콘텐츠는 시대·지역·목적만 선택해도 풍성한 프롬프트가 만들어집니다. 역사 전문가가 아니어도 됩니다.",
+  sections:[
+    {title:"시대 & 지역",fields:[
+      {id:"his_topic",   label:"다루고 싶은 역사·문화 주제",opts:["한국 왕조·궁궐 역사","조선시대 생활 문화","일제강점기·독립운동","한국 근현대사 (1945~)","삼국시대·고려 불교문화","동아시아 교류 역사","서양 중세 기사·성곽","그리스·로마 문명","르네상스·예술 혁명","산업혁명과 사회 변화","세계대전과 냉전","실크로드 교역 문화","이슬람 황금시대","아프리카 왕국 역사","아메리카 원주민 문화","세계유산·문화재","음식 문화·미식 역사","의복·패션의 역사","언어·문자의 역사"]},
+      {id:"his_period",  label:"역사적 시대·시기",   opts:["선사시대 (문자 이전)","고대 (BC 3000~AD 500)","중세 (500~1500년)","근세 (1500~1800년)","근대 (1800~1950년)","현대 (1950년~현재)","미래·SF 가상 역사","특정 왕 재위기·특정 사건"]},
+    ]},
+    {title:"지역 & 문화권",fields:[
+      {id:"his_region",  label:"지역·문화권",         opts:["한국 (삼국~조선~현대)","중국·동아시아","일본·류큐","동남아시아","인도·남아시아","중앙아시아·몽골","중동·이슬람권","그리스·로마","서유럽 (영·불·독)","동유럽·슬라브","아프리카","북미·아메리카","중남미·라틴아메리카","오세아니아·태평양","세계사·글로벌 비교"]},
+      {id:"his_culture", label:"문화 요소 강조",      opts:["정치·왕권·제도","군사·전쟁·무기","종교·신화·의례","예술·건축·조각","의식주·생활 풍속","교역·경제·화폐","과학·기술·발명","음악·공연·축제","언어·문학·기록","여성·젠더·가족 구조","피지배층·민중 역사","외교·국제 관계"]},
+    ]},
+    {title:"형식 & 고증",fields:[
+      {id:"his_genre",   label:"콘텐츠 장르",         opts:["역사 다큐멘터리 (BBC 스타일)","드라마·사극 재현","교육 애니메이션 (어린이용)","역사 여행 가이드","문화유산 홍보 영상","역사 뉴스레터·칼럼","박물관 전시 해설","역사 팩트체크 콘텐츠","대체역사·팩션 스토리","역사 인물 다큐"]},
+      {id:"his_accuracy",label:"고증·창작 수준",      opts:["1차 사료 기반 엄밀한 고증","학술 연구 기반 (신뢰 중심)","대중 교양 수준 (흥미 중심)","드라마적 재현 (팩션 허용)","완전 창작·픽션 (역사 소재)","어린이용 단순화·의인화"]},
+      {id:"his_visual",  label:"비주얼 스타일",       opts:["실사 재현·역사극 의상 세트","고품질 3D 복원 렌더링","고문서·지도·유물 활용","현대적 미니멀 재해석","수묵화·전통 회화풍","서양화·유화 역사화풍","애니메이션·카툰풍","사진·기록 사료 콜라주"]},
+      {id:"his_custom",  label:"추가 역사 맥락",      type:"text", placeholder:"예: 고려 불화 색감 기준, 조선 궁궐 배경, 특정 사건(임진왜란) 중심, 영문 자막 필요..."},
+    ]},
+  ]
+},
+};
+
+// ════════════════════════════════════════════════════
+// 렌더링 함수들
+// ════════════════════════════════════════════════════
+let currentDomain="전체";
+function starsStr(n){return '★'.repeat(n)+'☆'.repeat(5-n);}
+
+function renderLibTabs(){
+  const bar=document.getElementById('libTabs'); bar.innerHTML='';
+  ["전체",...domains.map(d=>d.label)].forEach(c=>{
+    const t=document.createElement('span'); t.className='ltab'+(c===currentDomain?' active':'');
+    t.textContent=c; t.onclick=()=>{currentDomain=c;renderLibTabs();renderDomainCards();};
+    bar.appendChild(t);
+  });
+}
+function renderDomainCards(){
+  const list=currentDomain==='전체'?domains:domains.filter(d=>d.label===currentDomain);
+  document.getElementById('domainCards').innerHTML=list.map(d=>`
+    <div class="dcard">
+      <div class="dcard-head">
+        <div>
+          <div class="dcard-kdc">KDC ${d.kdc}</div>
+          <div class="dcard-title">${d.label}</div>
+          <div class="dcard-sub">${d.strength}</div>
+        </div>
+        <div class="dcard-str">Top 10</div>
+      </div>
+      <div class="dcard-body">
+        ${d.sites.map(s=>`
+          <div class="site-row">
+            <div class="site-left">
+              <span class="site-rank ${s.r<=3?'g'+s.r:''}">${s.r}</span>
+              <div><div class="site-name">${s.name}</div><div class="site-desc">${s.desc}</div></div>
+            </div>
+            <div class="site-right">
+              <span class="stars-s">${starsStr(s.star)}</span>
+              <a class="site-link" href="https://${s.url}" target="_blank" rel="noopener">↗</a>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+renderLibTabs(); renderDomainCards();
+
+// AI 도구 테이블
+const tools=[
+  {cat:"영상",r:1,name:"Runway Gen-3",star:5,desc:"Image-to-Video 최고. 카메라·모션 정밀 제어. 4~16초",url:"runwayml.com"},
+  {cat:"영상",r:2,name:"Kling 1.6",star:5,desc:"고품질 2분 클립. 한국 서버 빠름. 얼굴 일관성 우수",url:"klingai.com"},
+  {cat:"영상",r:3,name:"Sora",star:5,desc:"물리 법칙 이해 최고. 복잡 장면·60초 클립",url:"sora.com"},
+  {cat:"영상",r:4,name:"Veo 2",star:4,desc:"4K·슬로모션. YouTube 연동. 긴 영상 강점",url:"deepmind.google/technologies/veo"},
+  {cat:"영상",r:5,name:"Hailuo",star:4,desc:"무료 티어 넉넉. 얼굴 일관성 모드 Subject Reference",url:"hailuoai.video"},
+  {cat:"영상",r:6,name:"Luma Dream Machine",star:4,desc:"Text/Image-to-Video. 현실감 카메라 무브먼트",url:"lumalabs.ai"},
+  {cat:"영상",r:7,name:"Pika 2.0",star:3,desc:"캐릭터 일관성·립싱크. 소셜 콘텐츠 최적",url:"pika.art"},
+  {cat:"영상",r:8,name:"Stable Video",star:3,desc:"오픈소스 로컬 실행. 커스텀 파인튜닝 허용",url:"stability.ai"},
+  {cat:"영상",r:9,name:"Genmo Mochi",star:3,desc:"오픈소스. 모션 다양성 높음. 무료 사용",url:"genmo.ai"},
+  {cat:"영상",r:10,name:"InVideo AI",star:2,desc:"템플릿 기반 편집. 자막·나레이션 자동화",url:"invideo.io"},
+  {cat:"음원",r:1,name:"Suno v4",star:5,desc:"가사+멜로디 동시 생성. 장르 조합 자유",url:"suno.com"},
+  {cat:"음원",r:2,name:"Udio",star:5,desc:"고음질 마스터링 수준. 세밀한 BPM·악기 제어",url:"udio.com"},
+  {cat:"음원",r:3,name:"Mubert",star:4,desc:"실시간 BGM 스트리밍. 영상 길이 맞춤 루프",url:"mubert.com"},
+  {cat:"음원",r:4,name:"Soundraw",star:4,desc:"영상 편집자용 BGM. 구간별 편집. 저작권 프리",url:"soundraw.io"},
+  {cat:"음원",r:5,name:"Boomy",star:3,desc:"30초 내 작곡. Spotify 배포 연동",url:"boomy.com"},
+  {cat:"음원",r:6,name:"Loudly",star:3,desc:"게임·영상용 사운드트랙. 감정 태그 기반",url:"loudly.com"},
+  {cat:"음원",r:7,name:"Beatoven.ai",star:3,desc:"영상 타임라인 연동. 감정·장면별 자동 조절",url:"beatoven.ai"},
+  {cat:"음원",r:8,name:"Aiva",star:3,desc:"클래식·오케스트라 특화. MIDI 추출 가능",url:"aiva.ai"},
+  {cat:"음원",r:9,name:"Stability Audio",star:2,desc:"오픈소스 음원 모델. 로컬 실행",url:"stability.ai"},
+  {cat:"음원",r:10,name:"Melobytes",star:2,desc:"텍스트→가사→멜로디 파이프라인",url:"melobytes.com"},
+  {cat:"이미지",r:1,name:"Midjourney v7",star:5,desc:"예술적 완성도 최고. 스타일 레퍼런스(--sref)",url:"midjourney.com"},
+  {cat:"이미지",r:2,name:"Adobe Firefly",star:5,desc:"상업용 저작권 클리어. Photoshop 직접 연동",url:"firefly.adobe.com"},
+  {cat:"이미지",r:3,name:"DALL-E 3",star:4,desc:"텍스트 이해력 최강. ChatGPT 내 즉시 사용",url:"openai.com/dall-e-3"},
+  {cat:"이미지",r:4,name:"Ideogram 2",star:4,desc:"이미지 내 텍스트 렌더링 최고. 로고·배너",url:"ideogram.ai"},
+  {cat:"이미지",r:5,name:"Flux Pro 1.1",star:4,desc:"사실적 인물 생성 강점. Midjourney 대안",url:"blackforestlabs.ai"},
+  {cat:"이미지",r:6,name:"Leonardo AI",star:4,desc:"게임 에셋·캐릭터 특화. 일관성 모드",url:"leonardo.ai"},
+  {cat:"이미지",r:7,name:"Stable Diffusion XL",star:4,desc:"오픈소스 로컬 실행. LoRA 파인튜닝",url:"stability.ai"},
+  {cat:"이미지",r:8,name:"Canva AI",star:3,desc:"디자인 템플릿 연동. 비전문가 친화",url:"canva.com"},
+  {cat:"이미지",r:9,name:"NightCafe",star:3,desc:"다양한 스타일 모델. 커뮤니티 공유",url:"creator.nightcafe.studio"},
+  {cat:"이미지",r:10,name:"Krea AI",star:3,desc:"실시간 이미지 생성. 스케치→이미지 변환",url:"krea.ai"},
+  {cat:"텍스트",r:1,name:"Claude 3.5 Sonnet",star:5,desc:"긴 문서·코드·분석 최강. 200K 컨텍스트",url:"claude.ai"},
+  {cat:"텍스트",r:2,name:"ChatGPT-4o",star:5,desc:"범용 텍스트·이미지 이해. 플러그인 지원",url:"chatgpt.com"},
+  {cat:"텍스트",r:3,name:"Gemini 1.5 Pro",star:4,desc:"Google 검색 연동. 1M 토큰 컨텍스트",url:"gemini.google.com"},
+  {cat:"텍스트",r:4,name:"Perplexity AI",star:4,desc:"실시간 웹 검색+AI. 출처 인용 자동화",url:"perplexity.ai"},
+  {cat:"텍스트",r:5,name:"Jasper AI",star:3,desc:"마케팅 카피 특화. 브랜드 톤앤매너 저장",url:"jasper.ai"},
+  {cat:"텍스트",r:6,name:"Copy.ai",star:3,desc:"광고·이메일·SNS 카피 자동화. 다국어",url:"copy.ai"},
+  {cat:"텍스트",r:7,name:"Notion AI",star:3,desc:"Notion 내 문서 요약·초안. 협업 최적",url:"notion.so"},
+  {cat:"텍스트",r:8,name:"Writesonic",star:3,desc:"SEO 최적화 블로그·광고 자동 생성",url:"writesonic.com"},
+  {cat:"텍스트",r:9,name:"DeepL Write",star:3,desc:"문장 품질 향상·교정. 번역 연동",url:"deepl.com"},
+  {cat:"텍스트",r:10,name:"HyperWrite",star:2,desc:"자동완성·AI 에이전트. 크롬 익스텐션",url:"hyperwriteai.com"},
+  {cat:"슬라이드",r:1,name:"Gamma",star:5,desc:"텍스트→슬라이드 자동 생성",url:"gamma.app"},
+  {cat:"슬라이드",r:2,name:"Beautiful.ai",star:4,desc:"스마트 레이아웃 자동 조정. 기업용",url:"beautiful.ai"},
+  {cat:"슬라이드",r:3,name:"Tome",star:4,desc:"스토리텔링 슬라이드. AI 콘텐츠 채우기",url:"tome.app"},
+  {cat:"슬라이드",r:4,name:"Canva AI",star:4,desc:"디자인 템플릿+AI. 협업 편집",url:"canva.com"},
+  {cat:"슬라이드",r:5,name:"Copilot in PPT",star:4,desc:"PowerPoint 내 AI. Office 365 포함",url:"microsoft.com"},
+  {cat:"슬라이드",r:6,name:"Slidesgo AI",star:3,desc:"무료 템플릿+AI. 교육·기업용 풍부",url:"slidesgo.com"},
+  {cat:"슬라이드",r:7,name:"Pitch",star:3,desc:"팀 협업 슬라이드. 실시간 공동편집",url:"pitch.com"},
+  {cat:"슬라이드",r:8,name:"Decktopus",star:3,desc:"질문 답변→슬라이드 자동 생성",url:"decktopus.com"},
+  {cat:"슬라이드",r:9,name:"MagicSlides",star:2,desc:"YouTube·PDF→슬라이드 변환",url:"magicslides.app"},
+  {cat:"슬라이드",r:10,name:"Plus AI",star:2,desc:"Google Slides 플러그인. AI 편집",url:"plusdocs.com"},
+  {cat:"코드",r:1,name:"GitHub Copilot",star:5,desc:"IDE 코드 자동완성·리뷰·PR 설명",url:"github.com/features/copilot"},
+  {cat:"코드",r:2,name:"Cursor",star:5,desc:"AI 네이티브 IDE. 코드베이스 전체 이해",url:"cursor.sh"},
+  {cat:"코드",r:3,name:"Claude API",star:5,desc:"복잡한 알고리즘·아키텍처 설계",url:"claude.ai"},
+  {cat:"코드",r:4,name:"Replit AI",star:4,desc:"브라우저 IDE+AI. 즉시 배포",url:"replit.com"},
+  {cat:"코드",r:5,name:"Windsurf",star:4,desc:"무료 AI 코딩 에이전트. 멀티스텝 작업",url:"codeium.com"},
+  {cat:"코드",r:6,name:"Tabnine",star:4,desc:"로컬 실행. 프라이버시 보호. 엔터프라이즈",url:"tabnine.com"},
+  {cat:"코드",r:7,name:"Amazon CodeWhisperer",star:3,desc:"AWS 연동 최적화. 보안 취약점 스캔",url:"aws.amazon.com"},
+  {cat:"코드",r:8,name:"Devin",star:4,desc:"완전 자율 AI 개발자. 태스크 자동 실행",url:"cognition.ai"},
+  {cat:"코드",r:9,name:"v0 (Vercel)",star:4,desc:"텍스트→React UI 생성. Next.js 배포",url:"v0.dev"},
+  {cat:"코드",r:10,name:"Bolt.new",star:3,desc:"텍스트→풀스택 앱. 브라우저 즉시 실행",url:"bolt.new"},
+];
+const tagMap={영상:"tag-v",음원:"tag-a",이미지:"tag-i",텍스트:"tag-t",슬라이드:"tag-p",코드:"tag-c"};
+let currentTool="전체";
+function renderToolTabs(){
+  const bar=document.getElementById('toolTabs'); bar.innerHTML='';
+  ["전체","영상","음원","이미지","텍스트","슬라이드","코드"].forEach(c=>{
+    const t=document.createElement('span'); t.className='ttab'+(c===currentTool?' active':'');
+    t.dataset.cat=c;
+    const cnt=c==='전체'?tools.length:tools.filter(x=>x.cat===c).length;
+    t.textContent=c+' '+cnt;
+    t.onclick=()=>{currentTool=c;renderToolTabs();renderToolTable();};
+    bar.appendChild(t);
+  });
+}
+function renderToolTable(){
+  const data=currentTool==='전체'?tools:tools.filter(t=>t.cat===currentTool);
+  document.getElementById('toolBody').innerHTML=data.map((t,i)=>`
+    <tr>
+      <td class="rk ${t.r<=3?'r'+t.r:''}">${currentTool==='전체'?i+1:t.r}</td>
+      <td><span class="tool-nm">${t.name}</span><span class="tag ${tagMap[t.cat]}">${t.cat}</span></td>
+      <td class="tool-desc-col">${t.desc}</td>
+      <td><span class="stars">${starsStr(t.star)}</span></td>
+      <td><a class="tool-link" href="https://${t.url}" target="_blank" rel="noopener">↗ ${t.url.split('/')[0]}</a></td>
+    </tr>`).join('');
+}
+renderToolTabs(); renderToolTable();
+
+// ════════════════════════════════════════════════════
+// 프롬프트 빌더 — 아코디언
+// ════════════════════════════════════════════════════
+let activeDomainKey=null;
+
+function renderDomainBtns(){
+  const wrap=document.getElementById('domainBtnGrid'); wrap.innerHTML='';
+  domains.forEach(d=>{
+    const f=domainFields[d.kdc];
+    const btn=document.createElement('button');
+    btn.className='dbtn'+(activeDomainKey===d.kdc?' active':'');
+    btn.innerHTML=`<span class="dbtn-kdc">KDC ${d.kdc} ${f.emoji}</span><span class="dbtn-name">${d.label}</span>`;
+    btn.onclick=()=>toggleAccordion(d.kdc);
+    wrap.appendChild(btn);
+  });
+}
+
+function renderAccordionPanels(){
+  const wrap=document.getElementById('accordionWrap'); wrap.innerHTML='';
+  domains.forEach(d=>{
+    const f=domainFields[d.kdc];
+    const panel=document.createElement('div');
+    panel.className='accordion-panel'+(activeDomainKey===d.kdc?' open':'');
+    panel.id='panel-'+d.kdc;
+    let sectionsHtml=f.sections.map(sec=>`
+      <div class="panel-section">
+        <div class="panel-section-title">${sec.title}</div>
+        <div class="panel-grid">
+          ${sec.fields.map(field=>{
+            if(field.type==='text'){
+              return `<div class="fg span3"><label class="fl">${field.label}</label>
+                <input type="text" id="dom_${field.id}" placeholder="${field.placeholder||''}"></div>`;
+            }
+            return `<div class="fg"><label class="fl">${field.label}</label>
+              <select id="dom_${field.id}">
+                <option value="">— 선택 —</option>
+                ${field.opts.map(o=>`<option>${o}</option>`).join('')}
+              </select></div>`;
+          }).join('')}
+        </div>
+      </div>`).join('');
+    panel.innerHTML=`
+      <div class="panel-title">${f.emoji} ${f.title}</div>
+      <div class="panel-hint">💡 ${f.hint}</div>
+      ${sectionsHtml}`;
+    wrap.appendChild(panel);
+  });
+}
+
+function toggleAccordion(kdc){
+  activeDomainKey=activeDomainKey===kdc?null:kdc;
+  renderDomainBtns(); renderAccordionPanels();
+}
+renderDomainBtns(); renderAccordionPanels();
+
+// 프리셋
+const presets=[
+  {label:"🏎️ 레이싱 영상",  kdc:"600",tool:"Runway Gen-3",content:"영상 — Image-to-Video",mood:"Cinematic epic · 시네마틱",style:"Photorealistic 8K",
+   vals:{art_type:"단편 영화·뮤직비디오",art_genre:"시네마틱 오케스트라",art_camera:"Low angle tracking (낮은 추적)",art_comp:"삼분할 법칙",art_light:"골든 아워 (해질녘 황금빛)",art_color:"따뜻한 오렌지·골드",art_director:"해당 없음",art_music_bpm:"해당 없음 (영상만)",art_custom:"motion blur on tires, asphalt heat shimmer, crowd cheering"}},
+  {label:"🔬 반도체 홍보",  kdc:"500",tool:"Runway Gen-3",content:"영상 — Text-to-Video",mood:"Futuristic and tech · 미래적",style:"Hyperrealistic HDR",
+   vals:{eng_topic:"반도체 칩 설계·제조 공정",eng_field:"반도체·집적회로 설계",eng_process:"웨이퍼 제조·리소그래피",eng_scale:"3nm 이하 첨단 공정",eng_audience:"기업 임원·전략 담당",eng_visual:"3D 공정 단면도 애니메이션",eng_tone:"홍보·마케팅형",eng_format:"발표 슬라이드 (20장)",eng_custom:"TSMC 3nm 기준, EUV 리소그래피 클린룸 환경"}},
+  {label:"🎓 교육 콘텐츠",  kdc:"370",tool:"Claude",content:"텍스트 — 스크립트",mood:"Warm and friendly · 따뜻한",style:"Minimalist clean",
+   vals:{edu_subject:"AI·디지털 리터러시",edu_goal:"이해하기 — 개념을 자신의 말로 설명한다",edu_level:"직장인 초급·신입",edu_prior:"완전 초보 (아무것도 모른다)",edu_method:"마이크로러닝 (짧은 단위)",edu_format:"설명 영상 (Explainer Video)",edu_time:"10분 미니 강의",edu_env:"온라인 비동기 (녹화)",edu_custom:"사례 3개 이상, 퀴즈 포함, 흥미로운 오프닝"}},
+  {label:"📊 비즈니스 IR", kdc:"300",tool:"Gamma",content:"슬라이드 — 프레젠테이션",mood:"Professional and clean · 전문적",style:"Minimalist clean",
+   vals:{biz_purpose:"투자 유치 IR 피칭",biz_industry:"IT·소프트웨어·SaaS",biz_audience:"투자자·벤처캐피털",biz_message:"시장 기회가 얼마나 큰가",biz_data:"시장 규모·성장률 통계",biz_visual:"막대·원형·꺾은선 차트",biz_format:"PPT 슬라이드 (10장 이내)",biz_tone:"자신감 있고 설득력 있는",biz_custom:"2025 Q3 실적 반영, 영문 병기"}},
+  {label:"🏛️ 역사 다큐",   kdc:"900",tool:"Runway Gen-3",content:"영상 — Text-to-Video",mood:"Dramatic intense · 드라마틱",style:"Cinematic film grain 35mm",
+   vals:{his_topic:"조선시대 생활 문화",his_period:"근세 (1500~1800년)",his_region:"한국 (삼국~조선~현대)",his_culture:"의식주·생활 풍속",his_genre:"역사 다큐멘터리 (BBC 스타일)",his_accuracy:"대중 교양 수준 (흥미 중심)",his_visual:"실사 재현·역사극 의상 세트",his_custom:"조선 한양 거리, 한복 의상, 시장 활기"}},
+];
+const chipsEl=document.getElementById('presetChips');
+presets.forEach(p=>{
+  const c=document.createElement('span'); c.className='chip'; c.textContent=p.label;
+  c.onclick=()=>{
+    document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active')); c.classList.add('active');
+    applyPreset(p);
+  };
+  chipsEl.appendChild(c);
+});
+function applyPreset(p){
+  setVal('selTool',p.tool); setVal('selContent',p.content);
+  setVal('selMood',p.mood); setVal('selStyle',p.style);
+  activeDomainKey=p.kdc; renderDomainBtns(); renderAccordionPanels();
+  setTimeout(()=>{ Object.entries(p.vals).forEach(([k,v])=>{ const el=document.getElementById('dom_'+k); if(el) el.value=v||''; }); buildPrompt(); },60);
+}
+function setVal(id,val){const el=document.getElementById(id);if(!el)return;for(let o of el.options){if(o.text===val){el.value=o.value;return;}}el.selectedIndex=0;}
+
+// 프롬프트 생성
+const moodPhrase={"Cinematic epic · 시네마틱":"cinematic and epic, like a blockbuster film","Dramatic intense · 드라마틱":"dramatically intense, full of emotional weight","Calm and peaceful · 차분한":"calm and peaceful, evoking serenity","Energetic and dynamic · 역동적":"high energy and dynamic, bursting with momentum","Dark and moody · 어둡고 무거운":"dark and moody, with deep shadows and contrast","Warm and friendly · 따뜻한":"warm and friendly, approachable and inviting","Professional and clean · 전문적":"professional and clean, polished for a corporate audience","Futuristic and tech · 미래적":"futuristic and high-tech in aesthetic","Nostalgic retro · 복고풍":"nostalgic and retro, reminiscent of a past era","Mysterious and tense · 긴장감":"mysterious and tense throughout","Playful and fun · 유쾌한":"playful and fun, lighthearted and joyful","Elegant and luxurious · 고급스러운":"elegant and luxurious, refined in every detail"};
+const toolHint={"Runway Gen-3":"// Runway: Motion Intensity High · Duration 4–8s · Image-to-Video 모드","Kling":"// Kling: Creative Mode · Subject Reference 업로드 권장","Sora":"// Sora: 물리적 묘사 구체적으로 · 시간 흐름 명시","Veo 2":"// Veo: 4K 모드 선택 · YouTube 연동","Suno v4":"// Suno: [장르] [BPM] [악기] [가사 여부] 태그 추가","Udio":"// Udio: 장르 태그 + negative prompt 활용","Midjourney v7":"// Midjourney: --ar 16:9 --v 7 --style raw","Adobe Firefly":"// Firefly: Content type→Photo · 스타일 레퍼런스 업로드","DALL-E 3":"// DALL-E 3: ChatGPT 직접 입력 · 긴 프롬프트 가능","Gamma":"// Gamma: 아웃라인 먼저 작성 → 슬라이드 자동 생성","Claude":"// Claude: 역할·목적·형식·분량 명시 → 체계적 출력","ChatGPT-4o":"// ChatGPT: System prompt에 역할 설정 → 일관성 유지"};
+
+function getFieldVal(id){ const el=document.getElementById('dom_'+id); return el&&el.value?el.value:''; }
+
+function getDomainSentence(kdc){
+  if(!kdc) return '';
+  const f=domainFields[kdc]; if(!f) return '';
+  const lines=[];
+  f.sections.forEach(sec=>{
+    sec.fields.forEach(field=>{
+      const v=getFieldVal(field.id);
+      if(v) lines.push(`${field.label}: ${v}`);
+    });
+  });
+  return lines.length?lines.join(' | '):'';
+}
+
+function buildPrompt(){
+  const tool=document.getElementById('selTool').value;
+  const content=document.getElementById('selContent').value;
+  const mood=document.getElementById('selMood').value;
+  const style=document.getElementById('selStyle').value;
+  const parts=[];
+  if(content) parts.push(`[콘텐츠 유형] ${content}.`);
+  if(activeDomainKey){
+    const dLabel=domains.find(d=>d.kdc===activeDomainKey)?.label||'';
+    const f=domainFields[activeDomainKey];
+    const dEmoji=f?f.emoji:'';
+    const domSentence=getDomainSentence(activeDomainKey);
+    if(domSentence) parts.push(`[도메인 ${dEmoji} ${dLabel}]\n${domSentence}.`);
+  }
+  if(style) parts.push(`[화질·스타일] ${style}.`);
+  if(mood&&moodPhrase[mood]) parts.push(`[톤·분위기] The tone is ${moodPhrase[mood]}.`);
+  const hint=toolHint[tool];
+  let body=parts.join('\n');
+  const tail=hint?'\n\n'+hint:'';
+  let prompt=body+tail;
+  if(!prompt.trim()||parts.length===0){ document.getElementById('promptOutput').textContent='⚠ 공통 항목 또는 전문 영역을 하나 이상 선택하세요.'; updateCount(''); return; }
+  // 1000자를 넘으면 끝에 붙는 도구별 안내는 지키고 본문을 줄인 뒤, 줄인 양을 알려 준다
+  const orig=prompt.length; let cut=0;
+  if(prompt.length>1000){ const room=1000-tail.length-1; cut=body.length-room; body=body.substring(0,room)+'…'; prompt=body+tail; }
+  document.getElementById('promptOutput').textContent=prompt;
+  updateCount(prompt,cut,orig);
+}
+
+function updateCount(text,cut,orig){
+  const el=document.getElementById('charCount');
+  if(!text){el.textContent='';return;}
+  el.textContent=text.length+' / 1000자'+(cut>0?' · 원래 '+orig+'자에서 본문 '+cut+'자를 줄였습니다(도구별 안내는 유지). 입력을 줄이면 전체가 들어갑니다.':'');
+  el.className='char-count'+(text.length>=1000||cut>0?' over':'');
+}
+function resetAll(){
+  ['selTool','selContent','selMood','selStyle'].forEach(id=>{const e=document.getElementById(id);if(e)e.selectedIndex=0;});
+  activeDomainKey=null; renderDomainBtns(); renderAccordionPanels();
+  document.getElementById('promptOutput').textContent='— 공통 항목 + 전문 영역을 선택하고 [프롬프트 생성]을 누르세요 —';
+  document.getElementById('charCount').textContent='';
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+}
+function copyPrompt(){
+  const text=document.getElementById('promptOutput').textContent;
+  if(text.startsWith('—')||text.startsWith('⚠')) return;
+  navigator.clipboard.writeText(text).then(()=>{ const t=document.getElementById('copyToast'); t.style.display='inline'; setTimeout(()=>t.style.display='none',2000); });
+}
+</script>
+</body>
+</html>
