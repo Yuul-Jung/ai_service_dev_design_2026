@@ -32,9 +32,10 @@ AI 서비스의 기획, 데이터 설계, 모델 연계, 응용 시스템 구현
 
 | 경로 | 내용 |
 |---|---|
-| `materials/chapters/` | 제1장~제10장 교육용 HTML (표준 형식, `index.html`이 전체 목차) |
+| `materials/techtree/` | 학습 테크트리 (선수 관계·노드별 완료 기준·보완 현황, 기준 파일 `tree.json`) |
+| `materials/chapters/` | 제1장~제11장 교육용 HTML (표준 형식, `index.html`이 전체 목차) |
 | `materials/practice/` | 기획·설계, 협업 구현, 결과 검증, 참고 자료, 캡스톤 실습 (표준 형식) |
-| `materials/day01` ~ `day10` | 일차별 쪽 단위 정리(강의 참고자료) |
+| `materials/day01` ~ `day11` | 일차별 쪽 단위 정리(강의 참고자료) |
 | `materials/roadmap/` | 바이브코딩 기반 8단계 개발 로드맵 |
 | `materials/ch10/` | 제10장 참고자료(무료 호스팅·배포 서비스 비교) |
 | `materials/ai/transfer-to-physical-ai/` | 독립 심화과정(12장 테크트리) |
