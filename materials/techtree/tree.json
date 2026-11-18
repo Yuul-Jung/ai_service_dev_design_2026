@@ -1,10 +1,10 @@
 {
-  "version": "v03",
-  "note": "이 파일이 테크트리의 단일 기준이다. 노드·선수 관계·완료 기준을 여기서만 고치고 페이지를 다시 생성한다. · v03: 실습 번호를 일차 순서로 다시 매김(옛 파일명은 이동 페이지로 남김)",
+  "version": "v05",
+  "note": "이 파일이 테크트리의 단일 기준이다. 노드·선수 관계·완료 기준을 여기서만 고치고 페이지를 다시 생성한다. · v03: 실습 번호를 일차 순서로 다시 매김(옛 파일명은 이동 페이지로 남김) · v04: 12일차 실습 14·15 추가, 캡스톤 16·참고 자료 17로 번호 이동 · v05: 13일차 실습 16·17 추가, 캡스톤 18·참고 자료 19로 번호 이동",
   "reference": {
     "id": "p04",
     "title": "참고 자료 모음",
-    "href": "materials/practice/pr15_references_v02.html"
+    "href": "materials/practice/pr19_references_v02.html"
   },
   "stages": [
     {
@@ -768,10 +768,10 @@
     "p05": {
       "id": "p05",
       "kind": "practice",
-      "title": "실습 14 · 캡스톤 프로젝트 가이드",
+      "title": "실습 18 · 캡스톤 프로젝트 가이드",
       "short": "캡스톤 프로젝트 가이드",
       "summary": "주제 선정 → 단계 계획 → 작업 지시 로그 → 시험 기준 → 안전·권리 → 평가",
-      "href": "materials/practice/pr14_capstone_v02.html",
+      "href": "materials/practice/pr18_capstone_v02.html",
       "decks": [],
       "verification": null,
       "roadmap": [
@@ -804,5 +804,41 @@
       "practice": [],
       "done": []
     }
-  }
+  },
+  "days_without_chapter": [
+    {
+      "day": "12일차",
+      "title": "AI로 수업을 구현하기",
+      "practice": [
+        {
+          "title": "실습 14 · 수업 도움 도구 설계 실습",
+          "href": "materials/practice/pr14_lesson_tool_design_lab_v02.html",
+          "day": "12일차 오전 실습"
+        },
+        {
+          "title": "실습 15 · 보충 설명 도구 만들고 수업에 연결하기",
+          "href": "materials/practice/pr15_lesson_tool_build_lab_v02.html",
+          "day": "12일차 오후 실습"
+        }
+      ],
+      "status": "장 페이지·쪽별 정리가 저장소에 아직 없음(12일차 PDF 기준으로 실습만 작성)"
+    },
+    {
+      "day": "13일차",
+      "title": "교안을 고치고 다른 수업으로 발전시키기",
+      "practice": [
+        {
+          "title": "실습 16 · 교안 고치기 실습",
+          "href": "materials/practice/pr16_lesson_revision_lab_v02.html",
+          "day": "13일차 1부 실습"
+        },
+        {
+          "title": "실습 17 · 다른 수업으로 옮기기 실습",
+          "href": "materials/practice/pr17_lesson_transfer_lab_v02.html",
+          "day": "13일차 2부 실습"
+        }
+      ],
+      "status": "장 페이지·쪽별 정리가 저장소에 아직 없음(13일차 PDF 기준으로 실습만 작성). 14~15일차 프로젝트·발표는 실습 18 캡스톤으로 연결"
+    }
+  ]
 }
