@@ -1,6 +1,6 @@
 {
-  "version": "v05",
-  "note": "이 파일이 테크트리의 단일 기준이다. 노드·선수 관계·완료 기준을 여기서만 고치고 페이지를 다시 생성한다. · v03: 실습 번호를 일차 순서로 다시 매김(옛 파일명은 이동 페이지로 남김) · v04: 12일차 실습 14·15 추가, 캡스톤 16·참고 자료 17로 번호 이동 · v05: 13일차 실습 16·17 추가, 캡스톤 18·참고 자료 19로 번호 이동",
+  "version": "v06",
+  "note": "이 파일이 테크트리의 단일 기준이다. 노드·선수 관계·완료 기준을 여기서만 고치고 페이지를 다시 생성한다. · v03: 실습 번호를 일차 순서로 다시 매김(옛 파일명은 이동 페이지로 남김) · v04: 12일차 실습 14·15 추가, 캡스톤 16·참고 자료 17로 번호 이동 · v05: 13일차 실습 16·17 추가, 캡스톤 18·참고 자료 19로 번호 이동 · v06: 제12·13장 노드 추가(강의 설계 단계), 장 페이지가 없는 일차 해소",
   "reference": {
     "id": "p04",
     "title": "참고 자료 모음",
@@ -152,12 +152,24 @@
     {
       "id": "teach",
       "name": "강의 설계",
-      "desc": "배운 것을 가르치는 수업으로",
+      "desc": "배운 것을 가르치는 수업으로 — 설계(11) → 구현(12) → 개선과 전이(13)",
       "nodes": [
         {
           "id": "ch11",
           "prereq": [
             "ch10"
+          ]
+        },
+        {
+          "id": "ch12",
+          "prereq": [
+            "ch11"
+          ]
+        },
+        {
+          "id": "ch13",
+          "prereq": [
+            "ch12"
           ]
         }
       ]
@@ -803,13 +815,50 @@
       "roadmap": [],
       "practice": [],
       "done": []
-    }
-  },
-  "days_without_chapter": [
-    {
-      "day": "12일차",
-      "title": "AI로 수업을 구현하기",
-      "practice": [
+    },
+    "ch12": {
+      "id": "ch12",
+      "kind": "chapter",
+      "title": "제12장 · AI로 수업을 구현하기",
+      "short": "AI로 수업을 구현하기",
+      "summary": "교육 요구와 원인 → 구현 방법 선택 → 보충 설명 도구 제작 → 피드백과 전달 → 학습 환경 → 동료 사용",
+      "href": "materials/chapters/ch12_lesson_implementation_v01.html",
+      "decks": [
+        {
+          "href": "materials/day12/deck/day12_1_needs_and_choice.html",
+          "label": "① 오전 · 수업에서 필요한 일 찾기 (p.1–37)"
+        },
+        {
+          "href": "materials/day12/deck/day12_2_build_and_use.html",
+          "label": "② 오후 1 · AI와 제작하고 수업에 쓰기 (p.38–56)"
+        },
+        {
+          "href": "materials/day12/deck/day12_3_feedback_delivery.html",
+          "label": "③ 오후 2 · 피드백과 수업 운영 연결 (p.57–71)"
+        },
+        {
+          "href": "materials/day12/deck/day12_4_environment.html",
+          "label": "④ 오후 3 · 학습을 시작하고 이어 갈 환경 (p.72–90)"
+        },
+        {
+          "href": "materials/day12/deck/day12_5_peer_use.html",
+          "label": "⑤ 오후 4 · 내 도구를 다른 사람이 사용해 보기 (p.91–99)"
+        }
+      ],
+      "verification": {
+        "pass": 29,
+        "fixed": 0,
+        "unverified": 3,
+        "added": 1
+      },
+      "roadmap": [],
+      "practice": [],
+      "done": [
+        "같은 증상이라도 원인에 따라 만들 기능이 왜 달라지며, 구현 방법(그대로 사용·연결·직접 제작)은 어떻게 고르는가?",
+        "AI 초안을 강사가 고쳐 확정하는 도구에서 무엇을 저장하고, 언제 다시 검토해야 하는가?",
+        "자동 전달에서 승인·재시도·중복 방지를 어떻게 처리하고, 학습자 권한으로 무엇을 점검하는가?"
+      ],
+      "labs": [
         {
           "title": "실습 14 · 수업 도움 도구 설계 실습",
           "href": "materials/practice/pr14_lesson_tool_design_lab_v02.html",
@@ -820,13 +869,41 @@
           "href": "materials/practice/pr15_lesson_tool_build_lab_v02.html",
           "day": "12일차 오후 실습"
         }
-      ],
-      "status": "장 페이지·쪽별 정리가 저장소에 아직 없음(12일차 PDF 기준으로 실습만 작성)"
+      ]
     },
-    {
-      "day": "13일차",
-      "title": "교안을 고치고 다른 수업으로 발전시키기",
+    "ch13": {
+      "id": "ch13",
+      "kind": "chapter",
+      "title": "제13장 · 교안을 고치고 다른 수업으로 발전시키기",
+      "short": "교안을 고치고 다른 수업으로 발전시키기",
+      "summary": "목표·질문 정렬 → 빠진 설명 → 루브릭과 되묻기 → 질문이 하던 일 → 새 대상 대조 → 스캐폴딩",
+      "href": "materials/chapters/ch13_lesson_revision_transfer_v01.html",
+      "decks": [
+        {
+          "href": "materials/day13/deck/day13_1_revise_lesson.html",
+          "label": "① 1부 · 내가 만든 교안으로 가르쳐 보기 (p.1–45)"
+        },
+        {
+          "href": "materials/day13/deck/day13_2_transfer_lesson.html",
+          "label": "② 2부 · 내가 만든 단원을 다른 수업으로 옮기기 (p.46–90)"
+        }
+      ],
+      "verification": {
+        "pass": 22,
+        "fixed": 0,
+        "unverified": 1,
+        "added": 0
+      },
+      "roadmap": [],
       "practice": [
+        "p05"
+      ],
+      "done": [
+        "목표가 ‘고르기’라면 확인 질문과 확인할 답은 무엇을 요구해야 하며, 빠진 것이 뜻·과정·근거 중 무엇인지 어떻게 가려 고치는가?",
+        "짧은 답에서 무엇을 더 물어야 다음 도움을 정할 수 있고, 가르쳐 본 결과로 설명·안내·화면 중 어디를 고치는가?",
+        "단원을 다른 수업으로 옮길 때 무엇을 남기고, 원본을 모르는 사람에게도 통하는지 어떻게 확인하는가?"
+      ],
+      "labs": [
         {
           "title": "실습 16 · 교안 고치기 실습",
           "href": "materials/practice/pr16_lesson_revision_lab_v02.html",
@@ -837,8 +914,7 @@
           "href": "materials/practice/pr17_lesson_transfer_lab_v02.html",
           "day": "13일차 2부 실습"
         }
-      ],
-      "status": "장 페이지·쪽별 정리가 저장소에 아직 없음(13일차 PDF 기준으로 실습만 작성). 14~15일차 프로젝트·발표는 실습 18 캡스톤으로 연결"
+      ]
     }
-  ]
+  }
 }

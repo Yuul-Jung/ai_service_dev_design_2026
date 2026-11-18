@@ -170,8 +170,33 @@ details.simg img{display:block;width:100%;max-width:640px;height:auto;margin:6px
 .cov{margin:0 0 6px;font-size:.92rem}
 nav.toc h2.sub2{margin-top:18px}
 @media (max-width:560px){.pgc{padding:16px 16px 14px}.slide .row.multi>span{flex-basis:100%}}
+</style><!-- site-nav v1 --><style>
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 54px)}
+.sitebar{position:sticky;top:0;z-index:50;background:var(--hero,#15171C);color:var(--hero-ink,#F1F2EE);border-bottom:1px solid rgba(255,255,255,.12);padding-top:env(safe-area-inset-top,0px)}
+.sitebar .in{max-width:var(--maxw,1180px);margin:0 auto;padding:7px 32px;display:flex;gap:6px;align-items:center;white-space:nowrap;font-size:.84rem}
+.sitebar .mid{display:flex;gap:6px;align-items:center;flex:1;min-width:0;overflow-x:auto;scrollbar-width:thin}
+.sitebar .end{display:flex;gap:4px;flex:none}
+.sitebar a{color:var(--hero-ink,#F1F2EE);text-decoration:none;padding:4px 9px;border-radius:3px;border:1px solid transparent}
+.sitebar a:hover,.sitebar a:focus-visible{border-color:rgba(255,255,255,.35)}
+.sitebar a[aria-current="page"]{background:var(--hl,#FFD24A);color:#15171C;font-weight:600}
+.sitebar .sep{width:1px;height:18px;background:rgba(255,255,255,.22);margin:0 4px;flex:none}
+.sitebar .lab{color:var(--hero-3,#8D9299);font-size:.78rem;margin-right:2px}
+.sitenext{margin:36px 0 8px;border-top:2px solid var(--line,#DDDFD8);padding-top:20px}
+.sitenext h2{font-size:1.05rem;margin:0 0 12px}
+.sitenext .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.sitenext a{display:block;border:1px solid var(--line,#DDDFD8);background:var(--card,#fff);padding:12px 14px;border-radius:4px;text-decoration:none;color:var(--ink,#15171C)}
+.sitenext a small{display:block;color:var(--ink-3,#6E7480);font-size:.78rem;margin-bottom:2px}
+.sitenext a:hover,.sitenext a:focus-visible{border-color:var(--accent,#4635B1)}
+@media(max-width:700px){.sitebar .in{padding:7px 10px;gap:4px}.sitebar .end a{padding:4px 7px}.sitebar .hm .t{display:none}}
 </style></head>
 <body>
+<span id="site-top"></span><nav class="sitebar" aria-label="사이트 이동"><div class="in"><a class="hm" href="../../../index.html" aria-label="메인으로">⌂<span class="t"> 메인</span></a><span class="sep"></span><div class="mid"><span class="lab">9일차</span><a href="day09_1_tool_calling.html" title="① 오전 · 도구 호출과 작업 흐름" aria-label="9일차 ① 오전 · 도구 호출과 작업 흐름">①</a><a href="day09_2_connect_capabilities.html" title="② 오후 1 · 필요한 기능 연결" aria-label="9일차 ② 오후 1 · 필요한 기능 연결">②</a><a href="day09_3_method_and_results.html" title="③ 오후 2 · 작업 방법과 실행 결과" aria-label="9일차 ③ 오후 2 · 작업 방법과 실행 결과" aria-current="page">③</a><a href="day09_4_teaching_materials.html" title="④ 마지막 구간 · 오늘 배운 내용을 설명자료로" aria-label="9일차 ④ 마지막 구간 · 오늘 배운 내용을 설명자료로">④</a><span class="sep"></span><a href="../../chapters/ch09_tools_environment_v01.html">제09장</a><a href="../../practice/pr11_tools_env_lab_v02.html" title="도구 호출과 실행 환경 실습">실습 11</a><a href="../../practice/pr10_verification_v02.html" title="AI 생성 결과 검증 실습">실습 10</a></div><span class="sep"></span><span class="end"><a href="#jump">쪽 목차</a><a href="#site-top" aria-label="맨 위로">↑</a></span></div></nav>
+
+
+
+
+
+
 <header class="hero"><div class="hero-grid"></div><div class="hero-inner">
 <p class="hero-kicker">9일차 오후 2 · 15:00–17:00</p>
 <h1>작업 방법을 전달하고 실행 결과를 읽기</h1>
@@ -260,6 +285,6 @@ America/New_York 09:15 → UTC 14:15
 <tr><td>p.101–102</td><td>시간초과 뒤에도 작업이 끝날 수 있다</td><td>느린 저장과 0.3초 시간초과 직접 실행</td><td><span class="tag ok">확인</span> <span class="tag add">추가</span></td></tr>
 <tr><td>p.103–105</td><td>프롬프트 인젝션과 실행 권한 제한</td><td>OWASP LLM01(7일차), 허용 폴더 검사 직접 실행</td><td><span class="tag ok">일치</span> <span class="tag add">보충</span></td></tr></tbody></table></div>
 </section>
-</main></div>
+<section class="sitenext" aria-labelledby="sitenext-h"><h2 id="sitenext-h">다음으로</h2><div class="grid"><a href="day09_2_connect_capabilities.html"><small>← 이전 구간</small>9일차 ② 오후 1 · 필요한 기능 연결</a><a href="day09_4_teaching_materials.html"><small>다음 구간 →</small>9일차 ④ 마지막 구간 · 오늘 배운 내용을 설명자료로</a><a href="../../practice/pr11_tools_env_lab_v02.html"><small>9일차 따라 하기 실습</small>실습 11 · 도구 호출과 실행 환경 실습</a><a href="../../practice/pr10_verification_v02.html"><small>9일차 따라 하기 실습</small>실습 10 · AI 생성 결과 검증 실습</a><a href="../../chapters/ch09_tools_environment_v01.html"><small>이 날의 장</small>제09장</a><a href="../../../index.html#contents"><small>전체 목록</small>메인 · 일차별 강의 참고자료</a></div></section></main></div>
 <footer><p>이 문서는 「AI 강사양성과정」 9일차 교육자료를 다시 쓴 학습 참고자료입니다. 회색 상자는 자료 원문을 인용하거나 요약한 것(표의 칸이나 여러 칸으로 된 슬라이드를 문장으로 풀어 쓴 곳 포함), 직접 다시 계산한 결과는 초록 ‘검증’ 상자, 자료에 없는 설명은 파란 ‘보충’ 상자로 구분했습니다. 보충 내용은 작성자의 지식에 기반하며 웹 검색으로 확인하지 않았습니다. 인용한 논문·문서의 제목과 연도는 원문을 직접 확인하세요. ‘설명용’, ‘가상’, ‘교육용 예’로 표시된 수치는 실제 측정값이 아닙니다. ‘공식 날씨 예’의 문서 원문, Claude Managed Agents, Dify의 도구·신형 에이전트 노드, Sentry의 MCP 서버 안내, Claude Code 후크의 설정 형식과 스킬 호출의 기본 동작, n8n의 서버 시간대 기본값은 접속할 수 없어 확인하지 못했습니다. Anthropic SDK의 도구 구조, MCP 공식 사양(역할·제공 요소·전송·두 종류의 오류), LangChain·LangGraph, QMD, anthropics/skills의 pptx 스킬, n8n의 일정·웹훅 문서, Claude Code 변경 기록, OWASP는 공식 저장소로, 도구 루프·허용 폴더·시간초과·시간대·웹훅 서명·토큰 수는 직접 실행과 계산으로 확인했습니다. 실제 AI 모델의 호출은 재현하지 못했습니다(가짜 모델 사용). 쪽 카드의 ‘슬라이드 내용’은 PDF의 텍스트 상자를 왼쪽에서 오른쪽, 위에서 아래 순서로 읽어 옮긴 것이고 같은 줄의 칸은 가로선으로 구분했습니다. 표와 그림은 ‘슬라이드 원본 이미지 보기’로 확인하세요. ‘해설’은 이 자료집 작성자가 쓴 설명이며 슬라이드 원문이 아닙니다.</p></footer>
 </body></html>
