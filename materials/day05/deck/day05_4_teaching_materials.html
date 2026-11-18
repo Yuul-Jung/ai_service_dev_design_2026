@@ -170,8 +170,33 @@ details.simg img{display:block;width:100%;max-width:640px;height:auto;margin:6px
 .cov{margin:0 0 6px;font-size:.92rem}
 nav.toc h2.sub2{margin-top:18px}
 @media (max-width:560px){.pgc{padding:16px 16px 14px}.slide .row.multi>span{flex-basis:100%}}
+</style><!-- site-nav v1 --><style>
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 54px)}
+.sitebar{position:sticky;top:0;z-index:50;background:var(--hero,#15171C);color:var(--hero-ink,#F1F2EE);border-bottom:1px solid rgba(255,255,255,.12);padding-top:env(safe-area-inset-top,0px)}
+.sitebar .in{max-width:var(--maxw,1180px);margin:0 auto;padding:7px 32px;display:flex;gap:6px;align-items:center;white-space:nowrap;font-size:.84rem}
+.sitebar .mid{display:flex;gap:6px;align-items:center;flex:1;min-width:0;overflow-x:auto;scrollbar-width:thin}
+.sitebar .end{display:flex;gap:4px;flex:none}
+.sitebar a{color:var(--hero-ink,#F1F2EE);text-decoration:none;padding:4px 9px;border-radius:3px;border:1px solid transparent}
+.sitebar a:hover,.sitebar a:focus-visible{border-color:rgba(255,255,255,.35)}
+.sitebar a[aria-current="page"]{background:var(--hl,#FFD24A);color:#15171C;font-weight:600}
+.sitebar .sep{width:1px;height:18px;background:rgba(255,255,255,.22);margin:0 4px;flex:none}
+.sitebar .lab{color:var(--hero-3,#8D9299);font-size:.78rem;margin-right:2px}
+.sitenext{margin:36px 0 8px;border-top:2px solid var(--line,#DDDFD8);padding-top:20px}
+.sitenext h2{font-size:1.05rem;margin:0 0 12px}
+.sitenext .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.sitenext a{display:block;border:1px solid var(--line,#DDDFD8);background:var(--card,#fff);padding:12px 14px;border-radius:4px;text-decoration:none;color:var(--ink,#15171C)}
+.sitenext a small{display:block;color:var(--ink-3,#6E7480);font-size:.78rem;margin-bottom:2px}
+.sitenext a:hover,.sitenext a:focus-visible{border-color:var(--accent,#4635B1)}
+@media(max-width:700px){.sitebar .in{padding:7px 10px;gap:4px}.sitebar .end a{padding:4px 7px}.sitebar .hm .t{display:none}}
 </style></head>
 <body>
+<span id="site-top"></span><nav class="sitebar" aria-label="사이트 이동"><div class="in"><a class="hm" href="../../../index.html" aria-label="메인으로">⌂<span class="t"> 메인</span></a><span class="sep"></span><div class="mid"><span class="lab">5일차</span><a href="day05_1_image_understanding_generation.html" title="① 오전 · 이미지의 이해와 생성" aria-label="5일차 ① 오전 · 이미지의 이해와 생성">①</a><a href="day05_2_video_speech_recognition.html" title="② 오후 첫 구간 · 영상 생성과 음성 인식" aria-label="5일차 ② 오후 첫 구간 · 영상 생성과 음성 인식">②</a><a href="day05_3_speech_music_generation.html" title="③ 오후 둘째 구간 · 음성과 음악 생성" aria-label="5일차 ③ 오후 둘째 구간 · 음성과 음악 생성">③</a><a href="day05_4_teaching_materials.html" title="④ 마지막 구간 · 오늘 배운 개념의 설명 자료 만들기" aria-label="5일차 ④ 마지막 구간 · 오늘 배운 개념의 설명 자료 만들기" aria-current="page">④</a><span class="sep"></span><a href="../../chapters/ch05_image_video_audio_ai_v01.html">제05장</a><a href="../../practice/pr05_media_ai_lab_v02.html" title="이미지·음성 AI 결과 읽기 실습">실습 05</a><a href="../../../lab01_261106/image_gen_cut_builder.html">이미지 생성 컷 빌더</a><a href="../../../lab02_261116/music_prompt_builder.html">음원 제작 프롬프트 빌더</a></div><span class="sep"></span><span class="end"><a href="#jump">쪽 목차</a><a href="#site-top" aria-label="맨 위로">↑</a></span></div></nav>
+
+
+
+
+
+
 <header class="hero"><div class="hero-grid"></div><div class="hero-inner">
 <p class="hero-kicker">5일차 마지막 구간 · 17:00–18:00</p>
 <h1>오늘 배운 개념으로 설명 자료 만들기</h1>
@@ -270,6 +295,6 @@ nav.toc h2.sub2{margin-top:18px}
 <tr><td>—</td><td>연습 초안의 여섯 오류</td><td>IoU·AP·정밀도 계산, COCO 평가 코드, Whisper·EnCodec 공식 코드, 인공지능 기본법과 대조</td><td><span class="tag ok">일치</span> <span class="tag add">보충</span></td></tr>
 <tr><td>—</td><td>수업 뼈대 · 오해 표 · 연습 초안</td><td>작성자 구성</td><td><span class="tag add">보충(자료에 없음)</span></td></tr></tbody></table></div>
 </section>
-</main></div>
+<section class="sitenext" aria-labelledby="sitenext-h"><h2 id="sitenext-h">다음으로</h2><div class="grid"><a href="day05_3_speech_music_generation.html"><small>← 이전 구간</small>5일차 ③ 오후 둘째 구간 · 음성과 음악 생성</a><a href="../../day06/deck/day06_1_forecasting.html"><small>다음 구간 →</small>6일차 ① 오전 · 시간 기록으로 미래를 예측하기</a><a href="../../practice/pr05_media_ai_lab_v02.html"><small>5일차 따라 하기 실습</small>실습 05 · 이미지·음성 AI 결과 읽기 실습</a><a href="../../chapters/ch05_image_video_audio_ai_v01.html"><small>이 날의 장</small>제05장</a><a href="../../../index.html#contents"><small>전체 목록</small>메인 · 일차별 강의 참고자료</a></div></section></main></div>
 <footer><p>이 문서는 「AI 강사양성과정」 5일차 교육자료를 다시 쓴 학습 참고자료입니다. 회색 상자는 자료 원문을 인용하거나 요약한 것(표의 칸이나 여러 칸으로 된 슬라이드를 문장으로 풀어 쓴 곳 포함), 직접 다시 계산한 결과는 초록 ‘검증’ 상자, 자료에 없는 설명은 파란 ‘보충’ 상자로 구분했습니다. 보충 내용은 작성자의 지식에 기반하며 웹 검색으로 확인하지 않았습니다. 인용한 논문·문서의 제목과 연도는 원문을 직접 확인하세요. ‘설명용’, ‘가상’, ‘교육용 예’로 표시된 수치는 실제 측정값이 아닙니다. 제품 이름·버전(챗지피티 이미지, 나노바나나, 씨댄스, 일레븐, 수노 등)은 공식 안내에 접속할 수 없어 확인하지 못했습니다. 기술 원리는 Whisper·LLaVA·Stable Diffusion·EnCodec·MusicGen·COCO 평가 코드의 공식 저장소와 직접 계산으로 확인했고, 법령 조문은 legalize-kr 저장소에서 읽었습니다(법률 자문이 아닙니다). 논문과 제품 시연은 ‘미확인’으로 표시했습니다. 쪽 카드의 ‘슬라이드 내용’은 PDF의 텍스트 상자를 왼쪽에서 오른쪽, 위에서 아래 순서로 읽어 옮긴 것이고 같은 줄의 칸은 가로선으로 구분했습니다. 표와 그림은 ‘슬라이드 원본 이미지 보기’로 확인하세요. ‘해설’은 이 자료집 작성자가 쓴 설명이며 슬라이드 원문이 아닙니다.</p></footer>
 </body></html>
